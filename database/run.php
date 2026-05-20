@@ -2,11 +2,11 @@
 
 require_once __DIR__ . '/../config/bootstrap.php';
 
-$dbhost   = $_ENV['DB_HOST'] ?? '127.0.0.1';
-$dbport   = $_ENV['DB_PORT'] ?? '3306';
-$dbname = $_ENV['DB_NAME'] ?? 'flux';
-$dbuser   = $_ENV['DB_USER'] ?? 'root';
-$dbpass   = $_ENV['DB_PASS'] ?? '';
+$dbhost   = $_ENV['DB_HOST'];
+$dbport   = $_ENV['DB_PORT'];
+$dbname   = $_ENV['DB_NAME'];
+$dbuser   = $_ENV['DB_USER'];
+$dbpass   = $_ENV['DB_PASS'];
 
 $command = $argv[1] ?? null;
 

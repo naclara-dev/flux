@@ -1,10 +1,11 @@
 <?php
 
-namespace App\model;
+namespace App\Models\Entities;
 
 class Transaction
 {
     private $id = null;
+    private $userId = null;
     private $walletId = null;
     private $categoryId = null;
     private $entityId = null;
@@ -25,6 +26,16 @@ class Transaction
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?int $userId): void
+    {
+        $this->userId = $userId;
     }
 
     public function getWalletId(): ?int

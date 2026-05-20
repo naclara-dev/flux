@@ -1,8 +1,8 @@
 <?php
 
-namespace App\model;
+namespace App\Models\Entities;
 
-class EntityType
+class PaymentMethod
 {
     private $id = null;
     private $name = null;

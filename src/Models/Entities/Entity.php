@@ -1,12 +1,13 @@
 <?php
 
-namespace App\model;
+namespace App\Models\Entities;
 
 class Entity
 {
-    private $id;
-    private $name;
-    private $typeId;
+    private $id = null;
+    private $userId = null;
+    private $name = null;
+    private $typeId = null;
 
     public function getId(): ?int
     {
@@ -16,6 +17,16 @@ class Entity
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?int $userId): void
+    {
+        $this->userId = $userId;
     }
 
     public function getName(): ?string

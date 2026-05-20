@@ -1,12 +1,11 @@
 <?php
 
-namespace App\model;
+namespace App\Models\Entities;
 
-class Frequency
+class EntityType
 {
     private $id = null;
     private $name = null;
-    private $unit = null;
 
     public function getId(): ?int
     {
@@ -26,15 +25,5 @@ class Frequency
     public function setName(?string $name): void
     {
         $this->name = $name;
-    }
-
-    public function getUnit(): ?string
-    {
-        return $this->unit;
-    }
-
-    public function setUnit(?string $unit): void
-    {
-        $this->unit = $unit;
     }
 }

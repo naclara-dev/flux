@@ -1,10 +1,11 @@
 <?php
 
-namespace App\model;
+namespace App\Models\Entities;
 
 class Rule
 {
     private $id = null;
+    private $userId = null;
     private $name = null;
     private $description = null;
     private $intervalValue = null;
@@ -22,6 +23,16 @@ class Rule
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?int $userId): void
+    {
+        $this->userId = $userId;
     }
 
     public function getName(): ?string

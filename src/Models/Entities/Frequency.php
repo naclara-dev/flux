@@ -1,11 +1,12 @@
 <?php
 
-namespace App\model;
+namespace App\Models\Entities;
 
-class PaymentMethod
+class Frequency
 {
     private $id = null;
     private $name = null;
+    private $unit = null;
 
     public function getId(): ?int
     {
@@ -25,5 +26,15 @@ class PaymentMethod
     public function setName(?string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?string $unit): void
+    {
+        $this->unit = $unit;
     }
 }

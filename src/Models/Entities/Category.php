@@ -1,10 +1,11 @@
 <?php
 
-namespace App\model;
+namespace App\Models\Entities;
 
 class Category
 {
     private $id = null;
+    private $userId = null;
     private $name = null;
     private $color = null;
     private $icon = null;
@@ -17,6 +18,16 @@ class Category
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?int $userId): void
+    {
+        $this->userId = $userId;
     }
 
     public function getName(): ?string
