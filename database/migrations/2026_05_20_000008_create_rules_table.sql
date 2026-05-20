@@ -1,6 +1,7 @@
 -- up
 CREATE TABLE rules (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     interval_value INT DEFAULT 1,
@@ -9,6 +10,7 @@ CREATE TABLE rules (
     end_date DATE,
     next_run_date DATE,
     active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (frequency_id) REFERENCES frequencies(id)
 );
 

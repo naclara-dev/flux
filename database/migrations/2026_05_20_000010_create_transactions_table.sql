@@ -1,6 +1,7 @@
 -- up
 CREATE TABLE transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     wallet_id INT NOT NULL,
     category_id INT,
     entity_id INT,
@@ -12,6 +13,7 @@ CREATE TABLE transactions (
     occurrence_date DATE NOT NULL,
     due_date DATE,
     paid_at DATE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (wallet_id) REFERENCES wallets(id),
     FOREIGN KEY (category_id) REFERENCES categories(id),
     FOREIGN KEY (entity_id) REFERENCES entities(id),
