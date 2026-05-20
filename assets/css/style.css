@@ -1,0 +1,12 @@
+:root {
+    --primary: #afa4cf;
+}
+
+* {
+    font-family: 'Montserrat';
+    font-weight: 500;
+}
+
+nav {
+   border: solid red 1px;  
+}
