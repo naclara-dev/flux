@@ -12,3 +12,6 @@ $twig = new \Twig\Environment($loader, [
     'cache' => false,
     'debug' => true,
 ]);
+
+$twig->addGlobal('base_url', appBaseUrl());
+$twig->addGlobal('current_path', appCurrentPath());

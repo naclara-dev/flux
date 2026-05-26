@@ -12,3 +12,5 @@ define('CONFIG_PATH', BASE_PATH . '/config');
 define('DATABASE_PATH', BASE_PATH . '/database');
 define('MIGRATIONS_PATH', DATABASE_PATH . '/migrations');
 define('SEEDS_PATH', DATABASE_PATH . '/seeds');
+
+require_once __DIR__ . '/functions.php';
