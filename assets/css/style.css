@@ -39,21 +39,19 @@ aside {
     transition: all 0.2s ease;
 }
 
-.nav-item:hover .nav-item-label {
-    opacity: 1;
-    transform: translateY(-5px);
-}
-
-.nav-item:hover .nav-item-link {   
-    transform: translateY(-5px);
-}
-
 .nav-item-link.active {
     background-color: var(--yellow);    
     border-radius: 3px;
 }
 
-@media screen and (max-width: 600px) {
+@media (hover: hover) {
+    .nav-item:hover .nav-item-label {
+        opacity: 1;
+        transform: translateX(5px);
+    }
+}
+
+@media (max-width: 600px) {
     aside {
         width: 100vw;
     }
