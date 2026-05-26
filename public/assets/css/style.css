@@ -7,48 +7,101 @@
     --dark: #3a3835;
 }
 
+.text-primary {
+    color: var(--lilac);
+}
+
 html {
     font-family: 'Montserrat';
-    font-weight: 500;
+    font-weight: 400;
     color: var(--dark);
+    font-size: 13px;
 }
 
 body {
     min-height: 100vh;
     margin: 0;
     background: var(--light);
+    display: flex;
 }
 
 aside {
     width: 80px;
     height: 100vh;
     color: var(--lilac);
+    margin-right: 100px;
+}
+
+h1 {
+    font-weight: 500;
 }
 
 .nav-item-link {
-    transition: all 0.2s ease;
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
     position: relative;
+    border-radius: 3px;
 }
 
 .nav-item-label {
     position: absolute;
-    font-size: 0.7rem;
+    font-size: 1rem;
     margin-left: 40px;
     opacity: 0;
     color: var(--dark-yellow);
     transition: all 0.2s ease;
 }
 
+.nav-item:hover .nav-item-label {
+    opacity: 1;
+    transform: translateX(5px);
+}
+
 .nav-item-link.active {
-    background-color: var(--yellow);    
+    background-color: var(--yellow);
+}
+
+.manage-card {
+    background-color: #fffff5;
+    border-radius: 5px;
+    padding: 1rem;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: solid 1px var(--yellow);
+}
+
+.manage-card-icon {
+    min-width: 50px;
+    color: var(--yellow);
+}
+
+.manage-card:hover {
+    transform: translateY(-5px);
+}
+
+.manage-card-title {
+    color: var(--lilac);
+    min-height: 25px;
+    font-size: 1.2rem;
+}
+
+.manage-card-text {
+    font-size: 0.9rem;
+    width: 80%;
+}
+
+.badge {
+    font-size: 9px;
+    background-color: var(--lilac);
+    color: var(--light);
+    padding: 2px 8px;    
     border-radius: 3px;
 }
 
-@media (hover: hover) {
-    .nav-item:hover .nav-item-label {
-        opacity: 1;
-        transform: translateX(5px);
-    }
+.breadcrumb {
+    font-size: 0.7rem;
+    color: var(--dark-yellow);
 }
 
 @media (max-width: 600px) {

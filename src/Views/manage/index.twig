@@ -1,5 +1,90 @@
 {% extends 'layouts/app.twig' %}
 
-{% block content %}
-    
+{% block content %}    
+    <p class="breadcrumb mb-2">
+        home 
+        <i class="fa-solid fa-angle-right fa-sm"></i>    
+        cadastros
+    </p>
+    <h1 class="text-primary text-3xl">
+        Cadastros
+    </h1>
+    <p class="mt-0 pt-0">
+        Gerencie todas as informações essenciais do Flux.
+    </p>
+
+    <section class="grid grid-cols-3 gap-6 mt-10">
+        <a class="manage-card" href="{{ base_url }}/manage/categories">
+            <div class="manage-card-icon">
+                <i class="fa-regular fa-note-sticky fa-xl"></i>            
+            </div>
+            <div class="manage-card-content">
+                <div class="manage-card-title">                
+                    categorias            
+                </div> 
+                <div class="manage-card-text">
+                    Organize seus lançamentos em categorias personalizadas.
+                </div> 
+                <div class="manage-card-info">
+                    <span class="badge">
+                        7 categorias
+                    </span>
+                </div> 
+            </div>       
+        </a> 
+        <a class="manage-card" href="{{ base_url }}/manage/wallets">
+            <div class="manage-card-icon">
+                <i class="fa-regular fa-envelope fa-xl"></i>
+            </div>
+            <div class="manage-card-content">
+                <div class="manage-card-title">                
+                    wallets            
+                </div> 
+                <div class="manage-card-text">
+                    Crie e gerencie suas contas financeiras e fontes de saldo.
+                </div> 
+                <div class="manage-card-info">
+                    <span class="badge">
+                        2 wallets
+                    </span>
+                </div> 
+            </div>       
+        </a> 
+        <a class="manage-card" href="{{ base_url }}/manage/entities">
+            <div class="manage-card-icon">
+                <i class="fa-regular fa-user fa-xl"></i>
+            </div>
+            <div class="manage-card-content">
+                <div class="manage-card-title">                
+                    entidades            
+                </div> 
+                <div class="manage-card-text">
+                    Crie e gerencie pessoas, grupos e organizações credoras.
+                </div> 
+                <div class="manage-card-info">
+                    <span class="badge">
+                        12 entidades
+                    </span>
+                </div> 
+            </div>       
+        </a> 
+        <a class="manage-card" href="{{ base_url }}/manage/rules">
+            <div class="manage-card-icon">
+                <i class="fa-regular fa-file-lines fa-xl"></i>           
+            </div>
+            <div class="manage-card-content">
+                <div class="manage-card-title">                
+                    regras            
+                </div> 
+                <div class="manage-card-text">
+                    Defina regras personalizadas para lançamentos periódicos.
+                </div> 
+                <div class="manage-card-info">
+                    <span class="badge">
+                        3 regras
+                    </span>
+                </div> 
+            </div>       
+        </a>          
+    <section> 
 {% endblock %}

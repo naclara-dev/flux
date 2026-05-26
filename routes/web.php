@@ -5,11 +5,13 @@ use App\Controllers\ManageController;
 use App\Controllers\SettingsController;
 use App\Controllers\AccountController;
 
-$root = appBaseUrl() . '/';
-
 return [
-    "$root"            => [HomeController::class, 'index'],
-    "{$root}manage/"   => [ManageController::class, 'index'],
-    "{$root}settings/" => [SettingsController::class, 'index'],
-    "{$root}account/"  => [AccountController::class, 'index']
+    '/'                    => [HomeController::class, 'index'],
+    '/manage/'             => [ManageController::class, 'index'],
+    '/manage/categories/'  => [ManageController::class, 'categories'],
+    '/manage/wallets/'     => [ManageController::class, 'wallets'],
+    '/manage/entities/'    => [ManageController::class, 'entities'],
+    '/manage/rules/'       => [ManageController::class, 'rules'],
+    '/settings/'           => [SettingsController::class, 'index'],
+    '/account/'            => [AccountController::class, 'index'],
 ];
