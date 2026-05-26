@@ -3,48 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../assets/img/favicon.svg" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Tailwind -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- CSS -->
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
     <title>Flux - Gestão de Gastos</title>
 </head>
 <body>
-    <header>
-        <nav class="p-4">
-            <ul class="flex flex-col">
-                <li class="nav-item">
-                    <a href="#">
-                        dashboard
+    <header class="sidebar p-4 flex flex-col justify-between items-center">
+        <a class="brand-mark block" href="#" aria-label="Flux">
+            <img src="../assets/img/logo.svg" alt="Flux">
+        </a>
+
+        <nav class="flex items-center justify-center" aria-label="Menu principal">
+            <ul class="flex flex-col gap-7">
+                <li>
+                    <a class="nav-item p-1 active inline-block" href="#" aria-label="Visão Geral" title="Visão Geral">
+                        <i class="fa-regular fa-house fa-lg" aria-hidden="true"></i>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#">
-                        gastos
+                <li>
+                    <a class="nav-item p-1 inline-block"" href="#" aria-label="Wallets" title="Wallets">
+                        <i class="fa-regular fa-rectangle-list fa-lg" aria-hidden="true"></i>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#">
-                        wallets
+                <li>
+                    <a class="nav-item p-1 inline-block"" href="#" aria-label="Adicionar" title="Adicionar">
+                        <i class="fa-solid fa-plus fa-lg" aria-hidden="true"></i>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#">
-                        categorias
+                <li>
+                    <a class="nav-item p-1 inline-block"" href="#" aria-label="Adicionar" title="Adicionar">
+                        <i class="fa-solid fa-gear fa-lg" aria-hidden="true"></i>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#">
-                        configurações
-                    </a>
-                </li>
+                </li>                
             </ul>
         </nav>
-    </header>    
+
+        <a href="#">
+            <i class="fa-regular fa-user fa-lg" aria-hidden="true"></i>
+        </a>
+    </header>
+
+    <main class="page-shell" aria-label="Conteudo principal"></main>
 </body>
 </html>

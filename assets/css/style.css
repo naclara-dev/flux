@@ -1,12 +1,41 @@
 :root {
-    --primary: #afa4cf;
+    --lilac: #c17fd7;
+    --purple: #965dab;
+    --yellow: #f8e9b6;
+    --dark-yellow: #e7d69c;
+    --light: #fffbe8;
+    --dark: #3a3835;
 }
 
-* {
+html {
     font-family: 'Montserrat';
     font-weight: 500;
+    color: var(--dark);
 }
 
-nav {
-   border: solid red 1px;  
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--light);
+}
+
+.sidebar {
+    width: 80px;
+    height: 100vh;
+    color: var(--dark-yellow);
+}
+
+.nav-item {
+    transition: all 0.2s ease
+}
+
+.nav-item:hover {   
+    transform: translateY(-5px);
+    color: var(--lilac);
+}
+
+.nav-item.active {
+    background-color: var(--yellow);
+    color: var(--lilac);
+    border-radius: 3px;
 }
