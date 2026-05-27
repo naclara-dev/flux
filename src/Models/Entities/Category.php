@@ -2,8 +2,7 @@
 
 namespace App\Models\Entities;
 
-class Category
-{
+class Category {
     private $id = null;
     private $userId = null;
     private $name = null;

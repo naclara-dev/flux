@@ -11,6 +11,41 @@
     color: var(--lilac);
 }
 
+.text-secondary {
+    color: var(--dark-yellow);
+}
+
+.btn-primary {
+    background-color: var(--lilac);
+    padding: 3px 10px;
+    color: var(--light);
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    transition: color 0.3s ease;
+}
+
+.btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 0;
+    background-color: var(--yellow);
+    border-radius: 0.25rem;
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+.btn-primary:hover::before {
+    width: 100%;
+}
+
+.btn-primary:hover {
+    color: var(--lilac);
+}
+
 html {
     font-family: 'Montserrat';
     font-weight: 400;
@@ -107,5 +142,21 @@ h1 {
 @media (max-width: 600px) {
     aside {
         width: 100vw;
+        height: 80px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 64px;
+        margin-right: 0;
+        z-index: 1000;        
+    }
+
+    aside nav, aside nav ul {
+        width: 100%;
+    }
+
+    body {
+        flex-direction: column;
     }
 }

@@ -4,12 +4,12 @@
     </a>
 
     <nav class="p-8 flex items-center justify-center" aria-label="Menu principal">
-        <ul class="flex flex-cow md:flex-col gap-8">
+        <ul class="flex flex-cow md:flex-col gap-0 md:gap-8 justify-between">
             <li class="nav-item flex items-center">
                 <a class="nav-item-link p-1 {{ current_path == (base_url ~ '/') ? 'active' : '' }} inline-block" href="{{ base_url }}/" aria-label="Visão Geral">
                     <i class="fa-regular fa-house fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label">
+                <span class="nav-item-label hidden md:d-inline-block">
                     visão geral
                 </span> 
             </li>
@@ -17,7 +17,7 @@
                 <a class="nav-item-link p-1 {{ 'manage/' in current_path ? 'active' : '' }} inline-block" href="{{ base_url }}/manage/" aria-label="Cadastros">
                     <i class="fa-regular fa-rectangle-list fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label">
+                <span class="nav-item-label hidden md:d-inline-block">
                     cadastros
                 </span>                    
             </li>
@@ -25,7 +25,7 @@
                 <a class="nav-item-link p-1 inline-block" href="#" aria-label="Configurações">
                     <i class="fa-solid fa-plus fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label">
+                <span class="nav-item-label hidden md:d-inline-block">
                     novo registro
                 </span> 
             </li> 
@@ -33,7 +33,7 @@
                 <a class="nav-item-link p-1 {{ current_path == (base_url ~ '/settings/') ? 'active' : '' }} inline-block" href="{{ base_url }}/settings/" aria-label="Configurações">
                     <i class="fa-solid fa-gear fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label">
+                <span class="nav-item-label hidden md:d-inline-block">
                     ajustes
                 </span> 
             </li>  
@@ -41,7 +41,7 @@
                 <a class="nav-item-link p-1 {{ current_path == (base_url ~ '/account/') ? 'active' : '' }} inline-block" href="{{ base_url }}/account/" aria-label="Configurações">
                     <i class="fa-regular fa-user fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label">
+                <span class="nav-item-label hidden md:d-inline-block">
                     conta
                 </span> 
             </li>              
