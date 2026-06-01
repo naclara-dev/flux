@@ -6,23 +6,43 @@
 
 {% block content %}
     <section class="flex h-full w-full">
-        <article class="flex-1 flex flex-col justify-center p-8">
-            <p class="text-primary text-4xl font-bold">
+        <article class="flex-1 flex flex-col justify-center p-8 bg-primary bg-pattern rounded-md">
+            <p class="text-purple text-4xl font-bold">
                 oi :)
             </p>
             <div class="flex gap-3">
-                <p class="text-primary text-4xl">
+                <p class="text-light text-4xl">
                     bem-vindo ao                    
                 </p>
-                <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux" class="w-20">
+                <img src="{{ base_url }}/assets/img/logo-light.svg" alt="Flux" class="w-20">
             </div>
 
-            <p class="text-secondary mt-4 text-xl">
-                entre na sua conta para administrar seus gastos.
+            <p class="text-light mt-4 text-xl">
+                seu app de gestão de gastos inteligente.
             </p>
         </article>
-        <article class="flex-1 flex justify-center items-center bg-primary rounded-md p-8">
-            
+        <article class="flex-1 flex flex-col justify-center items-center p-8">
+            <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux" class="w-25">
+    
+            <form class="w-100 mt-5">
+                <div class="form-group w-100">
+                    <label for="username">nome de usuário</label>
+                    <input id="username" name="username" class="w-100" type="text">
+                </div> 
+                <div class="form-group w-100 mt-4">
+                    <label for="username">senha</label>
+                    <input id="username" name="username" class="w-100" type="password">
+                </div>
+                <label class="checkbox mt-4">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    <span class="text-sm">lembre minha senha</span>
+                </label> 
+                <button type="submit" class="btn-secondary mt-4 w-100 font-bold">
+                    <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i>
+                    entrar
+                </button> 
+            </form> 
         </article>
     </section>
 {% endblock %}
