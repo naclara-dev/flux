@@ -46,6 +46,10 @@
     color: var(--lilac);
 }
 
+.bg-primary {
+    background-color: var(--lilac);
+}
+
 html {
     font-family: 'Montserrat';
     font-weight: 400;

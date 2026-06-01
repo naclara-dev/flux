@@ -1,5 +1,10 @@
 <?php
 
+function redirect($url): void {
+    $base = appBaseUrl();
+    header("Location: {$base}/{$url}");
+}
+
 function appBaseUrl(): string
 {
     $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';

@@ -18,12 +18,14 @@
 
     <title>Flux</title>
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body>
     {% block sidebar %}
-        {% include 'components/sidebar.twig' %}
+        {% if show_menu is not defined or show_menu %}
+            {% include 'components/sidebar.twig' %}
+        {% endif %}
     {% endblock %}
 
-    <main class="{% block main_class %}page-content grow-1 p-8{% endblock %}">
+    <main class="page-content grow-1 {% if not no_padding %} p-8 {% endif %}">
         {% block content %}
         {% endblock %}
     </main>

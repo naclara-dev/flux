@@ -4,6 +4,7 @@ use App\Controllers\HomeController;
 use App\Controllers\ManageController;
 use App\Controllers\SettingsController;
 use App\Controllers\AccountController;
+use App\Controllers\AuthController;
 
 return [
     '/'                    => [HomeController::class, 'index'],
@@ -14,4 +15,5 @@ return [
     '/manage/rules/'       => [ManageController::class, 'rules'],
     '/settings/'           => [SettingsController::class, 'index'],
     '/account/'            => [AccountController::class, 'index'],
+    '/login/'              => [AuthController::class, 'index']
 ];

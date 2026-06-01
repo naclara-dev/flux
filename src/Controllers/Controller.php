@@ -15,7 +15,7 @@ abstract class Controller {
 
     protected function requireAuth() {
         if (!\App\Core\Session::has('user_id')) {
-            header('/login');
+            redirect('login/');
             exit;
         }
     }

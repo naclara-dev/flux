@@ -1,11 +1,28 @@
 {% extends 'layouts/app.twig' %}
-
-{% block body_class %}min-h-screen{% endblock %}
+{% set show_menu = false %}
+{% set no_padding = true %}
 
 {% block sidebar %}{% endblock %}
 
-{% block main_class %}min-h-screen flex items-center justify-center p-6{% endblock %}
-
 {% block content %}
-    
+    <section class="flex h-full w-full">
+        <article class="flex-1 flex flex-col justify-center p-8">
+            <p class="text-primary text-4xl font-bold">
+                oi :)
+            </p>
+            <div class="flex gap-3">
+                <p class="text-primary text-4xl">
+                    bem-vindo ao                    
+                </p>
+                <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux" class="w-20">
+            </div>
+
+            <p class="text-secondary mt-4 text-xl">
+                entre na sua conta para administrar seus gastos.
+            </p>
+        </article>
+        <article class="flex-1 flex justify-center items-center bg-primary rounded-md p-8">
+            
+        </article>
+    </section>
 {% endblock %}
