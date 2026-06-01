@@ -12,4 +12,11 @@ abstract class Controller {
     protected function view(string $view, array $data = []) {
         echo $this->twig->render($view, $data);
     }
+
+    protected function requireAuth() {
+        if (!\App\Core\Session::has('user_id')) {
+            header('/login');
+            exit;
+        }
+    }
 }
