@@ -12,7 +12,7 @@
             </p>
             <div class="flex gap-3">
                 <p class="text-light text-4xl">
-                    bem-vindo ao                    
+                    bem-vindo ao
                 </p>
                 <img src="{{ base_url }}/assets/img/logo-light.svg" alt="Flux" class="w-20">
             </div>
@@ -21,28 +21,55 @@
                 seu app de gestão de gastos inteligente.
             </p>
         </article>
-        <article class="flex-1 flex flex-col justify-center items-center p-8">
-            <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux" class="w-25">
-    
-            <form class="w-100 mt-5">
+        <article class="auth-column flex-1 flex flex-col justify-center items-center p-8">
+            <nav class="pills" aria-label="Alternar entre login e cadastro">
+                <a href="#" class="pill active" data-auth-target="login-form" aria-controls="login-form" aria-selected="true">
+                    já tenho conta
+                </a>
+                <a href="#" class="pill" data-auth-target="register-form" aria-controls="register-form" aria-selected="false">
+                    criar uma conta
+                </a>
+            </nav>
+
+            <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux" class="w-25 auth-logo">
+
+            <form id="login-form" class="w-100 mt-5">
                 <div class="form-group w-100">
-                    <label for="username">nome de usuário</label>
-                    <input id="username" name="username" class="w-100" type="text">
-                </div> 
-                <div class="form-group w-100 mt-4">
-                    <label for="username">senha</label>
-                    <input id="username" name="username" class="w-100" type="password">
+                    <label for="username">e-mail</label>
+                    <input id="username" name="email" class="w-100" type="text">
                 </div>
-                <label class="checkbox mt-4">
-                    <input type="checkbox">
-                    <span class="checkmark"></span>
-                    <span class="text-sm">lembre minha senha</span>
-                </label> 
+                <div class="form-group w-100 mt-4">
+                    <label for="password">senha</label>
+                    <input id="password" name="password" class="w-100" type="password">
+                </div>
                 <button type="submit" class="btn-secondary mt-4 w-100 font-bold">
                     <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i>
                     entrar
-                </button> 
-            </form> 
+                </button>
+            </form>
+
+            <form action="{{ base_url }}/register/" method="post" id="register-form" class="w-100 mt-5" hidden>
+                <div class="form-group w-100">
+                    <label for="register-name">nome</label>
+                    <input id="register-name" name="name" class="w-100" type="text">
+                </div>
+                <div class="form-group w-100 mt-4">
+                    <label for="register-email">e-mail</label>
+                    <input id="register-email" name="email" class="w-100" type="email">
+                </div>
+                <div class="form-group w-100 mt-4">
+                    <label for="register-password">senha</label>
+                    <input id="register-password" name="password" class="w-100" type="password">
+                </div>
+                <button type="submit" class="btn-secondary mt-4 w-100 font-bold">
+                    <i class="fa-solid fa-user-plus mr-2"></i>
+                    criar conta
+                </button>
+            </form>
         </article>
     </section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ base_url }}/assets/js/auth-tabs.js"></script>
 {% endblock %}

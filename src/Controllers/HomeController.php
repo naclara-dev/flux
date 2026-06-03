@@ -2,11 +2,15 @@
 
 namespace App\Controllers;
 
-use App\Controllers\AuthController;
-
 class HomeController extends Controller {
     public function index() {  
-        $this->requireAuth();
+        $isLogged = \App\Core\Session::has('user_id');
+
+        if (!$isLogged) {
+            $this->view('auth/login.twig');
+            return;
+        }
+
         $this->view('home.twig');
     }
 }

@@ -46,7 +46,7 @@
 
 .btn-primary {
     background-color: var(--lilac);
-    padding: 3px 10px;
+    padding: 5px 10px;
     color: var(--light);
     border-radius: 3px;
     cursor: pointer;
@@ -77,7 +77,7 @@
 
 .btn-secondary {
     background-color: var(--yellow);
-    padding: 3px 10px;
+    padding: 5px 10px;
     color: var(--lilac);
     border-radius: 3px;
     cursor: pointer;
@@ -142,6 +142,11 @@ h1 {
     display: block;
     border-bottom: 1.5px solid var(--lilac);
     border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--purple);
 }
 
 .nav-item-link {
@@ -254,6 +259,59 @@ h1 {
     font-size: 12px;
 }
 
+.pills {    
+    --pill-index: 0;
+    display: flex;
+    position: absolute;
+    top: 2rem;
+    gap: 7px;
+    padding: 0;
+    background-color: var(--yellow);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.pills::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: var(--lilac);
+    border-radius: 4px;
+    transform: translateX(calc(var(--pill-index) * 100%));
+    transition: transform 0.28s ease;
+}
+
+.pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: var(--lilac);
+    transition: color 0.28s ease, font-weight 0.28s ease;
+}
+
+.pill.active {
+    color: var(--light);
+    font-weight: 600;
+}
+
+.auth-column {
+    position: relative;
+}
+
+.auth-logo {
+    display: block;
+    margin: 0 auto;
+}
+
 @media (max-width: 600px) {
     aside {
         width: 100vw;
@@ -273,5 +331,9 @@ h1 {
 
     body {
         flex-direction: column;
+    }
+
+    .pills {
+        top: 1rem;
     }
 }

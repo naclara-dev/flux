@@ -11,7 +11,7 @@ class ManageController extends Controller {
 
     public function categories() {
         $repository = new CategoryRepository;
-        $categories = $repository->listAll();
+        $categories = $repository->all();
 
         $this->view('manage/categories.twig', [
             'categories' => $categories
