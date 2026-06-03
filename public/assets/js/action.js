@@ -7,6 +7,6 @@ document.addEventListener('submit', (event) => {
 
     if (!window.validateForms(form)) {
         event.preventDefault();
+        window.dispatchEvent(new CustomEvent('auth-panel-height-change'));
     }
 });
-

@@ -33,39 +33,41 @@
 
             <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux" class="w-25 auth-logo">
 
-            <form action="{{ base_url }}/login/" method="post" id="login-form" class="validate w-100 mt-5">
-                <div class="form-group w-100">
-                    <label for="email">e-mail</label>
-                    <input id="email" name="email" class="w-100" type="text" data-type="required">
-                </div>
-                <div class="form-group w-100 mt-4">
-                    <label for="password">senha</label>
-                    <input id="password" name="password" class="w-100" type="password" data-type="required">
-                </div>
-                <button type="submit" class="btn-secondary mt-4 w-100 font-bold">
-                    <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i>
-                    entrar
-                </button>
-            </form>
+            <div class="auth-form-stage w-100 mt-5">
+                <form action="{{ base_url }}/login/" method="post" id="login-form" class="auth-panel is-active validate w-100">
+                    <div class="form-group w-100">
+                        <label for="email">e-mail</label>
+                        <input id="email" name="email" class="w-100" type="text" data-type="required">
+                    </div>
+                    <div class="form-group w-100 mt-4">
+                        <label for="password">senha</label>
+                        <input id="password" name="password" class="w-100" type="password" data-type="required">
+                    </div>
+                    <button type="submit" class="btn-secondary mt-4 w-100 font-bold">
+                        <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i>
+                        entrar
+                    </button>
+                </form>
 
-            <form action="{{ base_url }}/register/" method="post" id="register-form" class="validate w-100 mt-5" hidden>
-                <div class="form-group w-100">
-                    <label for="register-name">nome</label>
-                    <input id="register-name" name="name" class="w-100" type="text" data-type="required">
-                </div>
-                <div class="form-group w-100 mt-4">
-                    <label for="register-email">e-mail</label>
-                    <input id="register-email" name="email" class="w-100" data-type="required|email">
-                </div>
-                <div class="form-group w-100 mt-4">
-                    <label for="register-password">senha</label>
-                    <input id="register-password" name="password" class="w-100" type="password" data-type="required">
-                </div>
-                <button type="submit" class="btn-secondary mt-4 w-100 font-bold">
-                    <i class="fa-solid fa-user-plus mr-2"></i>
-                    criar conta
-                </button>
-            </form>
+                <form action="{{ base_url }}/register/" method="post" id="register-form" class="auth-panel is-after validate w-100" hidden>
+                    <div class="form-group w-100">
+                        <label for="register-name">nome</label>
+                        <input id="register-name" name="name" class="w-100" type="text" data-type="required">
+                    </div>
+                    <div class="form-group w-100 mt-4">
+                        <label for="register-email">e-mail</label>
+                        <input id="register-email" name="email" class="w-100" data-type="required|email">
+                    </div>
+                    <div class="form-group w-100 mt-4">
+                        <label for="register-password">senha</label>
+                        <input id="register-password" name="password" class="w-100" type="password" data-type="required">
+                    </div>
+                    <button type="submit" class="btn-secondary mt-4 w-100 font-bold">
+                        <i class="fa-solid fa-user-plus mr-2"></i>
+                        criar conta
+                    </button>
+                </form>
+            </div>
         </article>
     </section>
 {% endblock %}
