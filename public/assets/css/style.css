@@ -312,6 +312,18 @@ h1 {
     margin: 0 auto;
 }
 
+.input-error-text {
+    font-size: 0.8rem;
+    color: var(--purple);
+    opacity: 0.5;
+}
+
+.form-group:has(input[data-type*="required"]) label::after {
+    content: ' *';
+    color: var(--dark-yellow);
+    font-size: 1rem;
+}
+
 @media (max-width: 600px) {
     aside {
         width: 100vw;
