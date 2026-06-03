@@ -1,6 +1,6 @@
 <?php
 
-function redirect($url): void {
+function redirect($url = ''): void {
     $base = appBaseUrl();
     header("Location: {$base}/{$url}");
 }

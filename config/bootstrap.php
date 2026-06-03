@@ -13,5 +13,8 @@ $twig = new \Twig\Environment($loader, [
     'debug' => true,
 ]);
 
+// Initialize Session
+\App\Core\Session::start();
+
 $twig->addGlobal('base_url', appBaseUrl());
 $twig->addGlobal('current_path', appCurrentPath());

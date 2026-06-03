@@ -14,6 +14,7 @@ return [
     '/manage/entities/'    => [ManageController::class, 'entities'],
     '/manage/rules/'       => [ManageController::class, 'rules'],
     '/settings/'           => [SettingsController::class, 'index'],
+    '/login/'              => [AuthController::class, 'login'],
     '/account/'            => [AccountController::class, 'index'],
     '/register/'           => [AccountController::class, 'store'],
 ];

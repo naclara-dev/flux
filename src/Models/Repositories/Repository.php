@@ -59,10 +59,11 @@ abstract class Repository {
         return $stmt->fetchAll();
     }
 
-    public function find(int $id) {
-        $query = "SELECT * FROM $this->table WHERE id = :id";
+    public function find($value, string $key = 'id') {
+        $filter = $this->getParams([$key], true);
+        $query = "SELECT * FROM $this->table WHERE $filter";
         $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(":$key", $value);
         $stmt->execute();
 
         return $stmt->fetch();
