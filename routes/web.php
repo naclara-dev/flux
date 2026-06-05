@@ -17,4 +17,5 @@ return [
     '/login/'              => [AuthController::class, 'login'],
     '/account/'            => [AccountController::class, 'index'],
     '/register/'           => [AccountController::class, 'store'],
+    '/register/check-email/' => [AccountController::class, 'checkEmail'],
 ];

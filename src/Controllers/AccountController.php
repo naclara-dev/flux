@@ -19,4 +19,15 @@ class AccountController extends Controller {
         $repository = new UserRepository;
         $repository->save($data);
     }
+
+    public function checkEmail() {
+        $email = trim($_POST['email'] ?? '');
+        $repository = new UserRepository;
+        $user = $email !== '' ? $repository->find($email, 'email') : null;
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'available' => empty($user),
+        ]);
+    }
 }
