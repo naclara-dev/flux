@@ -30,4 +30,10 @@ class AuthController extends Controller {
             exit;
         }
     }
+
+    public function logoff() {
+        Session::remove('user_id');
+        redirect();
+        exit;
+    }
 }

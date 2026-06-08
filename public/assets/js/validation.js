@@ -56,6 +56,15 @@
                     message: "ops! e-mail já cadastrado."
                 }
             }
+        },
+        exists: {
+            validate: validateExists,
+            message: "ops! parece que você não tem uma conta :/",
+            types: {
+                email: {
+                    message: "ops! parece que você não tem uma conta :/",    
+                }
+            }
         }
     };
 
@@ -100,6 +109,44 @@
 
         return regex.test(value) && isCompleteDate(value) && compare;
     }
+
+    function validateExists(input) {
+        //
+    }
+
+    function validateUnique(input) {
+        const url = input.dataset.uniqueUrl;
+        const name = input.getAttribute('name');
+        let isUnique = true;
+        let data = {};
+
+        if (!url || !name) {
+            return true;
+        }
+
+        data[name] = input.value;
+        data = Object.assign(data, getUniqueExtraData(input));
+
+        const request = new XMLHttpRequest();
+        request.open('POST', url, false);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        request.setRequestHeader('Accept', 'application/json');
+
+        try {
+            request.send(new URLSearchParams(data).toString());
+
+            if (request.status >= 200 && request.status < 300) {
+                const response = JSON.parse(request.responseText);
+                isUnique = response.available === true;
+            } else {
+                isUnique = false;
+            }
+        } catch (error) {
+            isUnique = false;
+        }
+
+        return isUnique;
+    }    
 
     function getDaysBetween(startDate, endDate, allowZero) {
         if (typeof window.getDaysBetween === 'function') {
@@ -150,40 +197,6 @@
         }
 
         return /^\d{2}\/\d{2}\/\d{4}$/.test(value);
-    }
-
-    function validateUnique(input) {
-        const url = input.dataset.uniqueUrl;
-        const name = input.getAttribute('name');
-        let isUnique = true;
-        let data = {};
-
-        if (!url || !name) {
-            return true;
-        }
-
-        data[name] = input.value;
-        data = Object.assign(data, getUniqueExtraData(input));
-
-        const request = new XMLHttpRequest();
-        request.open('POST', url, false);
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        request.setRequestHeader('Accept', 'application/json');
-
-        try {
-            request.send(new URLSearchParams(data).toString());
-
-            if (request.status >= 200 && request.status < 300) {
-                const response = JSON.parse(request.responseText);
-                isUnique = response.available === true;
-            } else {
-                isUnique = false;
-            }
-        } catch (error) {
-            isUnique = false;
-        }
-
-        return isUnique;
     }
 
     function getUniqueExtraData(input) {

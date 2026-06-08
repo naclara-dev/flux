@@ -15,6 +15,7 @@ return [
     '/manage/rules/'       => [ManageController::class, 'rules'],
     '/settings/'           => [SettingsController::class, 'index'],
     '/login/'              => [AuthController::class, 'login'],
+    '/logoff/'              => [AuthController::class, 'logoff'],
     '/account/'            => [AccountController::class, 'index'],
     '/register/'           => [AccountController::class, 'store'],
     '/register/check-email/' => [AccountController::class, 'checkEmail'],
