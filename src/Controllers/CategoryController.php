@@ -14,10 +14,6 @@ class CategoryController extends Controller {
 
         $this->requireAuth();
 
-        if (!Session::has('user_id')) {
-            return;
-        }
-
         $data = $this->normalizeData($_POST);
         
         $repository = new CategoryRepository;
@@ -26,6 +22,24 @@ class CategoryController extends Controller {
         redirect('manage/categories');
         exit;
     }
+
+    public function delete() {
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            redirect('manage/categories');
+            exit;
+        }
+        
+        $this->requireAuth();
+
+        $id = (int) $_POST["id"];
+        $repository = new CategoryRepository;
+        $repository->delete($id, [
+            'user_id' => Session::get('user_id')
+        ]);
+
+        redirect('manage/categories');
+        exit;
+    }    
 
     protected function normalizeData(array $data) {
         return [

@@ -31,7 +31,10 @@
         {% endblock %}
     </main>
 
+    {% include 'components/delete-confirm-modal.twig' %}
+
     <script src="{{ base_url }}/assets/js/validation.js"></script>
+    <script src="{{ base_url }}/assets/js/modal.js"></script>
     <script src="{{ base_url }}/assets/js/action.js"></script>   
      
     {% block scripts %}{% endblock %}

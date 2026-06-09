@@ -1,17 +1,118 @@
 {% extends 'layouts/app.twig' %}
 
 {% block content %}
-    <p class="breadcrumb mb-2">
-        home 
-        <i class="fa-solid fa-angle-right fa-sm"></i>    
-        cadastros
-        <i class="fa-solid fa-angle-right fa-sm"></i>    
-        wallets
-    </p>
-    <h1 class="text-primary text-3xl">
-        Wallets
-    </h1>
-    <p class="mt-0 pt-0">
-        Crie e gerencie suas contas financeiras e fontes de saldo.
-    </p>    
+    <section class="grid grid-cols-1 md:grid-cols-2 items-end">
+        <div>
+            <h1 class="text-primary text-3xl">
+                Wallets
+            </h1>
+            <p class="text-sm mt-2">
+                Crie e gerencie suas contas financeiras e fontes de saldo.
+            </p>
+        </div> 
+        <div class="flex justify-end"> 
+            <button type="button" class="btn-primary w-50 mt-4 text-xl" data-open-wallet-modal>
+                <i class="fa-solid fa-plus fa-sm mr-1"></i>
+                criar
+            </button>
+        </div> 
+    </section> 
+
+    <section class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4">
+        {% for wallet in wallets %}
+            <div class="manage-card relative w-full">
+                <button type="button" class="w-full pr-10 text-left" data-edit-wallet data-wallet-id="{{ wallet.id|e('html_attr') }}" data-wallet-name="{{ wallet.name|e('html_attr') }}" data-wallet-type-id="{{ wallet.type_id|e('html_attr') }}" data-wallet-initial-balance="{{ wallet.initial_balance|e('html_attr') }}" data-wallet-active="{{ wallet.active|e('html_attr') }}">
+                    <div class="flex items-center gap-3">
+                        <div class="manage-card-text">                
+                            {{ wallet.name }}            
+                        </div> 
+                    </div>       
+                </button>
+
+                <form method="post" action="{{ base_url }}/manage/wallets/delete" class="absolute right-2 top-3">
+                    <input type="hidden" name="id" value="{{ wallet.id|e('html_attr') }}">
+                    <button type="submit" class="cursor-pointer flex h-8 w-8 items-center justify-center rounded text-secondary" aria-label="Excluir wallet" data-delete-button>
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </form>
+            </div>
+        {% else %} 
+            <p class="col-span-4 flex min-h-[calc(100vh-220px)] items-center justify-center text-center text-secondary text-3xl">
+                você ainda não cadastrou nenhuma wallet :/ 
+            </p>            
+        {% endfor %}  
+    </section>
+
+    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-wallet-modal>
+        <form method="post" action="{{ base_url }}/manage/wallets/store" class="validate" data-wallet-form>
+            <div class="flex items-center justify-between px-6 py-4">
+                <div>
+                    <h2 class="text-xl font-bold text-primary" data-wallet-modal-title>nova wallet</h2>
+                    <p class="mt-1 text-xs text-[var(--dark)] opacity-70">informe nome, tipo, saldo inicial e status.</p>
+                </div>
+                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-wallet-modal aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-5 px-6 py-5">
+                <input type="hidden" name="id" data-wallet-id-input>
+
+                <div class="form-group">
+                    <label for="wallet-name">nome</label>
+                    <input id="wallet-name" name="name" type="text" data-type="required" class="mt-1 w-full bg-transparent outline-none" autocomplete="off" data-wallet-name-input>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div class="form-group">
+                        <label>tipo</label>
+                        <input type="hidden" name="type_id" data-type="required" data-wallet-type-input>
+
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-wallet-type-toggle>
+                            <span data-wallet-type-label class="text-sm">
+                                escolha um tipo
+                            </span>
+                            <i class="fa-solid fa-chevron-down text-primary"></i>
+                        </button>
+
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-wallet-type-menu>
+                            {% for type in wallet_types %}
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-wallet-type-option data-wallet-type-id="{{ type.id|e('html_attr') }}" data-wallet-type-name="{{ type.name|e('html_attr') }}">
+                                    {{ type.name }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wallet-initial-balance">saldo inicial</label>
+                        <input id="wallet-initial-balance" name="initial_balance" type="text" inputmode="decimal" value="0,00" data-type="required" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" autocomplete="off" data-wallet-balance-input>
+                    </div>
+                </div>
+
+                <label class="flex cursor-pointer items-center gap-3 text-sm text-[var(--dark)]">
+                    <input type="hidden" name="active" value="0">
+                    <input type="checkbox" name="active" value="1" checked class="peer sr-only" data-wallet-active-input>
+                    <span class="flex h-5 w-5 items-center justify-center rounded border-[1.5px] border-[var(--lilac)] text-[0px] text-light transition peer-checked:bg-[var(--lilac)] peer-checked:text-xs">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                    ativo
+                </label>
+            </div>
+
+            <div class="flex justify-end gap-3 px-6 py-4">
+                <button type="button" class="btn-secondary" data-close-wallet-modal>
+                    cancelar
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-check"></i>
+                    salvar
+                </button>
+            </div>
+        </form>
+    </dialog>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ base_url }}/assets/js/wallets.js"></script>
 {% endblock %}

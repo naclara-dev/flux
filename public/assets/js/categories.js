@@ -3,7 +3,6 @@
     const form = document.querySelector('[data-category-form]');
     const openButton = document.querySelector('[data-open-category-modal]');
     const editButtons = document.querySelectorAll('[data-edit-category]');
-    const closeButtons = document.querySelectorAll('[data-close-category-modal]');
     const picker = document.querySelector('[data-icon-picker]');
     const pickerToggle = document.querySelector('[data-toggle-icon-picker]');
     const grid = document.querySelector('[data-icon-grid]');
@@ -18,13 +17,17 @@
     const iconsUrl = modal ? modal.dataset.iconsUrl : '';
     let icons = [];
 
-    if (!modal || !form || !openButton || !picker || !pickerToggle || !grid || !search || !idInput || !nameInput || !colorInput || !iconInput || !selectedIconPreview || !selectedIconLabel || !modalTitle || !iconsUrl) {
+    const categoryModal = window.FluxModal ? window.FluxModal.create(modal, {
+        closeSelector: '[data-close-category-modal]'
+    }) : null;
+
+    if (!categoryModal || !form || !openButton || !picker || !pickerToggle || !grid || !search || !idInput || !nameInput || !colorInput || !iconInput || !selectedIconPreview || !selectedIconLabel || !modalTitle || !iconsUrl) {
         return;
     }
 
     openButton.addEventListener('click', function () {
         resetForm();
-        openModal();
+        categoryModal.open();
     });
 
     editButtons.forEach(function (button) {
@@ -36,20 +39,8 @@
                 icon: button.dataset.categoryIcon || ''
             });
 
-            openModal();
+            categoryModal.open();
         });
-    });
-
-    closeButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            closeModal();
-        });
-    });
-
-    modal.addEventListener('click', function (event) {
-        if (event.target === modal) {
-            closeModal();
-        }
     });
 
     pickerToggle.addEventListener('click', function () {
@@ -73,24 +64,6 @@
                 setSelectedIcon(iconInput.value);
             }
         });
-
-    function openModal() {
-        modal.showModal();
-
-        requestAnimationFrame(function () {
-            modal.classList.remove('scale-95', 'opacity-0');
-            modal.classList.add('scale-100', 'opacity-100');
-        });
-    }
-
-    function closeModal() {
-        modal.classList.remove('scale-100', 'opacity-100');
-        modal.classList.add('scale-95', 'opacity-0');
-
-        setTimeout(function () {
-            modal.close();
-        }, 180);
-    }
 
     function resetForm() {
         form.reset();

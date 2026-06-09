@@ -20,18 +20,31 @@
 
     <section class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4">
         {% for category in categories %}
-            <button type="button" class="manage-card w-full text-left" data-edit-category data-category-id="{{ category.id|e('html_attr') }}" data-category-name="{{ category.name|e('html_attr') }}" data-category-color="{{ category.color|e('html_attr') }}" data-category-icon="{{ category.icon|e('html_attr') }}">
-                <div class="flex items-center gap-3">
-                    <div class="flex h-9 w-9 flex-none items-center justify-center rounded-full text-light" style="background-color: {{ category.color|e('html_attr') }}">
-                        {% if category.icon %}
-                            <i class="{{ category.icon|e('html_attr') }}"></i>
-                        {% endif %}
+            <div class="manage-card relative w-full">
+                <button type="button" class="w-full pr-10 text-left" data-edit-category data-category-id="{{ category.id|e('html_attr') }}" data-category-name="{{ category.name|e('html_attr') }}" data-category-color="{{ category.color|e('html_attr') }}" data-category-icon="{{ category.icon|e('html_attr') }}">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 flex-none items-center justify-center rounded-full text-light" style="background-color: {{ category.color|e('html_attr') }}">
+                            {% if category.icon %}
+                                <i class="{{ category.icon|e('html_attr') }}"></i>
+                            {% endif %}
+                        </div>
+                        <div class="manage-card-text">                
+                            {{ category.name }}            
+                        </div>
                     </div>
-                    <div class="manage-card-text">                
-                        {{ category.name }}            
-                    </div> 
-                </div>       
-            </button> 
+                </button>
+
+                <form method="post" action="{{ base_url }}/manage/categories/delete" class="absolute right-2 top-3">
+                    <input type="hidden" name="id" value="{{ category.id|e('html_attr') }}">
+                    <button type="submit" class="cursor-pointer flex h-8 w-8 items-center justify-center rounded text-secondary" aria-label="Excluir categoria" data-delete-button>
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </form>
+            </div>
+        {% else %} 
+            <p class="col-span-4 flex min-h-[calc(100vh-220px)] items-center justify-center text-center text-secondary text-3xl">
+                você ainda não cadastrou nenhuma categoria :/ 
+            </p>              
         {% endfor %}  
     </section>
 

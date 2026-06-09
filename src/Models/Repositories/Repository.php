@@ -3,6 +3,7 @@
 namespace App\Models\Repositories;
 
 use App\Core\Database;
+use App\Core\Session;
 
 abstract class Repository {
     protected $db;
@@ -25,7 +26,7 @@ abstract class Repository {
         return $this->entityClass;
     }
 
-    public function getFields(): array {
+    private function getFields(): array {
         $reflection = new \ReflectionClass($this->entityClass);
 
         $fields = [];
@@ -34,39 +35,71 @@ abstract class Repository {
             $name = $property->getName();
 
             if ($name !== 'id') {
-                $fields[] = $name;
+                $fields[] = camelToSnake($name);
             }            
         }
 
         return $fields;        
     }
 
-    public function getParams(array $fields, bool $isUpdate = false): string {
+    private function getParams(array $fields, bool $isUpdate = false, string $separator = ','): string {
         $params = [];
 
         foreach ($fields as $f) {
-            $params[] = $isUpdate ? "$f = :$f" : ":$f";          
+            $params[] = $isUpdate ? "$f = :$f" : ":$f";
         }
 
-        return implode(',', $params);        
-    }
+        return implode($separator, $params);
+    }     
 
-    public function all() {
+    public function all(array $filters = []): array {
+        $fields = array_keys($filters);
         $query = "SELECT * FROM $this->table";
+
+        if (!empty($filters)) {
+            $query .= " WHERE " . $this->getParams($fields, true, ' AND ');
+        }
+
         $stmt = $this->db->prepare($query);
+
+        foreach ($filters as $field => $value) {
+            $stmt->bindValue(":$field", $value);
+        }
+
         $stmt->execute();
 
         return $stmt->fetchAll();
     }
 
-    public function allFromUser(int $user_id) {
-        $filter = "user_id = :user_id";
-        $query = "SELECT * FROM $this->table WHERE $filter";
+    public function allFromUser(): array {
+        return $this->all([
+            "user_id" => Session::get("user_id")
+        ]);
+    }
+
+    public function count(array $filters = []): int {
+        $fields = array_keys($filters);
+        $query = "SELECT COUNT(id) FROM $this->table";
+
+        if (!empty($filters)) {
+            $query .= " WHERE " . $this->getParams($fields, true, ' AND ');
+        }
+
         $stmt = $this->db->prepare($query);
-        $stmt->bindValue("user_id", $user_id);
+
+        foreach ($filters as $field => $value) {
+            $stmt->bindValue(":$field", $value);
+        }
+
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function countFromUser(): int {
+        return $this->count([
+            "user_id" => Session::get("user_id")
+        ]);        
     }
 
     public function find($value, string $key = 'id') {
@@ -89,23 +122,40 @@ abstract class Repository {
         }        
     }
 
-    public function update(array $data) {
+    private function update(array $data) {
         $fields = $this->getFields();
-        $sets = $this->getParams($fields, true);
+        $updateFields = $fields;
+
+        if (array_key_exists('user_id', $data)) {
+            $updateFields = array_values(array_filter($fields, function ($field) {
+                return $field !== 'user_id';
+            }));
+        }
+
+        $sets = $this->getParams($updateFields, true);
 
         $query = "UPDATE $this->table SET $sets WHERE id = :id";
+
+        if (array_key_exists('user_id', $data)) {
+            $query .= " AND user_id = :user_id";
+        }
+
         $stmt = $this->db->prepare($query);
 
-        foreach ($fields as $f) {
+        foreach ($updateFields as $f) {
             $stmt->bindValue(":$f", $data[$f]);
         }
 
         $stmt->bindValue(':id', $data['id']);
 
+        if (array_key_exists('user_id', $data)) {
+            $stmt->bindValue(':user_id', $data['user_id']);
+        }
+
         return $stmt->execute();
     }
 
-    public function insert(array $data) {
+    private function insert(array $data) {
         $fields = $this->getFields();
         $params = $this->getParams($fields);
         $columns = implode(',', $fields);
@@ -118,5 +168,22 @@ abstract class Repository {
         }
 
         return $stmt->execute();        
+    } 
+
+    public function delete(int $id, array $filters = []) {
+        $query = "DELETE FROM $this->table WHERE id = :id";
+
+        if (!empty($filters)) {
+            $query .= " AND " . $this->getParams(array_keys($filters), true, ' AND ');
+        }
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":id", $id);
+
+        foreach ($filters as $field => $value) {
+            $stmt->bindValue(":$field", $value);
+        }
+
+        return $stmt->execute();
     }
 }

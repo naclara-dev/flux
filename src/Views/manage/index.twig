@@ -1,11 +1,6 @@
 {% extends 'layouts/app.twig' %}
 
 {% block content %}    
-    <p class="breadcrumb mb-2">
-        home 
-        <i class="fa-solid fa-angle-right fa-sm"></i>    
-        cadastros
-    </p>
     <h1 class="text-primary text-3xl">
         Cadastros
     </h1>
@@ -27,7 +22,8 @@
                 </div> 
                 <div class="manage-card-info">
                     <span class="badge">
-                        7 categorias
+                        {{ categories_count }}
+                        categorias
                     </span>
                 </div> 
             </div>       
@@ -45,7 +41,8 @@
                 </div> 
                 <div class="manage-card-info">
                     <span class="badge">
-                        2 wallets
+                        {{ wallets_count }}
+                        wallets
                     </span>
                 </div> 
             </div>       
@@ -63,7 +60,8 @@
                 </div> 
                 <div class="manage-card-info">
                     <span class="badge">
-                        12 entidades
+                        {{ entities_count }}
+                        entidades
                     </span>
                 </div> 
             </div>       
@@ -81,7 +79,8 @@
                 </div> 
                 <div class="manage-card-info">
                     <span class="badge">
-                        3 regras
+                        {{ rules_count }}
+                        regras
                     </span>
                 </div> 
             </div>       
