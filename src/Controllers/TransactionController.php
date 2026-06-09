@@ -27,14 +27,23 @@ class TransactionController extends Controller {
         $paid = !empty($data['paid']);
         $templateId = empty($data['template_id']) ? null : (int) $data['template_id'];
         $title = trim($data['title'] ?? '');
+        $template = null;
 
-        if ($title === '' && $templateId) {
+        if ($templateId) {
             $template = (new TemplateRepository)->find([
                 'id' => $templateId,
                 'user_id' => Session::get('user_id')
             ]);
+        }
 
+        if ($title === '' && $template) {
             $title = trim($template['title'] ?? '');
+        }
+
+        $occurrenceDate = $data['occurrence_date'] ?? null;
+
+        if (empty($occurrenceDate) && !empty($template['month_day'])) {
+            $occurrenceDate = $this->nextDateFromMonthDay((int) $template['month_day']);
         }
 
         return [
@@ -48,9 +57,28 @@ class TransactionController extends Controller {
             'title' => $title,
             'paid' => $paid ? 1 : 0,
             'amount' => moneyToFloat($data['amount'] ?? '0'),
-            'occurrence_date' => $data['occurrence_date'] ?? null,
+            'occurrence_date' => $occurrenceDate,
             'due_date' => empty($data['due_date']) ? null : $data['due_date'],
             'paid_at' => !$paid || empty($data['paid_at']) ? null : $data['paid_at'],
         ];
+    }
+
+    private function nextDateFromMonthDay(int $monthDay): string {
+        $today = new \DateTimeImmutable('today');
+        $day = max(1, min($monthDay, 31));
+        $date = $this->dateInMonth($today, $day);
+
+        if ($date < $today) {
+            $date = $this->dateInMonth($today->modify('first day of next month'), $day);
+        }
+
+        return $date->format('Y-m-d');
+    }
+
+    private function dateInMonth(\DateTimeImmutable $baseDate, int $day): \DateTimeImmutable {
+        $lastDay = (int) $baseDate->format('t');
+        $safeDay = min($day, $lastDay);
+
+        return $baseDate->setDate((int) $baseDate->format('Y'), (int) $baseDate->format('m'), $safeDay);
     }
 }

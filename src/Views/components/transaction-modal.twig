@@ -2,7 +2,7 @@
     <form method="post" action="{{ base_url }}/transactions/store" class="validate" data-transaction-form>
         <div class="flex items-center justify-between px-6 py-4">
             <div>
-                <h2 class="text-xl font-bold text-primary">novo registro</h2>
+                <h2 class="text-xl font-bold text-primary" data-transaction-modal-title>novo registro</h2>
                 <p class="mt-1 text-xs text-[var(--dark)] opacity-70">registre uma movimentacao financeira.</p>
             </div>
             <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-transaction-modal aria-label="Fechar">
@@ -85,7 +85,7 @@
                     </button>
                     <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-transaction-select-menu="template">
                         {% for template in transaction_templates|default([]) %}
-                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-transaction-option="template" data-transaction-option-id="{{ template.id|e('html_attr') }}" data-transaction-option-name="{{ template.title|e('html_attr') }}" data-template-wallet-id="{{ template.wallet.id|e('html_attr') }}" data-template-wallet-name="{{ template.wallet.name|e('html_attr') }}" data-template-category-id="{{ template.category.id|e('html_attr') }}" data-template-category-name="{{ template.category.name|e('html_attr') }}" data-template-entity-id="{{ template.entity.id|e('html_attr') }}" data-template-entity-name="{{ template.entity.name|e('html_attr') }}" data-template-amount="{{ template.amount|e('html_attr') }}">
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-transaction-option="template" data-transaction-option-id="{{ template.id|e('html_attr') }}" data-transaction-option-name="{{ template.title|e('html_attr') }}" data-template-wallet-id="{{ template.wallet.id|e('html_attr') }}" data-template-wallet-name="{{ template.wallet.name|e('html_attr') }}" data-template-category-id="{{ template.category.id|e('html_attr') }}" data-template-category-name="{{ template.category.name|e('html_attr') }}" data-template-entity-id="{{ template.entity.id|e('html_attr') }}" data-template-entity-name="{{ template.entity.name|e('html_attr') }}" data-template-amount="{{ template.amount|e('html_attr') }}" data-template-month-day="{{ template.month_day|e('html_attr') }}">
                                 {{ template.title }}
                             </button>
                         {% endfor %}

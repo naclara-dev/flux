@@ -125,7 +125,14 @@ body {
     width: 80px;
     height: 100vh;
     color: var(--lilac);
-    margin-right: 100px;
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1000;
+}
+
+.page-content {
+    margin-left: 180px;
+    min-width: 0;
 }
 
 h1 {
@@ -358,13 +365,17 @@ h1 {
     .app-sidebar {
         width: 100vw;
         height: 80px;
-        position: fixed;
         bottom: 0;
         left: 0;
         width: 100vw;
         height: 64px;
-        margin-right: 0;
+        top: auto;
         z-index: 1000;        
+    }
+
+    .page-content {
+        margin-left: 0;
+        padding-bottom: 88px;
     }
 
     .app-sidebar nav, .app-sidebar nav ul {

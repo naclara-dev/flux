@@ -45,9 +45,46 @@ class TransactionRepository extends Repository
         return $result ?: null;
     }
 
+    public function findNextIncomeAfter(int $userId, string $date): ?array
+    {
+        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date > :date ORDER BY occurrence_date ASC LIMIT 1";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(':date', $date);
+        $stmt->execute();
+
+        $result = $stmt->fetch();
+
+        return $result ?: null;
+    }
+
     public function sumAmountInCycle(int $userId, string $startDate, string $endDate): float
     {
         $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND occurrence_date >= :start_date AND occurrence_date < :end_date";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(':start_date', $startDate);
+        $stmt->bindValue(':end_date', $endDate);
+        $stmt->execute();
+
+        return (float) $stmt->fetchColumn();
+    }
+
+    public function sumIncomeInCycle(int $userId, string $startDate, string $endDate): float
+    {
+        $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date >= :start_date AND occurrence_date < :end_date";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(':start_date', $startDate);
+        $stmt->bindValue(':end_date', $endDate);
+        $stmt->execute();
+
+        return (float) $stmt->fetchColumn();
+    }
+
+    public function sumExpenseInCycle(int $userId, string $startDate, string $endDate): float
+    {
+        $query = "SELECT COALESCE(SUM(ABS(amount)), 0) FROM $this->table WHERE user_id = :user_id AND amount < 0 AND occurrence_date >= :start_date AND occurrence_date < :end_date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':start_date', $startDate);
@@ -67,5 +104,37 @@ class TransactionRepository extends Repository
         $stmt->execute();
 
         return (float) $stmt->fetchColumn();
+    }
+
+    public function allInCycleFromUser(int $userId, string $startDate, string $endDate): array
+    {
+        $query = "
+            SELECT
+                transactions.*,
+                categories.name AS category_name,
+                categories.color AS category_color,
+                categories.icon AS category_icon,
+                wallets.name AS wallet_name,
+                entities.name AS entity_name,
+                templates.title AS template_title,
+                payment_methods.name AS payment_method_name
+            FROM $this->table
+            LEFT JOIN categories ON categories.id = transactions.category_id
+            LEFT JOIN wallets ON wallets.id = transactions.wallet_id
+            LEFT JOIN entities ON entities.id = transactions.entity_id
+            LEFT JOIN templates ON templates.id = transactions.template_id
+            LEFT JOIN payment_methods ON payment_methods.id = transactions.payment_method_id
+            WHERE transactions.user_id = :user_id
+                AND transactions.occurrence_date >= :start_date
+                AND transactions.occurrence_date < :end_date
+            ORDER BY transactions.occurrence_date ASC, transactions.id ASC
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(':start_date', $startDate);
+        $stmt->bindValue(':end_date', $endDate);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 }
