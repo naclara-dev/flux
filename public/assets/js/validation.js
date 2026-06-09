@@ -111,21 +111,52 @@
     }
 
     function validateExists(input) {
-        //
-    }
+        const result = requestFieldValidation(input, 'exists');
 
-    function validateUnique(input) {
-        const url = input.dataset.uniqueUrl;
-        const name = input.getAttribute('name');
-        let isUnique = true;
-        let data = {};
-
-        if (!url || !name) {
+        if (result === null) {
             return true;
         }
 
+        if (typeof result.exists === 'boolean') {
+            return result.exists;
+        }
+
+        if (typeof result.available === 'boolean') {
+            return !result.available;
+        }
+
+        return false;
+    }
+
+    function validateUnique(input) {
+        const result = requestFieldValidation(input, 'unique');
+
+        if (result === null) {
+            return true;
+        }
+
+        if (typeof result.available === 'boolean') {
+            return result.available;
+        }
+
+        if (typeof result.exists === 'boolean') {
+            return !result.exists;
+        }
+
+        return false;
+    }
+
+    function requestFieldValidation(input, validationType) {
+        const url = getValidationUrl(input, validationType);
+        const name = input.getAttribute('name');
+        let data = {};
+
+        if (!url || !name) {
+            return null;
+        }
+
         data[name] = input.value;
-        data = Object.assign(data, getUniqueExtraData(input));
+        data = Object.assign(data, getExtraData(input, validationType));
 
         const request = new XMLHttpRequest();
         request.open('POST', url, false);
@@ -136,17 +167,22 @@
             request.send(new URLSearchParams(data).toString());
 
             if (request.status >= 200 && request.status < 300) {
-                const response = JSON.parse(request.responseText);
-                isUnique = response.available === true;
-            } else {
-                isUnique = false;
+                return JSON.parse(request.responseText);
             }
         } catch (error) {
-            isUnique = false;
+            return {};
         }
 
-        return isUnique;
-    }    
+        return {};
+    }
+
+    function getValidationUrl(input, validationType) {
+        if (validationType === 'exists') {
+            return input.dataset.existsUrl || input.dataset.uniqueUrl;
+        }
+
+        return input.dataset.uniqueUrl;
+    }
 
     function getDaysBetween(startDate, endDate, allowZero) {
         if (typeof window.getDaysBetween === 'function') {
@@ -199,9 +235,9 @@
         return /^\d{2}\/\d{2}\/\d{4}$/.test(value);
     }
 
-    function getUniqueExtraData(input) {
+    function getExtraData(input, validationType) {
         const form = input.closest('form');
-        const fields = String(input.dataset.uniqueExtraFields || '').split(',');
+        const fields = String(getExtraFields(input, validationType) || '').split(',');
         let data = {};
 
         if (!form) {
@@ -222,6 +258,14 @@
         return data;
     }
 
+    function getExtraFields(input, validationType) {
+        if (validationType === 'exists') {
+            return input.dataset.existsExtraFields || input.dataset.uniqueExtraFields;
+        }
+
+        return input.dataset.uniqueExtraFields;
+    }
+
     function cleanMessages(form) {
         form.querySelectorAll('.input-error-text').forEach(function (message) {
             message.remove();
@@ -235,11 +279,11 @@
     function getErrorText(type, input) {
         if (type === 'date' && input.dataset.compare !== undefined) {
             return 'A data inicial tem de ser anterior a data final.';
-        } else if (type === 'unique') {
+        } else if (type === 'unique' || type === 'exists') {
             const fieldName = input.getAttribute('name');
-            const uniqueType = validators.unique.types[fieldName];
+            const validationType = validators[type].types[fieldName];
 
-            return uniqueType ? uniqueType.message : validators.unique.message;
+            return validationType ? validationType.message : validators[type].message;
         } else {
             return validators[type].message;
         }

@@ -31,6 +31,17 @@ class AuthController extends Controller {
         }
     }
 
+    public function checkEmail() {
+        $email = trim($_POST['email'] ?? '');
+        $repository = new UserRepository;
+        $user = $email !== '' ? $repository->find($email, 'email') : null;
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'exists' => !empty($user),
+        ]);
+    }
+
     public function logoff() {
         Session::remove('user_id');
         redirect();

@@ -19,4 +19,8 @@ abstract class Controller {
             return;
         }
     }
+
+    protected function normalizeData(array $data) {
+        return $data;   
+    }
 }

@@ -1,0 +1,262 @@
+[
+    {
+        "label": "Burger",
+        "style": "fa-solid fa-burger"
+    },
+    {
+        "label": "Utensils",
+        "style": "fa-solid fa-utensils"
+    },
+    {
+        "label": "Pizza Slice",
+        "style": "fa-solid fa-pizza-slice"
+    },
+    {
+        "label": "Mug Hot",
+        "style": "fa-solid fa-mug-hot"
+    },
+    {
+        "label": "Basket Shopping",
+        "style": "fa-solid fa-basket-shopping"
+    },
+    {
+        "label": "Cart Shopping",
+        "style": "fa-solid fa-cart-shopping"
+    },
+    {
+        "label": "Store",
+        "style": "fa-solid fa-store"
+    },
+    {
+        "label": "Gift",
+        "style": "fa-solid fa-gift"
+    },
+    {
+        "label": "Briefcase Medical",
+        "style": "fa-solid fa-briefcase-medical"
+    },
+    {
+        "label": "Heart Pulse",
+        "style": "fa-solid fa-heart-pulse"
+    },
+    {
+        "label": "Pills",
+        "style": "fa-solid fa-pills"
+    },
+    {
+        "label": "Stethoscope",
+        "style": "fa-solid fa-stethoscope"
+    },
+    {
+        "label": "Shirt",
+        "style": "fa-solid fa-shirt"
+    },
+    {
+        "label": "House",
+        "style": "fa-solid fa-house"
+    },
+    {
+        "label": "Building",
+        "style": "fa-solid fa-building"
+    },
+    {
+        "label": "Lightbulb",
+        "style": "fa-solid fa-lightbulb"
+    },
+    {
+        "label": "Droplet",
+        "style": "fa-solid fa-droplet"
+    },
+    {
+        "label": "Wifi",
+        "style": "fa-solid fa-wifi"
+    },
+    {
+        "label": "Mobile Screen Button",
+        "style": "fa-solid fa-mobile-screen-button"
+    },
+    {
+        "label": "TV",
+        "style": "fa-solid fa-tv"
+    },
+    {
+        "label": "Car",
+        "style": "fa-solid fa-car"
+    },
+    {
+        "label": "Bus",
+        "style": "fa-solid fa-bus"
+    },
+    {
+        "label": "Train",
+        "style": "fa-solid fa-train"
+    },
+    {
+        "label": "Taxi",
+        "style": "fa-solid fa-taxi"
+    },
+    {
+        "label": "Gas Pump",
+        "style": "fa-solid fa-gas-pump"
+    },
+    {
+        "label": "Plane",
+        "style": "fa-solid fa-plane"
+    },
+    {
+        "label": "Route",
+        "style": "fa-solid fa-route"
+    },
+    {
+        "label": "Book",
+        "style": "fa-solid fa-book"
+    },
+    {
+        "label": "Graduation Cap",
+        "style": "fa-solid fa-graduation-cap"
+    },
+    {
+        "label": "School",
+        "style": "fa-solid fa-school"
+    },
+    {
+        "label": "Film",
+        "style": "fa-solid fa-film"
+    },
+    {
+        "label": "Gamepad",
+        "style": "fa-solid fa-gamepad"
+    },
+    {
+        "label": "Music",
+        "style": "fa-solid fa-music"
+    },
+    {
+        "label": "Ticket",
+        "style": "fa-solid fa-ticket"
+    },
+    {
+        "label": "Dumbbell",
+        "style": "fa-solid fa-dumbbell"
+    },
+    {
+        "label": "Futbol",
+        "style": "fa-solid fa-futbol"
+    },
+    {
+        "label": "Spa",
+        "style": "fa-solid fa-spa"
+    },
+    {
+        "label": "Scissors",
+        "style": "fa-solid fa-scissors"
+    },
+    {
+        "label": "Heart",
+        "style": "fa-solid fa-heart"
+    },
+    {
+        "label": "Baby",
+        "style": "fa-solid fa-baby"
+    },
+    {
+        "label": "Paw",
+        "style": "fa-solid fa-paw"
+    },
+    {
+        "label": "Credit Card",
+        "style": "fa-solid fa-credit-card"
+    },
+    {
+        "label": "Money Bill",
+        "style": "fa-solid fa-money-bill"
+    },
+    {
+        "label": "Money Bill Wave",
+        "style": "fa-solid fa-money-bill-wave"
+    },
+    {
+        "label": "Receipt",
+        "style": "fa-solid fa-receipt"
+    },
+    {
+        "label": "Wallet",
+        "style": "fa-solid fa-wallet"
+    },
+    {
+        "label": "Piggy Bank",
+        "style": "fa-solid fa-piggy-bank"
+    },
+    {
+        "label": "Coins",
+        "style": "fa-solid fa-coins"
+    },
+    {
+        "label": "Landmark",
+        "style": "fa-solid fa-landmark"
+    },
+    {
+        "label": "Chart Line",
+        "style": "fa-solid fa-chart-line"
+    },
+    {
+        "label": "Briefcase",
+        "style": "fa-solid fa-briefcase"
+    },
+    {
+        "label": "Laptop",
+        "style": "fa-solid fa-laptop"
+    },
+    {
+        "label": "Screwdriver Wrench",
+        "style": "fa-solid fa-screwdriver-wrench"
+    },
+    {
+        "label": "Wrench",
+        "style": "fa-solid fa-wrench"
+    },
+    {
+        "label": "Hammer",
+        "style": "fa-solid fa-hammer"
+    },
+    {
+        "label": "Shield Halved",
+        "style": "fa-solid fa-shield-halved"
+    },
+    {
+        "label": "Rotate Right",
+        "style": "fa-solid fa-rotate-right"
+    },
+    {
+        "label": "Calendar",
+        "style": "fa-solid fa-calendar"
+    },
+    {
+        "label": "Tag",
+        "style": "fa-solid fa-tag"
+    },
+    {
+        "label": "Tags",
+        "style": "fa-solid fa-tags"
+    },
+    {
+        "label": "Circle Dollar To Slot",
+        "style": "fa-solid fa-circle-dollar-to-slot"
+    },
+    {
+        "label": "Hand Holding Dollar",
+        "style": "fa-solid fa-hand-holding-dollar"
+    },
+    {
+        "label": "Seedling",
+        "style": "fa-solid fa-seedling"
+    },
+    {
+        "label": "Sack Dollar",
+        "style": "fa-solid fa-sack-dollar"
+    },
+    {
+        "label": "Ellipsis",
+        "style": "fa-solid fa-ellipsis"
+    }
+]

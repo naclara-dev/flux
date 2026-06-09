@@ -17,7 +17,7 @@ class ManageController extends Controller {
             'categories' => $categories
         ]);
     }
-    
+
     public function wallets() {
         $this->view('manage/wallets.twig');
     }
