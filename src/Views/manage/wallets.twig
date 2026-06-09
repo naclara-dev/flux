@@ -21,7 +21,7 @@
     <section class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4">
         {% for wallet in wallets %}
             <div class="manage-card relative w-full">
-                <button type="button" class="w-full pr-10 text-left" data-edit-wallet data-wallet-id="{{ wallet.id|e('html_attr') }}" data-wallet-name="{{ wallet.name|e('html_attr') }}" data-wallet-type-id="{{ wallet.type_id|e('html_attr') }}" data-wallet-initial-balance="{{ wallet.initial_balance|e('html_attr') }}" data-wallet-active="{{ wallet.active|e('html_attr') }}">
+                <button type="button" class="w-full pr-10 text-left" data-edit-wallet data-wallet-id="{{ wallet.id|e('html_attr') }}">
                     <div class="flex items-center gap-3">
                         <div class="manage-card-text">                
                             {{ wallet.name }}            
@@ -31,7 +31,7 @@
 
                 <form method="post" action="{{ base_url }}/manage/wallets/delete" class="absolute right-2 top-3">
                     <input type="hidden" name="id" value="{{ wallet.id|e('html_attr') }}">
-                    <button type="submit" class="cursor-pointer flex h-8 w-8 items-center justify-center rounded text-secondary" aria-label="Excluir wallet" data-delete-button>
+                    <button type="submit" class="cursor-pointer flex h-8 w-8 items-center justify-center rounded text-secondary" aria-label="Excluir Wallet" data-delete-button>
                         <i class="fa-regular fa-trash-can"></i>
                     </button>
                 </form>
@@ -43,7 +43,7 @@
         {% endfor %}  
     </section>
 
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-wallet-modal>
+    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-wallet-modal data-wallet-find-url="{{ base_url }}/manage/wallets/find">
         <form method="post" action="{{ base_url }}/manage/wallets/store" class="validate" data-wallet-form>
             <div class="flex items-center justify-between px-6 py-4">
                 <div>

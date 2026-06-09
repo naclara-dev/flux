@@ -3,27 +3,27 @@
 namespace App\Controllers;
 
 use App\Core\Session;
-use App\Models\Repositories\CategoryRepository;
+use App\Models\Repositories\EntityRepository;
 
-class CategoryController extends Controller {
+class EntityController extends Controller {
     public function find() {
         $this->requireAuth();
 
         $id = (int) ($_GET["id"] ?? 0);
-        $repository = new CategoryRepository;
+        $repository = new EntityRepository;
 
-        $category = $repository->find([
+        $entity = $repository->find([
             "id" => $id,
             "user_id" => Session::get('user_id')
         ]);
 
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($category);
+        echo json_encode($entity);
     }
 
     public function store() {
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
-            redirect('manage/categories');
+            redirect('manage/entities');
             exit;
         }
 
@@ -31,28 +31,28 @@ class CategoryController extends Controller {
 
         $data = $this->normalizeData($_POST);
         
-        $repository = new CategoryRepository;
+        $repository = new EntityRepository;
         $repository->save($data);
 
-        redirect('manage/categories');
+        redirect('manage/entities');
         exit;
     }
 
     public function delete() {
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
-            redirect('manage/categories');
+            redirect('manage/entities');
             exit;
         }
         
         $this->requireAuth();
 
         $id = (int) $_POST["id"];
-        $repository = new CategoryRepository;
+        $repository = new EntityRepository;
         $repository->delete($id, [
             'user_id' => Session::get('user_id')
         ]);
 
-        redirect('manage/categories');
+        redirect('manage/entities');
         exit;
     }    
 
@@ -61,8 +61,7 @@ class CategoryController extends Controller {
             "id"      => empty($data["id"]) ? null : (int) $data["id"],
             "user_id" => Session::get('user_id'),
             "name"    => trim($data["name"] ?? ""),
-            "color"   => strtolower(trim($data["color"] ?? "#c17fd7")),
-            "icon"    => trim($data["icon"] ?? "")
+            "type_id" => empty($data["type_id"]) ? null : (int) $data["type_id"]
         ];
-    }
+    }    
 }

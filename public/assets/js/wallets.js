@@ -17,8 +17,9 @@
     const balanceInput = document.querySelector('[data-wallet-balance-input]');
     const activeInput = document.querySelector('[data-wallet-active-input]');
     const modalTitle = document.querySelector('[data-wallet-modal-title]');
+    const findUrl = modal ? modal.dataset.walletFindUrl : '';
 
-    if (!walletModal || !form || !openButton || !idInput || !nameInput || !typeInput || !typeToggle || !typeLabel || !typeMenu || !balanceInput || !activeInput || !modalTitle) {
+    if (!walletModal || !form || !openButton || !idInput || !nameInput || !typeInput || !typeToggle || !typeLabel || !typeMenu || !balanceInput || !activeInput || !modalTitle || !findUrl) {
         return;
     }
 
@@ -29,15 +30,7 @@
 
     editButtons.forEach(function (button) {
         button.addEventListener('click', function () {
-            fillForm({
-                id: button.dataset.walletId || '',
-                name: button.dataset.walletName || '',
-                typeId: button.dataset.walletTypeId || '',
-                initialBalance: button.dataset.walletInitialBalance || '0.00',
-                active: button.dataset.walletActive !== '0'
-            });
-
-            walletModal.open();
+            fetchWallet(button.dataset.walletId);
         });
     });
 
@@ -77,11 +70,38 @@
     function fillForm(wallet) {
         idInput.value = wallet.id;
         nameInput.value = wallet.name;
-        balanceInput.value = formatBalance(wallet.initialBalance);
-        activeInput.checked = wallet.active;
+        balanceInput.value = formatBalance(wallet.initial_balance);
+        activeInput.checked = wallet.active === true || wallet.active === 1 || wallet.active === '1';
         modalTitle.textContent = 'editar wallet';
-        setSelectedType(wallet.typeId);
+        setSelectedType(wallet.type_id);
         closeTypeMenu();
+    }
+
+    function fetchWallet(id) {
+        if (!id) {
+            return;
+        }
+
+        fetch(findUrl + '?id=' + encodeURIComponent(id), {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('wallet not found');
+                }
+
+                return response.json();
+            })
+            .then(function (wallet) {
+                if (!wallet) {
+                    return;
+                }
+
+                fillForm(wallet);
+                walletModal.open();
+            });
     }
 
     function setSelectedType(typeId, typeName) {
@@ -109,13 +129,13 @@
 
     function closeTypeMenu() {
         if (typeMenu) {
-            typeMenu.classList.remove('max-h-56', 'border-[var(--yellow)]', 'opacity-100');
-            typeMenu.classList.add('max-h-0', 'border-transparent', 'opacity-0');
+            typeMenu.classList.remove('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
+            typeMenu.classList.add('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
         }
     }
 
     function openTypeMenu() {
-        typeMenu.classList.remove('max-h-0', 'border-transparent', 'opacity-0');
-        typeMenu.classList.add('max-h-56', 'border-[var(--yellow)]', 'opacity-100');
+        typeMenu.classList.remove('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
+        typeMenu.classList.add('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
     }
 })();

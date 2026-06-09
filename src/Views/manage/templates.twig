@@ -1,0 +1,200 @@
+{% extends 'layouts/app.twig' %}
+
+{% block content %}
+    <section class="grid grid-cols-1 md:grid-cols-2 items-end">
+        <div>
+            <h1 class="text-primary text-3xl">
+                Templates
+            </h1>
+            <p class="text-sm mt-2">
+                Defina modelos personalizados para lançamentos periódicos.
+            </p>
+        </div> 
+        <div class="flex justify-end"> 
+            <button type="button" class="btn-primary w-50 mt-4 text-xl" data-open-template-modal>
+                <i class="fa-solid fa-plus fa-sm mr-1"></i>
+                criar
+            </button>
+        </div> 
+    </section> 
+
+    <section class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4">
+        {% for template in templates %}
+            <div class="manage-card relative w-full">
+                <button type="button" class="w-full pr-10 text-left" data-edit-template data-template-id="{{ template.id|e('html_attr') }}">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 flex-none items-center justify-center rounded-full text-light" style="background-color: {{ template.category.color|e('html_attr') }}">
+                            {% if template.category.icon %}
+                                <i class="{{ template.category.icon|e('html_attr') }}"></i>
+                            {% endif %}
+                        </div>                    
+                        <div class="manage-card-text">
+                            {{ template.title }}
+                            <p class="mt-1 text-xs text-gray-400">
+                                proxima execução: {{ template.next_run_date|date('d/m/Y') }}
+                            </p>
+                        </div> 
+                    </div>       
+                </button>
+
+                <form method="post" action="{{ base_url }}/manage/templates/delete" class="absolute right-2 top-3">
+                    <input type="hidden" name="id" value="{{ template.id|e('html_attr') }}">
+                    <button type="submit" class="cursor-pointer flex h-8 w-8 items-center justify-center rounded text-secondary" aria-label="Excluir Template" data-delete-button>
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </form>
+            </div>
+        {% else %} 
+            <p class="col-span-4 flex min-h-[calc(100vh-220px)] items-center justify-center text-center text-secondary text-3xl">
+                você ainda não criou nenhum template :/ 
+            </p>            
+        {% endfor %}  
+    </section>
+
+    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-template-modal data-template-find-url="{{ base_url }}/manage/templates/find">
+        <form method="post" action="{{ base_url }}/manage/templates/store" class="validate" data-template-form>
+            <div class="flex items-center justify-between px-6 py-4">
+                <div>
+                    <h2 class="text-xl font-bold text-primary" data-template-modal-title>novo template</h2>
+                    <p class="mt-1 text-xs text-[var(--dark)] opacity-70">informe origem, destino, valor e periodicidade.</p>
+                </div>
+                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-template-modal aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-5 px-6 py-5">
+                <input type="hidden" name="id" data-template-id-input>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_160px]">
+                    <div class="form-group">
+                        <label for="template-title">título</label>
+                        <input id="template-title" name="title" type="text" data-type="required" class="mt-1 w-full bg-transparent outline-none" autocomplete="off" data-template-title-input>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="template-amount">valor</label>
+                        <input id="template-amount" name="amount" type="text" inputmode="decimal" value="0,00" data-type="required" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" autocomplete="off" data-template-amount-input>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div class="form-group">
+                        <label>wallet</label>
+                        <input type="hidden" name="wallet_id" data-type="required" data-template-wallet-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="wallet">
+                            <span data-template-wallet-label class="text-sm">escolha uma wallet</span>
+                            <i class="fa-solid fa-chevron-down text-primary"></i>
+                        </button>
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="wallet">
+                            {% for wallet in wallets %}
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="wallet" data-template-option-id="{{ wallet.id|e('html_attr') }}" data-template-option-name="{{ wallet.name|e('html_attr') }}">
+                                    {{ wallet.name }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>categoria</label>
+                        <input type="hidden" name="category_id" data-type="required" data-template-category-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="category">
+                            <span data-template-category-label class="text-sm">escolha uma categoria</span>
+                            <i class="fa-solid fa-chevron-down text-primary"></i>
+                        </button>
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="category">
+                            {% for category in categories %}
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="category" data-template-option-id="{{ category.id|e('html_attr') }}" data-template-option-name="{{ category.name|e('html_attr') }}">
+                                    {{ category.name }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>entidade</label>
+                        <input type="hidden" name="entity_id" data-type="required" data-template-entity-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="entity">
+                            <span data-template-entity-label class="text-sm">escolha uma entidade</span>
+                            <i class="fa-solid fa-chevron-down text-primary"></i>
+                        </button>
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="entity">
+                            {% for entity in entities %}
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="entity" data-template-option-id="{{ entity.id|e('html_attr') }}" data-template-option-name="{{ entity.name|e('html_attr') }}">
+                                    {{ entity.name }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-[110px_1fr_110px]">
+                    <div class="form-group">
+                        <label for="template-interval-value">intervalo</label>
+                        <input id="template-interval-value" name="interval_value" type="number" min="1" value="1" data-type="required" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" data-template-interval-input>
+                    </div>
+
+                    <div class="form-group">
+                        <label>frequencia</label>
+                        <input type="hidden" name="frequency_id" data-type="required" data-template-frequency-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="frequency">
+                            <span data-template-frequency-label class="text-sm">escolha uma frequencia</span>
+                            <i class="fa-solid fa-chevron-down text-primary"></i>
+                        </button>
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="frequency">
+                            {% for frequency in frequencies %}
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="frequency" data-template-option-id="{{ frequency.id|e('html_attr') }}" data-template-option-name="{{ frequency.name|e('html_attr') }}">
+                                    {{ frequency.name }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="template-month-day">dia do mês</label>
+                        <input id="template-month-day" name="month_day" type="number" min="1" max="31" value="1" data-type="required" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" data-template-month-day-input>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div class="form-group">
+                        <label for="template-start-date">início</label>
+                        <input id="template-start-date" name="start_date" type="date" data-type="required" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" data-template-start-date-input>
+                    </div>
+                    <div class="form-group">
+                        <label for="template-end-date">fim</label>
+                        <input id="template-end-date" name="end_date" type="date" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" data-template-end-date-input>
+                    </div>
+                    <div class="form-group">
+                        <label for="template-next-run-date">próxima execução</label>
+                        <input id="template-next-run-date" name="next_run_date" type="date" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" data-template-next-run-date-input>
+                    </div>
+                </div>
+
+                <label class="flex cursor-pointer items-center gap-3 text-sm text-[var(--dark)]">
+                    <input type="hidden" name="active" value="0">
+                    <input type="checkbox" name="active" value="1" checked class="peer sr-only" data-template-active-input>
+                    <span class="flex h-5 w-5 items-center justify-center rounded border-[1.5px] border-[var(--lilac)] text-[0px] text-light transition peer-checked:bg-[var(--lilac)] peer-checked:text-xs">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                    ativo
+                </label>
+            </div>
+
+            <div class="flex justify-end gap-3 px-6 py-4">
+                <button type="button" class="btn-secondary" data-close-template-modal>
+                    cancelar
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-check"></i>
+                    salvar
+                </button>
+            </div>
+        </form>
+    </dialog>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ base_url }}/assets/js/templates.js"></script>
+{% endblock %}
+

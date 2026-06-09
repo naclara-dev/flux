@@ -42,20 +42,29 @@ abstract class Repository {
         return $fields;        
     }
 
+    private function getParamName(string $field): string {
+        return str_replace('.', '_', $field);
+    }
+
     private function getParams(array $fields, bool $isUpdate = false, string $separator = ','): string {
         $params = [];
 
         foreach ($fields as $f) {
-            $params[] = $isUpdate ? "$f = :$f" : ":$f";
+            $param = $this->getParamName($f);
+            $params[] = $isUpdate ? "$f = :$param" : ":$param";
         }
 
         return implode($separator, $params);
     }     
 
-    public function all(array $filters = []): array {
+    public function all($filters = [], $joins = [], $columns = '*'): array {
         $fields = array_keys($filters);
-        $query = "SELECT * FROM $this->table";
+        $query = "SELECT $columns FROM $this->table";
 
+        foreach ($joins as $join) {
+            $query .= " $join";
+        }
+        
         if (!empty($filters)) {
             $query .= " WHERE " . $this->getParams($fields, true, ' AND ');
         }
@@ -63,7 +72,7 @@ abstract class Repository {
         $stmt = $this->db->prepare($query);
 
         foreach ($filters as $field => $value) {
-            $stmt->bindValue(":$field", $value);
+            $stmt->bindValue(":" . $this->getParamName($field), $value);
         }
 
         $stmt->execute();
@@ -88,7 +97,7 @@ abstract class Repository {
         $stmt = $this->db->prepare($query);
 
         foreach ($filters as $field => $value) {
-            $stmt->bindValue(":$field", $value);
+            $stmt->bindValue(":" . $this->getParamName($field), $value);
         }
 
         $stmt->execute();
@@ -102,18 +111,28 @@ abstract class Repository {
         ]);        
     }
 
-    public function find($value, string $key = 'id') {
-        $filter = $this->getParams([$key], true);
-        $query = "SELECT * FROM $this->table WHERE $filter";
+    public function find(array $filters = []) {
+        if (empty($filters)) {
+            return null;
+        }
+
+        $filter = $this->getParams(array_keys($filters), true, ' AND ');
+        $query = "SELECT * FROM $this->table WHERE $filter LIMIT 1";
         $stmt = $this->db->prepare($query);
-        $stmt->bindValue(":$key", $value);
+
+        foreach ($filters as $field => $value) {
+            $stmt->bindValue(":" . $this->getParamName($field), $value);
+        }
+
         $stmt->execute();
 
         return $stmt->fetch();
     }
 
     public function save(array $data) {
-        $hasID = !empty($data['id']) && $this->find($data['id']);
+        $hasID = !empty($data['id']) && $this->find([
+            'id' => $data['id']
+        ]);
 
         if ($hasID) {
             return $this->update($data);
@@ -181,7 +200,7 @@ abstract class Repository {
         $stmt->bindValue(":id", $id);
 
         foreach ($filters as $field => $value) {
-            $stmt->bindValue(":$field", $value);
+            $stmt->bindValue(":" . $this->getParamName($field), $value);
         }
 
         return $stmt->execute();

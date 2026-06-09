@@ -9,7 +9,7 @@ class Transaction
     private $walletId = null;
     private $categoryId = null;
     private $entityId = null;
-    private $ruleId = null;
+    private $templateId = null;
     private $paymentMethodId = null;
     private $title = null;
     private $paid = null;
@@ -68,14 +68,14 @@ class Transaction
         $this->entityId = $entityId;
     }
 
-    public function getRuleId(): ?int
+    public function getTemplateId(): ?int
     {
-        return $this->ruleId;
+        return $this->templateId;
     }
 
-    public function setRuleId(?int $ruleId): void
+    public function setTemplateId(?int $templateId): void
     {
-        $this->ruleId = $ruleId;
+        $this->templateId = $templateId;
     }
 
     public function getPaymentMethodId(): ?int
