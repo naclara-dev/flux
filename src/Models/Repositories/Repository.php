@@ -59,6 +59,16 @@ abstract class Repository {
         return $stmt->fetchAll();
     }
 
+    public function allFromUser(int $user_id) {
+        $filter = "user_id = :user_id";
+        $query = "SELECT * FROM $this->table WHERE $filter";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue("user_id", $user_id);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
     public function find($value, string $key = 'id') {
         $filter = $this->getParams([$key], true);
         $query = "SELECT * FROM $this->table WHERE $filter";

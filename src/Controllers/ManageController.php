@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Session;
 use App\Models\Repositories\CategoryRepository;
 
 class ManageController extends Controller {
@@ -11,7 +12,7 @@ class ManageController extends Controller {
 
     public function categories() {
         $repository = new CategoryRepository;
-        $categories = $repository->all();
+        $categories = $repository->allFromUser(Session::get("user_id"));
 
         $this->view('manage/categories.twig', [
             'categories' => $categories
