@@ -32,10 +32,12 @@
     </main>
 
     {% include 'components/delete-confirm-modal.twig' %}
+    {% include 'components/transaction-modal.twig' %}
 
     <script src="{{ base_url }}/assets/js/validation.js"></script>
     <script src="{{ base_url }}/assets/js/modal.js"></script>
     <script src="{{ base_url }}/assets/js/action.js"></script>   
+    <script src="{{ base_url }}/assets/js/transactions.js"></script>
      
     {% block scripts %}{% endblock %}
 </body>

@@ -9,6 +9,7 @@ use App\Controllers\CategoryController;
 use App\Controllers\WalletController;
 use App\Controllers\EntityController;
 use App\Controllers\TemplateController;
+use App\Controllers\TransactionController;
 
 return [
     '/'                      => [HomeController::class, 'index'],
@@ -27,6 +28,7 @@ return [
     '/manage/templates/find/' => [TemplateController::class, 'find'],
     '/manage/templates/store/' => [TemplateController::class, 'store'],
     '/manage/templates/delete/' => [TemplateController::class, 'delete'],
+    '/transactions/store/'    => [TransactionController::class, 'store'],
     '/settings/'             => [SettingsController::class, 'index'],
     '/login/'                => [AuthController::class, 'login'],
     '/login/check-email/'    => [AuthController::class, 'checkEmail'],

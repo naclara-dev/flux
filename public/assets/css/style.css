@@ -121,7 +121,7 @@ body {
     display: flex;
 }
 
-aside {
+.app-sidebar {
     width: 80px;
     height: 100vh;
     color: var(--lilac);
@@ -355,7 +355,7 @@ h1 {
 }
 
 @media (max-width: 600px) {
-    aside {
+    .app-sidebar {
         width: 100vw;
         height: 80px;
         position: fixed;
@@ -367,7 +367,7 @@ h1 {
         z-index: 1000;        
     }
 
-    aside nav, aside nav ul {
+    .app-sidebar nav, .app-sidebar nav ul {
         width: 100%;
     }
 
