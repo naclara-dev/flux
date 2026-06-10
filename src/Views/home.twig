@@ -20,11 +20,11 @@
             <div class="grid grid-cols-2 gap-3 xl:min-w-[680px]">
                 <div class="rounded border border-[var(--yellow)] bg-[#fffff5] p-3">
                     <p class="text-xs text-secondary">saldo do ciclo</p>
-                    <strong class="mt-1 block text-xl font-semibold text-primary">{{ summary.cycle_balance_label }}</strong>
+                    <strong class="mt-1 block text-xl font-semibold text-primary">{{ dashboard.currentCycle.balanceLabel }}</strong>
                 </div>
                 <div class="rounded border border-[var(--yellow)] bg-[#fffff5] p-3">
                     <p class="text-xs text-secondary">comprometido</p>
-                    <strong class="mt-1 block text-xl font-semibold">{{ summary.committed_label }}</strong>
+                    <strong class="mt-1 block text-xl font-semibold">{{ dashboard.balance.commitedLabel }}</strong>
                 </div>
             </div>
         </div>
@@ -32,11 +32,11 @@
         <div class="mt-5 grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
             <div>
                 <div class="flex items-center justify-between text-xs">
-                    <span class="text-secondary">progresso do ciclo {{ summary.cycle_label }}</span>
-                    <span class="text-purple">{{ summary.cycle_progress }}%</span>
+                    <span class="text-secondary">progresso do ciclo {{ dashboard.currentCycle.label }}</span>
+                    <span class="text-purple">{{ dashboard.currentCycle.progress }}%</span>
                 </div>
                 <div class="mt-2 h-2 overflow-hidden rounded-full bg-[var(--yellow)]">
-                    <div class="h-full rounded-full bg-[var(--lilac)] transition-all duration-300" style="width: {{ summary.cycle_progress }}%"></div>
+                    <div class="h-full rounded-full bg-[var(--lilac)] transition-all duration-300" style="width: {{ dashboard.currentCycle.progress }}%"></div>
                 </div>
             </div>
 
@@ -55,24 +55,24 @@
                 <header>
                     <button type="button" class="grid w-full gap-4 text-left md:grid-cols-[auto_1fr_auto_auto] md:items-center" data-cycle-toggle aria-expanded="true">
                         <div class="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--yellow)] text-primary">
-                            <span class="text-lg font-semibold">{{ summary.cycle_start_day_label }}</span>
+                            <span class="text-lg font-semibold">{{ dashboard.currentCycle.startDayLabel }}</span>
                         </div>
                         <div>
-                            <h2 class="text-xl font-semibold text-primary">{{ summary.cycle_label }}</h2>
+                            <h2 class="text-xl font-semibold text-primary">{{ dashboard.currentCycle.label }}</h2>
                             <p class="mt-1 text-sm opacity-70">ciclo atual ate o proximo recebimento</p>
                         </div>
                         <div class="grid grid-cols-3 gap-3 text-right text-xs md:min-w-[360px]">
                             <div>
                                 <p class="text-secondary">recebe</p>
-                                <strong class="block text-sm text-primary">{{ summary.cycle_income_label }}</strong>
+                                <strong class="block text-sm text-primary">{{ dashboard.currentCycle.incomeLabel }}</strong>
                             </div>
                             <div>
                                 <p class="text-secondary">gastos</p>
-                                <strong class="block text-sm text-purple">{{ summary.cycle_expenses_label }}</strong>
+                                <strong class="block text-sm text-purple">{{ dashboard.currentCycle.expensesLabel }}</strong>
                             </div>
                             <div>
                                 <p class="text-secondary">sobra</p>
-                                <strong class="block text-sm text-[var(--dark)]">{{ summary.cycle_balance_label }}</strong>
+                                <strong class="block text-sm text-[var(--dark)]">{{ dashboard.currentCycle.balanceLabel }}</strong>
                             </div>
                         </div>
                         <span class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-hidden="true">
@@ -82,7 +82,7 @@
                 </header>
 
                 <div class="mt-5 space-y-3 pl-0 transition-[max-height,margin-top] duration-300 ease-in-out md:pl-20" data-cycle-content>
-                    {% for transaction in summary.cycle_transactions %}
+                    {% for transaction in dashboard.currentCycle.transactions %}
                         <button type="button" class="grid w-full gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md {% if transaction.paid %}opacity-80{% endif %} sm:grid-cols-[1fr_auto] sm:items-center" data-edit-transaction data-transaction-id="{{ transaction.id|e('html_attr') }}" data-transaction-title="{{ transaction.title|e('html_attr') }}" data-transaction-amount="{{ transaction.form_amount_label|e('html_attr') }}" data-transaction-occurrence-date="{{ transaction.occurrence_date|e('html_attr') }}" data-transaction-due-date="{{ transaction.due_date|e('html_attr') }}" data-transaction-paid-at="{{ transaction.paid_at|e('html_attr') }}" data-transaction-paid="{{ transaction.paid|e('html_attr') }}" data-transaction-wallet-id="{{ transaction.wallet.id|e('html_attr') }}" data-transaction-wallet-name="{{ transaction.wallet.name|e('html_attr') }}" data-transaction-category-id="{{ transaction.category.id|e('html_attr') }}" data-transaction-category-name="{{ transaction.category.name|e('html_attr') }}" data-transaction-entity-id="{{ transaction.entity.id|e('html_attr') }}" data-transaction-entity-name="{{ transaction.entity.name|e('html_attr') }}" data-transaction-template-id="{{ transaction.template.id|e('html_attr') }}" data-transaction-template-name="{{ transaction.template.title|e('html_attr') }}" data-transaction-payment-method-id="{{ transaction.payment_method.id|e('html_attr') }}" data-transaction-payment-method-name="{{ transaction.payment_method.name|e('html_attr') }}">
                             <div class="flex items-center gap-3">
                                 <div class="flex h-10 w-10 items-center justify-center rounded-full text-light" style="background-color: {{ transaction.category.color|e('html_attr') }}">
@@ -110,24 +110,24 @@
             <article class="relative rounded border border-[var(--yellow)] bg-[#fffff5] p-5">
                 <header class="grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-center">
                     <div class="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--yellow)] text-primary">
-                        <span class="text-lg font-semibold">{{ summary.next_cycle.start_day_label }}</span>
+                        <span class="text-lg font-semibold">{{ dashboard.nextCycle.startDayLabel }}</span>
                     </div>
                     <div>
-                        <h2 class="text-xl font-semibold text-primary">{{ summary.next_cycle.label }}</h2>
+                        <h2 class="text-xl font-semibold text-primary">{{ dashboard.nextCycle.label }}</h2>
                         <p class="mt-1 text-sm opacity-70">proximo ciclo projetado</p>
                     </div>
                     <div class="grid grid-cols-3 gap-3 text-right text-xs md:min-w-[360px]">
                         <div>
                             <p class="text-secondary">recebe</p>
-                            <strong class="block text-sm text-primary">{{ summary.next_cycle.income_label }}</strong>
+                            <strong class="block text-sm text-primary">{{ dashboard.nextCycle.incomeLabel }}</strong>
                         </div>
                         <div>
                             <p class="text-secondary">gastos</p>
-                            <strong class="block text-sm text-purple">{{ summary.next_cycle.expenses_label }}</strong>
+                            <strong class="block text-sm text-purple">{{ dashboard.nextCycle.expensesLabel }}</strong>
                         </div>
                         <div>
                             <p class="text-secondary">sobra</p>
-                            <strong class="block text-sm text-[var(--dark)]">{{ summary.next_cycle.balance_label }}</strong>
+                            <strong class="block text-sm text-[var(--dark)]">{{ dashboard.nextCycle.balanceLabel }}</strong>
                         </div>
                     </div>
                 </header>
@@ -138,16 +138,16 @@
                             <i class="fa-solid fa-circle-dollar-to-slot"></i>
                             maior impacto
                         </p>
-                        <h3 class="mt-1 font-medium">{{ summary.next_cycle.largest_expense.title }}</h3>
-                        <p class="mt-1 text-sm">{{ summary.next_cycle.largest_expense.description }}</p>
+                        <h3 class="mt-1 font-medium">{{ dashboard.nextCycle.largestExpense.title }}</h3>
+                        <p class="mt-1 text-sm">{{ dashboard.nextCycle.largestExpense.description }}</p>
                     </div>
                     <div class="rounded border border-[var(--yellow)] bg-[var(--light)] p-3">
                         <p class="text-sm text-secondary font-bold">
                             <i class="fa-solid fa-triangle-exclamation"></i>
                             ponto de atenção
                         </p>
-                        <h3 class="mt-1 font-medium">{{ summary.next_cycle.attention.title }}</h3>
-                        <p class="mt-1 text-sm">{{ summary.next_cycle.attention.description }}</p>
+                        <h3 class="mt-1 font-medium">{{ dashboard.nextCycle.attention.title }}</h3>
+                        <p class="mt-1 text-sm">{{ dashboard.nextCycle.attention.description }}</p>
                     </div>
                 </div>
             </article>
@@ -156,20 +156,20 @@
         <aside class="space-y-4 2xl:min-w-[320px]">
             <div class="rounded border border-[var(--yellow)] bg-[#fffff5] p-4">
                 <p class="text-xs text-secondary">você pode gastar hoje</p>
-                <strong class="mt-2 block text-3xl font-semibold text-primary md:text-4xl">{{ summary.spend_today_label }}</strong>
+                <strong class="mt-2 block text-3xl font-semibold text-primary md:text-4xl">{{ dashboard.balance.spendableLabel }}</strong>
                 <p class="mt-2 max-w-[260px] text-sm leading-relaxed opacity-75">sem comprometer contas previstas antes do proximo recebimento.</p>
             </div>
 
             <div class="rounded border border-[var(--yellow)] bg-[#fffff5] p-4">
                 <h2 class="font-semibold text-primary">próximos marcos</h2>
                 <div class="mt-4 space-y-3">
-                    {% for milestone in summary.upcoming_milestones %}
+                    {% for milestone in dashboard.milestones %}
                         <div class="flex items-center justify-between gap-3">
                             <div>
                                 <p class="text-sm font-medium">{{ milestone.title }}</p>
-                                <p class="text-xs text-secondary">{{ milestone.date_label }}</p>
+                                <p class="text-xs text-secondary">{{ milestone.dateLabel }}</p>
                             </div>
-                            <strong class="text-sm {% if milestone.amount > 0 %}text-primary{% endif %}">{{ milestone.amount_label }}</strong>
+                            <strong class="text-sm {% if milestone.amount > 0 %}text-primary{% endif %}">{{ milestone.amountLabel }}</strong>
                         </div>
                     {% else %}
                         <p class="text-sm text-secondary">nenhum marco previsto.</p>
