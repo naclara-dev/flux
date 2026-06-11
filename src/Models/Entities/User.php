@@ -8,6 +8,8 @@ class User
     private $name = null;
     private $email = null;
     private $password = null;
+    private $googleId = null;
+    private $authProvider = null;
 
     public function getId(): ?int
     {
@@ -34,6 +36,16 @@ class User
         return $this->email;
     }
 
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function getAuthProvider(): ?string
+    {
+        return $this->authProvider;
+    }
+
     public function setEmail(?string $email): void
     {
         $this->email = $email;
@@ -47,5 +59,15 @@ class User
     public function setPassword(?string $password): void
     {
         $this->password = $password;
+    }
+
+    public function setGoogleId(?string $googleId): void
+    {
+        $this->googleId = $googleId;
+    }
+
+    public function setAuthProvider(?string $authProvider): void
+    {
+        $this->authProvider = $authProvider;
     }
 }

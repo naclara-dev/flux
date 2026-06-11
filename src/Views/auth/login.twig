@@ -5,8 +5,8 @@
 {% block sidebar %}{% endblock %}
 
 {% block content %}
-    <section class="flex h-full w-full">
-        <article class="flex-1 flex flex-col justify-center p-8 bg-primary bg-pattern rounded-md">
+    <section class="flex min-h-screen w-full">
+        <article class="hidden md:flex flex-1 flex-col justify-center p-8 bg-primary bg-pattern rounded-md">
             <p class="text-purple text-4xl font-bold">
                 oi :)
             </p>
@@ -22,19 +22,19 @@
             </p>
         </article>
         <article class="auth-column flex-1 flex flex-col justify-center items-center p-8">
-            <nav class="pills" aria-label="Alternar entre login e cadastro">
-                <a href="#" class="pill active" data-auth-target="login-form" aria-controls="login-form" aria-selected="true">
+            <nav class="tab-menu" aria-label="Alternar entre login e cadastro">
+                <a href="#" class="tab-item active" data-tab-target="login-form" aria-controls="login-form" aria-selected="true">
                     já tenho conta
                 </a>
-                <a href="#" class="pill" data-auth-target="register-form" aria-controls="register-form" aria-selected="false">
+                <a href="#" class="tab-item" data-tab-target="register-form" aria-controls="register-form" aria-selected="false">
                     criar uma conta
                 </a>
             </nav>
 
             <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux" class="w-25 auth-logo">
 
-            <div class="auth-form-stage w-100 mt-5">
-                <form action="{{ base_url }}/login/" method="post" id="login-form" class="auth-panel is-active validate w-100">
+            <div class="tab-stage w-100 mt-5">
+                <form action="{{ base_url }}/login/" method="post" id="login-form" class="tab is-active validate w-100">
                     <div class="form-group w-100">
                         <label for="email">e-mail</label>
                         <input id="email" name="email" class="w-100" type="text" data-type="required|email|exists" data-exists-url="{{ base_url }}/login/check-email/">
@@ -47,9 +47,14 @@
                         <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i>
                         entrar
                     </button>
+
+                    <a href="{{ base_url }}/login/google/" class="mt-3 flex w-100 items-center justify-center rounded border border-[var(--yellow)] bg-[#fffff5] px-3 py-2 font-bold text-primary transition hover:bg-[var(--yellow)]">
+                        <i class="fa-brands fa-google mr-2"></i>
+                        entrar com google
+                    </a>
                 </form>
 
-                <form action="{{ base_url }}/register/" method="post" id="register-form" class="auth-panel is-after validate w-100" hidden>
+                <form action="{{ base_url }}/register/" method="post" id="register-form" class="tab is-after validate w-100" hidden>
                     <div class="form-group w-100">
                         <label for="register-name">nome</label>
                         <input id="register-name" name="name" class="w-100" type="text" data-type="required">

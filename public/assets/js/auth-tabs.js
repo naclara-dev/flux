@@ -1,82 +1,87 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.pill');
-    const tabsContainer = document.querySelector('.pills');
-    const stage = document.querySelector('.auth-form-stage');
-    let activePanelId = null;
-    let activePanelObserver = null;
+    // Menu
+    const tabMenu = document.querySelector('.tab-menu');  
+    // Itens do menu   
+    const tabItems = document.querySelectorAll('.tab-item');
+    // Container do menu
+    const stage = document.querySelector('.tab-stage');
+    // Armazena a tab ativa
+    let activeTab = null;
+    let activeTabObserver = null;
 
-    // Resolve os formularios a partir do id apontado por cada pill.
-    const panels = Array.from(tabs)
-        .map((tab) => document.getElementById(tab.dataset.authTarget))
+    // Obtem o formulario alvo de cada item.
+    const tabs = Array.from(tabItems)
+        .map((tab) => document.getElementById(tab.dataset.tabTarget))
         .filter(Boolean);
 
-    const updateStageHeight = (panel) => {
-        if (!stage || !panel) {
+    // Atualiza a altura do container dos formulários.
+    const updateStageHeight = (tab) => {
+        if (!stage || !tab) {
             return;
         }
 
-        stage.style.height = `${panel.offsetHeight}px`;
+        stage.style.height = `${tab.offsetHeight}px`;
     };
 
-    const watchPanelHeight = (panel) => {
-        if (activePanelObserver) {
-            activePanelObserver.disconnect();
+    const watchTabHeight = (tab) => {
+        if (activeTabObserver) {
+            activeTabObserver.disconnect();
         }
 
-        if (!window.ResizeObserver || !panel) {
+        if (!window.ResizeObserver || !tab) {
             return;
         }
 
-        activePanelObserver = new ResizeObserver(() => {
-            updateStageHeight(panel);
+        activeTabObserver = new ResizeObserver(() => {
+            updateStageHeight(tab);
         });
 
-        activePanelObserver.observe(panel);
+        activeTabObserver.observe(tab);
     };
 
     const setActiveTab = (targetId) => {
         // Busca o formulario que deve ficar visivel.
-        const nextPanel = document.getElementById(targetId);
+        const nextTab = document.getElementById(targetId);
 
-        if (!nextPanel) {
+        if (!nextTab) {
             return;
         }
 
-        tabs.forEach((tab) => {
-            // Marca visualmente a pill selecionada e atualiza acessibilidade.
-            const isActive = tab.dataset.authTarget === targetId;
+        tabItems.forEach((tab) => {
+            // Marca visualmente o item selecionado e atualiza acessibilidade.
+            const isActive = tab.dataset.tabTarget === targetId;
 
             tab.classList.toggle('active', isActive);
             tab.setAttribute('aria-selected', String(isActive));
         });
 
-        // Atualiza a posicao do indicador lilas que desliza entre as pills.
-        const activeIndex = Array.from(tabs).findIndex((tab) => tab.dataset.authTarget === targetId);
-        tabsContainer.style.setProperty('--pill-index', String(activeIndex >= 0 ? activeIndex : 0));
+        // Atualiza a posicao do indicador lilas que desliza entre as tabs.
+        const activeIndex = Array.from(tabItems).findIndex((tab) => tab.dataset.tabTarget === targetId);
+        tabMenu.style.setProperty('--tab-index', String(activeIndex >= 0 ? activeIndex : 0));
 
         const nextIndex = activeIndex >= 0 ? activeIndex : 0;
 
-        panels.forEach((panel) => {
-            const panelIndex = Array.from(tabs).findIndex((tab) => tab.dataset.authTarget === panel.id);
-            const isActive = panel.id === targetId;
+        tabs.forEach((tab) => {
+            const tabIndex = Array.from(tabItems).findIndex((item) => item.dataset.tabTarget === tab.id);
+            const isActive = tab.id === targetId;
 
-            panel.hidden = false;
-            panel.classList.toggle('is-active', isActive);
-            panel.classList.toggle('is-before', panelIndex < nextIndex);
-            panel.classList.toggle('is-after', panelIndex > nextIndex);
-            panel.setAttribute('aria-hidden', String(!isActive));
+            tab.hidden = false;
+            tab.classList.toggle('is-active', isActive);
+            tab.classList.toggle('is-before', tabIndex < nextIndex);
+            tab.classList.toggle('is-after', tabIndex > nextIndex);
+            tab.setAttribute('aria-hidden', String(!isActive));
         });
 
-        updateStageHeight(nextPanel);
-        watchPanelHeight(nextPanel);
-        activePanelId = targetId;
+        updateStageHeight(nextTab);
+        watchTabHeight(nextTab);
+        activeTab = targetId;
     };
 
-    tabs.forEach((tab) => {
+    tabItems.forEach((tab) => {
         tab.addEventListener('click', (event) => {
             // Evita navegar para "#" e faz a troca via JS.
             event.preventDefault();
-            setActiveTab(tab.dataset.authTarget);
+            setActiveTab(tab.dataset.tabTarget);
         });
     });
 
@@ -84,12 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setActiveTab('login-form');
 
     window.addEventListener('resize', () => {
-        updateStageHeight(document.getElementById(activePanelId));
+        updateStageHeight(document.getElementById(activeTab));
     });
 
-    window.addEventListener('auth-panel-height-change', () => {
+    window.addEventListener('auth-tab-height-change', () => {
         requestAnimationFrame(() => {
-            updateStageHeight(document.getElementById(activePanelId));
+            updateStageHeight(document.getElementById(activeTab));
         });
     });
 });

@@ -26,7 +26,7 @@
         {% endif %}
     {% endblock %}
 
-    <main class="page-content grow-1 {% if not no_padding %} p-8 {% endif %}">
+    <main class="page-content {% if show_menu is not defined or show_menu %}has-sidebar{% endif %} grow-1 {% if not no_padding %} p-8 {% endif %}">
         {% block content %}
         {% endblock %}
     </main>

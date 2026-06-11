@@ -1,5 +1,136 @@
 {% extends 'layouts/app.twig' %}
 
 {% block content %}
-    
+    <section class="grid grid-cols-1 md:grid-cols-2 items-end">
+        <div>
+            <h1 class="text-primary text-3xl">
+                Configura&ccedil;&otilde;es
+            </h1>
+            <p class="text-sm mt-2">
+                Gerencie suas prefer&ecirc;ncias e op&ccedil;&otilde;es dentro do Flux.
+            </p>
+        </div>
+    </section>
+
+    <section class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <button type="button" class="manage-card w-full text-left" data-open-settings-modal>
+            <div class="manage-card-icon">
+                <i class="fa-solid fa-gears fa-xl"></i>
+            </div>
+            <div class="manage-card-content">
+                <div class="manage-card-title">
+                    transa&ccedil;&otilde;es
+                </div>
+                <div class="manage-card-text">
+                    defina valores padr&atilde;o ao cadastrar lan&ccedil;amentos.
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="manage-card w-full text-left" data-open-settings-modal>
+            <div class="manage-card-icon">
+                <i class="fa-regular fa-user fa-xl"></i>
+            </div>
+            <div class="manage-card-content">
+                <div class="manage-card-title">
+                    minha conta
+                </div>
+                <div class="manage-card-text">
+                    gerencie seus dados pessoais.
+                </div>
+            </div>
+        </button>
+    </section>
+
+    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-settings-modal>
+        <form method="post" action="{{ base_url }}/settings/store" class="validate" data-settings-form>
+            <div class="flex items-center justify-between px-6 py-4">
+                <div>
+                    <h2 class="text-xl font-bold text-primary">configura&ccedil;&otilde;es de transa&ccedil;&otilde;es</h2>
+                    <p class="mt-1 text-xs text-[var(--dark)] opacity-70">defina os campos padr&atilde;o para novos lan&ccedil;amentos.</p>
+                </div>
+                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-settings-modal aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-5 px-6 py-5">
+                <input type="hidden" name="id" value="{{ settings.id|default('')|e('html_attr') }}">
+
+                <div class="form-group">
+                    <label>forma de pagamento padr&atilde;o</label>
+                    <input type="hidden" name="default_payment_method_id" value="{{ settings.default_payment_method_id|default('')|e('html_attr') }}" data-settings-select-input="payment-method">
+
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-settings-select-toggle="payment-method">
+                        <span class="text-sm" data-settings-select-label="payment-method">
+                            escolha uma forma
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-primary"></i>
+                    </button>
+
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-settings-select-menu="payment-method">
+                        {% for method in payment_methods %}
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-settings-select-option="payment-method" data-settings-option-id="{{ method.id|e('html_attr') }}" data-settings-option-name="{{ method.name|e('html_attr') }}">
+                                {{ method.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>wallet padr&atilde;o</label>
+                    <input type="hidden" name="default_wallet_id" value="{{ settings.default_wallet_id|default('')|e('html_attr') }}" data-settings-select-input="wallet">
+
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-settings-select-toggle="wallet">
+                        <span class="text-sm" data-settings-select-label="wallet">
+                            escolha uma wallet
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-primary"></i>
+                    </button>
+
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-settings-select-menu="wallet">
+                        {% for wallet in wallets %}
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-settings-select-option="wallet" data-settings-option-id="{{ wallet.id|e('html_attr') }}" data-settings-option-name="{{ wallet.name|e('html_attr') }}">
+                                {{ wallet.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>entidade padr&atilde;o</label>
+                    <input type="hidden" name="default_entity_id" value="{{ settings.default_entity_id|default('')|e('html_attr') }}" data-settings-select-input="entity">
+
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-settings-select-toggle="entity">
+                        <span class="text-sm" data-settings-select-label="entity">
+                            escolha uma entidade
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-primary"></i>
+                    </button>
+
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-settings-select-menu="entity">
+                        {% for entity in entities %}
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-settings-select-option="entity" data-settings-option-id="{{ entity.id|e('html_attr') }}" data-settings-option-name="{{ entity.name|e('html_attr') }}">
+                                {{ entity.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 px-6 py-4">
+                <button type="button" class="btn-secondary" data-close-settings-modal>
+                    cancelar
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-check"></i>
+                    salvar
+                </button>
+            </div>
+        </form>
+    </dialog>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ base_url }}/assets/js/settings.js"></script>
 {% endblock %}

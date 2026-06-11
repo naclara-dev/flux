@@ -1,4 +1,4 @@
-<dialog class="fixed top-1/2 left-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-transaction-modal>
+<dialog class="fixed top-1/2 left-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-transaction-modal data-default-wallet-id="{{ transaction_settings.default_wallet_id|default('')|e('html_attr') }}" data-default-entity-id="{{ transaction_settings.default_entity_id|default('')|e('html_attr') }}" data-default-payment-method-id="{{ transaction_settings.default_payment_method_id|default('')|e('html_attr') }}">
     <form method="post" action="{{ base_url }}/transactions/store" class="validate" data-transaction-form>
         <div class="flex items-center justify-between px-6 py-4">
             <div>

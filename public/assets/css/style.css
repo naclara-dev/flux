@@ -131,8 +131,11 @@ body {
 }
 
 .page-content {
-    margin-left: 180px;
     min-width: 0;
+}
+
+.page-content.has-sidebar {
+    margin-left: 180px;
 }
 
 h1 {
@@ -266,8 +269,8 @@ h1 {
     font-size: 12px;
 }
 
-.pills {    
-    --pill-index: 0;
+.tab-menu {    
+    --tab-index: 0;
     display: flex;
     position: absolute;
     top: 2rem;
@@ -278,7 +281,7 @@ h1 {
     overflow: hidden;
 }
 
-.pills::before {
+.tab-menu::before {
     content: "";
     position: absolute;
     top: 0;
@@ -287,11 +290,11 @@ h1 {
     height: 100%;
     background-color: var(--lilac);
     border-radius: 4px;
-    transform: translateX(calc(var(--pill-index) * 100%));
+    transform: translateX(calc(var(--tab-index) * 100%));
     transition: transform 0.28s ease;
 }
 
-.pill {
+.tab-item {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -305,7 +308,7 @@ h1 {
     transition: color 0.28s ease, font-weight 0.28s ease;
 }
 
-.pill.active {
+.tab-item.active {
     color: var(--light);
     font-weight: 600;
 }
@@ -319,33 +322,35 @@ h1 {
     margin: 0 auto;
 }
 
-.auth-form-stage {
+.tab-stage {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    padding: 1px;
     transition: height 0.28s ease;
 }
 
-.auth-panel {
+.tab {
     inset: 0 auto auto 0;
     opacity: 0;
     pointer-events: none;
     position: absolute;
     transform: translateX(1.5rem);
     transition: opacity 0.28s ease, transform 0.28s ease;
+    width: 100%;
 }
 
-.auth-panel.is-active {
+.tab.is-active {
     opacity: 1;
     pointer-events: auto;
     position: relative;
     transform: translateX(0);
 }
 
-.auth-panel.is-before {
+.tab.is-before {
     transform: translateX(-1.5rem);
 }
 
-.auth-panel.is-after {
+.tab.is-after {
     transform: translateX(1.5rem);
 }
 
@@ -373,7 +378,7 @@ h1 {
         z-index: 1000;        
     }
 
-    .page-content {
+    .page-content.has-sidebar {
         margin-left: 0;
         padding-bottom: 88px;
     }
@@ -386,7 +391,7 @@ h1 {
         flex-direction: column;
     }
 
-    .pills {
+    .tab-menu {
         top: 1rem;
     }
 }

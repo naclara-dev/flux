@@ -16,7 +16,7 @@ abstract class Controller {
     protected function requireAuth() {
         if (!\App\Core\Session::has('user_id')) {
             $this->view('auth/login.twig');
-            return;
+            exit;
         }
     }
 

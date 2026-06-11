@@ -5,6 +5,9 @@ const deleteConfirmModal = window.FluxModal ? window.FluxModal.create(deleteConf
 const confirmDeleteButton = document.querySelector('[data-confirm-delete]');
 let pendingDeleteForm = null;
 
+/**
+ * Exibe um modal de confirmação ao tentar excluir um registro.
+ */
 document.addEventListener('click', (event) => {
     const deleteButton = event.target.closest('[data-delete-button]');
 
@@ -23,6 +26,9 @@ document.addEventListener('click', (event) => {
     deleteConfirmModal.open();
 });
 
+/**
+ * Faz o submit de um form de exclusão quando o usuário clica em cofirmar.
+ */
 if (confirmDeleteButton) {
     confirmDeleteButton.addEventListener('click', () => {
         if (!pendingDeleteForm) {
@@ -36,6 +42,9 @@ if (confirmDeleteButton) {
     });
 }
 
+/**
+ * Intercepta o submit dos formulários para validar os campos.
+ */
 document.addEventListener('submit', (event) => {
     const form = event.target;
 
@@ -45,6 +54,6 @@ document.addEventListener('submit', (event) => {
 
     if (!window.validateForms(form)) {
         event.preventDefault();
-        window.dispatchEvent(new CustomEvent('auth-panel-height-change'));
+        window.dispatchEvent(new CustomEvent('auth-tab-height-change'));
     }
 });

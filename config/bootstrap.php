@@ -25,4 +25,5 @@ if (\App\Core\Session::has('user_id')) {
     $twig->addGlobal('transaction_entities', (new \App\Models\Repositories\EntityRepository)->allFromUser());
     $twig->addGlobal('transaction_templates', (new \App\Models\Repositories\TemplateRepository)->allFromUser());
     $twig->addGlobal('transaction_payment_methods', (new \App\Models\Repositories\PaymentMethodRepository)->all());
+    $twig->addGlobal('transaction_settings', (new \App\Models\Repositories\SettingRepository)->firstFromUser((int) \App\Core\Session::get('user_id')));
 }

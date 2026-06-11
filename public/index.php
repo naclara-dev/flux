@@ -4,10 +4,18 @@ require_once __DIR__ . '/../config/bootstrap.php';
 
 $uri = appCurrentPath();
 $base = normalizePath(appBaseUrl());
+$bases = [$base];
 
-if ($base !== '/' && str_starts_with($uri, $base)) {
-    $uri = '/' . ltrim(substr($uri, strlen($base)), '/');
-    $uri = normalizePath($uri);
+if (str_ends_with($base, '/public/')) {
+    $bases[] = normalizePath(substr($base, 0, -strlen('/public/')));
+}
+
+foreach ($bases as $basePath) {
+    if ($basePath !== '/' && str_starts_with($uri, $basePath)) {
+        $uri = '/' . ltrim(substr($uri, strlen($basePath)), '/');
+        $uri = normalizePath($uri);
+        break;
+    }
 }
 
 $routes = require ROUTES_PATH . '/web.php';

@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Models\Entities;
+
+class Setting
+{
+    private $id = null;
+    private $userId = null;
+    private $defaultPaymentMethodId = null;
+    private $defaultWalletId = null;
+    private $defaultEntityId = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?int $userId): void
+    {
+        $this->userId = $userId;
+    }
+
+    public function getDefaultPaymentMethodId(): ?int
+    {
+        return $this->defaultPaymentMethodId;
+    }
+
+    public function setDefaultPaymentMethodId(?int $defaultPaymentMethodId): void
+    {
+        $this->defaultPaymentMethodId = $defaultPaymentMethodId;
+    }
+
+    public function getDefaultWalletId(): ?int
+    {
+        return $this->defaultWalletId;
+    }
+
+    public function setDefaultWalletId(?int $defaultWalletId): void
+    {
+        $this->defaultWalletId = $defaultWalletId;
+    }
+
+    public function getDefaultEntityId(): ?int
+    {
+        return $this->defaultEntityId;
+    }
+
+    public function setDefaultEntityId(?int $defaultEntityId): void
+    {
+        $this->defaultEntityId = $defaultEntityId;
+    }
+}

@@ -1,12 +1,16 @@
 {% extends 'layouts/app.twig' %}
 
 {% block content %}    
-    <h1 class="text-primary text-3xl">
-        Cadastros
-    </h1>
-    <p class="mt-0 pt-0">
-        Gerencie todas as informacoes essenciais do Flux.
-    </p>
+    <section class="grid grid-cols-1 md:grid-cols-2 items-end">
+        <div>
+            <h1 class="text-primary text-3xl">
+                Cadastros
+            </h1>
+            <p class="text-sm mt-2">
+                Crie e gerencie todas as informações essenciais do Flux.
+            </p>
+        </div>  
+    </section>
 
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
         <a class="manage-card" href="{{ base_url }}/manage/categories">
@@ -18,7 +22,7 @@
                     categorias            
                 </div> 
                 <div class="manage-card-text">
-                    Organize seus lancamentos em categorias personalizadas.
+                    Organize seus lançamentos em categorias personalizadas.
                 </div> 
                 <div class="manage-card-info">
                     <span class="badge">

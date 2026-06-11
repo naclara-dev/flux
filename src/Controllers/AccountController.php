@@ -14,6 +14,8 @@ class AccountController extends Controller {
             'name' => $_POST['name'] ?? null,
             'email' => $_POST['email'] ?? null,
             'password' => password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT),
+            'google_id' => null,
+            'auth_provider' => 'local',
         ];
 
         $repository = new UserRepository;

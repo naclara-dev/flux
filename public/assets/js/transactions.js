@@ -84,6 +84,7 @@
         resetSelect('entity', 'escolha uma entidade');
         resetSelect('template', 'sem template');
         resetSelect('payment-method', 'escolha uma forma');
+        applyDefaults();
         closeMenus();
     }
 
@@ -142,6 +143,32 @@
 
         select.input.value = id || '';
         select.label.textContent = optionName || 'item selecionado';
+    }
+
+    function applyDefaults() {
+        applyDefaultSelect('wallet', modal.dataset.defaultWalletId);
+        applyDefaultSelect('entity', modal.dataset.defaultEntityId);
+        applyDefaultSelect('payment-method', modal.dataset.defaultPaymentMethodId);
+    }
+
+    function applyDefaultSelect(name, id) {
+        if (!id) {
+            return;
+        }
+
+        const option = findOption(name, id);
+
+        if (!option) {
+            return;
+        }
+
+        setSelected(name, option.dataset.transactionOptionId, option.dataset.transactionOptionName);
+    }
+
+    function findOption(name, id) {
+        return selects[name].options.find(function (option) {
+            return option.dataset.transactionOptionId === String(id);
+        });
     }
 
     function applyTemplate(option) {
