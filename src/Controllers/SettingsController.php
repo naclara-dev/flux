@@ -6,6 +6,7 @@ use App\Core\Session;
 use App\Models\Repositories\EntityRepository;
 use App\Models\Repositories\PaymentMethodRepository;
 use App\Models\Repositories\SettingRepository;
+use App\Models\Repositories\UserRepository;
 use App\Models\Repositories\WalletRepository;
 
 class SettingsController extends Controller {
@@ -19,6 +20,9 @@ class SettingsController extends Controller {
             'payment_methods' => (new PaymentMethodRepository)->all(),
             'wallets' => (new WalletRepository)->allFromUser(),
             'entities' => (new EntityRepository)->allFromUser(),
+            'user' => (new UserRepository)->find([
+                'id' => $userId
+            ]),
         ]);
     }
 
@@ -39,12 +43,26 @@ class SettingsController extends Controller {
     }
 
     protected function normalizeData(array $data) {
+        $repository = new SettingRepository;
+        $current = $repository->firstFromUser((int) Session::get('user_id'));
+
         return [
             'id' => empty($data['id']) ? null : (int) $data['id'],
             'user_id' => Session::get('user_id'),
-            'default_payment_method_id' => empty($data['default_payment_method_id']) ? null : (int) $data['default_payment_method_id'],
-            'default_wallet_id' => empty($data['default_wallet_id']) ? null : (int) $data['default_wallet_id'],
-            'default_entity_id' => empty($data['default_entity_id']) ? null : (int) $data['default_entity_id'],
+            'default_payment_method_id' => $this->normalizeOptionalInteger($data, $current, 'default_payment_method_id'),
+            'default_wallet_id' => $this->normalizeOptionalInteger($data, $current, 'default_wallet_id'),
+            'default_entity_id' => $this->normalizeOptionalInteger($data, $current, 'default_entity_id'),
+            'cycle_starts_after_income' => array_key_exists('cycle_starts_after_income', $data)
+                ? (!empty($data['cycle_starts_after_income']) ? 1 : 0)
+                : (int) ($current['cycle_starts_after_income'] ?? 1),
         ];
+    }
+
+    private function normalizeOptionalInteger(array $data, array $current, string $field) {
+        if (!array_key_exists($field, $data)) {
+            return $current[$field] ?? null;
+        }
+
+        return empty($data[$field]) ? null : (int) $data[$field];
     }
 }

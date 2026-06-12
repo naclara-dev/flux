@@ -13,6 +13,7 @@ CREATE TABLE transactions (
     occurrence_date DATE NOT NULL,
     due_date DATE,
     paid_at DATE,
+    INDEX idx_transactions_user_occurrence_date (user_id, occurrence_date),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (wallet_id) REFERENCES wallets(id),
     FOREIGN KEY (category_id) REFERENCES categories(id),

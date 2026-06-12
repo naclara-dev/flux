@@ -37,16 +37,21 @@ class AuthController extends Controller {
 
         // Encerra o fluxo se o e-mail não existir.
         if (empty($user) || $user == null) {
-            echo "Usuario nao encontrado";
-            exit;
+            $this->failStandardLogin('E-mail ou senha invalidos.');
         }
 
         // Valida a senha e inicia a sessão.
-        if (password_verify($data['password'], $user['password'])) {
-            Session::set('user_id', $user['id']);
-            redirect();
-            exit;
+        if (!password_verify($data['password'], $user['password'])) {
+            $message = ($user['auth_provider'] ?? 'local') === 'google'
+                ? 'Esta conta usa login com Google.'
+                : 'E-mail ou senha invalidos.';
+
+            $this->failStandardLogin($message);
         }
+
+        Session::set('user_id', $user['id']);
+        redirect();
+        exit;
     }
 
     /**
@@ -183,7 +188,6 @@ class AuthController extends Controller {
             // Vincula a conta local existente ao Google.
             $data = array_merge($user, [
                 'google_id' => $googleId,
-                'auth_provider' => 'google',
             ]);
 
             $repository->save($data);
@@ -341,6 +345,17 @@ class AuthController extends Controller {
      */
     private function failGoogleLogin(string $message): void {
         echo $message;
+        exit;
+    }
+
+    /**
+     * Reexibe o formulario com uma mensagem de falha no login padrao.
+     * @return void
+     */
+    private function failStandardLogin(string $message): void {
+        $this->view('auth/login.twig', [
+            'login_error' => $message
+        ]);
         exit;
     }
 }

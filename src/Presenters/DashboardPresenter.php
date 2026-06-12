@@ -8,7 +8,7 @@ use App\DTOs\Dashboard\Dashboard;
 class DashboardPresenter {
     private $dashboard;
 
-    public function __construct(Dashboard $dashboard) {
+    public function __construct(?Dashboard $dashboard = null) {
         $this->dashboard = $dashboard;
     }
 
@@ -33,7 +33,7 @@ class DashboardPresenter {
         ];
     }
 
-    private function presentCycle(Cycle $cycle, bool $withHighlights): array {
+    public function presentCycle(Cycle $cycle, bool $withHighlights = false): array {
         $transactions = $this->presentTransactions($cycle->transactions);
 
         return [
@@ -49,9 +49,60 @@ class DashboardPresenter {
             'expensesLabel' => '-' . $this->formatMoney($cycle->expenses),
             'balanceLabel' => $this->formatMoney($cycle->balance),
             'transactions' => $transactions,
+            'entitySummary' => $this->summarizeExpenses($transactions, 'entity', 'name', 'sem entidade'),
+            'categorySummary' => $this->summarizeExpenses($transactions, 'category', 'name', 'sem categoria'),
             'largestExpense' => $withHighlights ? $this->getLargestExpenseHighlight($transactions) : [],
             'attention' => $withHighlights ? $this->getAttentionHighlight($transactions, $cycle->openingBalance) : [],
         ];
+    }
+
+    private function summarizeExpenses(array $transactions, string $group, string $labelField, string $fallbackLabel): array {
+        // Inicializa os totais agrupados das despesas
+        $totals = [];
+
+        // Percorre as transações apresentadas no ciclo
+        foreach ($transactions as $transaction) {
+            // Define o valor numérico da transação atual
+            $amount = (float) $transaction['amount'];
+
+            // Verifica se a transação não representa uma saída
+            if ($amount >= 0) {
+                // Interrompe o processamento da transação atual
+                continue;
+            }
+
+            // Define o nome utilizado para agrupar a despesa
+            $label = $transaction[$group][$labelField] ?? $fallbackLabel;
+            $label = $label ?: $fallbackLabel;
+
+            // Calcula o total acumulado do grupo
+            $totals[$label] = ($totals[$label] ?? 0) + abs($amount);
+        }
+
+        // Ordena os grupos do maior para o menor valor
+        arsort($totals);
+
+        // Calcula o total de despesas usado como base percentual
+        $totalAmount = array_sum($totals);
+
+        // Inicializa o resumo apresentado na dashboard
+        $summary = [];
+
+        // Percorre os totais para montar as linhas do resumo
+        foreach ($totals as $label => $amount) {
+            // Define os valores e a participação percentual do grupo
+            $summary[] = [
+                'label' => $label,
+                'amount' => $amount,
+                'amountLabel' => $this->formatMoney($amount),
+                'percentage' => $totalAmount > 0
+                    ? (int) round(($amount / $totalAmount) * 100)
+                    : 0,
+            ];
+        }
+
+        // Retorna o resumo ordenado das despesas
+        return $summary;
     }
 
     private function presentNextIncome(): array {

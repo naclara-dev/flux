@@ -6,7 +6,6 @@
         onClose: closeMenus
     }) : null;
     const openButtons = document.querySelectorAll('[data-open-transaction-modal]');
-    const editButtons = document.querySelectorAll('[data-edit-transaction]');
     const paidInput = document.querySelector('[data-transaction-paid-input]');
     const modalTitle = document.querySelector('[data-transaction-modal-title]');
 
@@ -29,11 +28,15 @@
         });
     });
 
-    editButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            fillForm(button.dataset);
-            transactionModal.open();
-        });
+    document.addEventListener('click', function (event) {
+        const button = event.target.closest('[data-edit-transaction]');
+
+        if (!button) {
+            return;
+        }
+
+        fillForm(button.dataset);
+        transactionModal.open();
     });
 
     Object.keys(selects).forEach(function (name) {

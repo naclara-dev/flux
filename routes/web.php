@@ -13,6 +13,7 @@ use App\Controllers\TransactionController;
 
 return [
     '/'                      => [HomeController::class, 'index'],
+    '/dashboard/cycle/'      => [HomeController::class, 'cycle'],
     '/manage/'               => [ManageController::class, 'index'],
     '/manage/categories/'    => [ManageController::class, 'categories'],
     '/manage/categories/store/' => [CategoryController::class, 'store'],
@@ -37,6 +38,7 @@ return [
     '/login/check-email/'    => [AuthController::class, 'checkEmail'],
     '/logoff/'               => [AuthController::class, 'logoff'],
     '/account/'              => [AccountController::class, 'index'],
+    '/account/update/'       => [AccountController::class, 'update'],
     '/register/'             => [AccountController::class, 'store'],
     '/register/check-email/' => [AccountController::class, 'checkEmail'],
 ];

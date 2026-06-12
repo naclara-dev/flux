@@ -13,7 +13,7 @@
     </section>
 
     <section class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <button type="button" class="manage-card w-full text-left" data-open-settings-modal>
+        <button type="button" class="manage-card w-full text-left" data-open-transaction-settings-modal>
             <div class="manage-card-icon">
                 <i class="fa-solid fa-gears fa-xl"></i>
             </div>
@@ -27,7 +27,21 @@
             </div>
         </button>
 
-        <button type="button" class="manage-card w-full text-left" data-open-settings-modal>
+        <button type="button" class="manage-card w-full text-left" data-open-cycle-settings-modal>
+            <div class="manage-card-icon">
+                <i class="fa-solid fa-arrows-spin fa-xl"></i>
+            </div>
+            <div class="manage-card-content">
+                <div class="manage-card-title">
+                    ciclos financeiros
+                </div>
+                <div class="manage-card-text">
+                    defina como recebimentos abrem ou fecham ciclos.
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="manage-card w-full text-left" data-open-account-settings-modal>
             <div class="manage-card-icon">
                 <i class="fa-regular fa-user fa-xl"></i>
             </div>
@@ -42,14 +56,15 @@
         </button>
     </section>
 
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-settings-modal>
+    <!-- Configurações de Transação -->
+    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-transaction-settings-modal>
         <form method="post" action="{{ base_url }}/settings/store" class="validate" data-settings-form>
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
                     <h2 class="text-xl font-bold text-primary">configura&ccedil;&otilde;es de transa&ccedil;&otilde;es</h2>
                     <p class="mt-1 text-xs text-[var(--dark)] opacity-70">defina os campos padr&atilde;o para novos lan&ccedil;amentos.</p>
                 </div>
-                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-settings-modal aria-label="Fechar">
+                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-transaction-settings-modal aria-label="Fechar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -116,10 +131,95 @@
                         {% endfor %}
                     </div>
                 </div>
+
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">
-                <button type="button" class="btn-secondary" data-close-settings-modal>
+                <button type="button" class="btn-secondary" data-close-transaction-settings-modal>
+                    cancelar
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-check"></i>
+                    salvar
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Configurações de Ciclo Financeiro -->
+    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-cycle-settings-modal>
+        <form method="post" action="{{ base_url }}/settings/store" class="validate">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div>
+                    <h2 class="text-xl font-bold text-primary">ciclos financeiros</h2>
+                    <p class="mt-1 text-xs text-[var(--dark)] opacity-70">defina como os recebimentos delimitam seus ciclos.</p>
+                </div>
+                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-cycle-settings-modal aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-5 px-6 py-5">
+                <input type="hidden" name="id" value="{{ settings.id|default('')|e('html_attr') }}">
+
+                <label class="flex cursor-pointer items-start gap-3 text-sm text-[var(--dark)]">
+                    <input type="hidden" name="cycle_starts_after_income" value="0">
+                    <input type="checkbox" name="cycle_starts_after_income" value="1" class="peer sr-only" {% if settings.cycle_starts_after_income|default(1) %}checked{% endif %}>
+                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-[1.5px] border-[var(--lilac)] text-[0px] text-light transition peer-checked:bg-[var(--lilac)] peer-checked:text-xs">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                    <span>
+                        iniciar fluxo no dia posterior ao recebimento
+                        <small class="mt-1 block text-xs text-[var(--dark)] opacity-60">quando ativo, o recebimento fecha o ciclo atual.</small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="flex justify-end gap-3 px-6 py-4">
+                <button type="button" class="btn-secondary" data-close-cycle-settings-modal>
+                    cancelar
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-check"></i>
+                    salvar
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Configurações de Conta -->
+    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-account-settings-modal>
+        <form method="post" action="{{ base_url }}/settings/update" class="validate">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div>
+                    <h2 class="text-xl font-bold text-primary">minha conta</h2>
+                    <p class="mt-1 text-xs text-[var(--dark)] opacity-70">gerencie seus dados pessoais.</p>
+                </div>
+                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-account-settings-modal aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-5 px-6 py-5">
+                <input type="hidden" name="id" value="{{ user.id }}">
+
+                <div class="form-group">
+                    <label for="name">nome</label>
+                    <input name="name" id="name" class="w-full" type="text" value="{{ user.name }}" data-type="required">
+                </div>
+                <div class="form-group">
+                    <label for="email">e-mail</label>
+                    <input name="email" id="email" class="w-full" type="text" value="{{ user.email }}" data-type="required" readonly>
+                </div> 
+
+                <button type="button" class="mt-3 flex w-full items-center justify-center rounded border border-[var(--yellow)] bg-[#fffff5] px-3 py-2 font-bold text-primary transition hover:bg-[var(--yellow)]" data-open-change-password>
+                    <i class="fa-solid fa-shield-halved mr-1"></i>
+                    quero alterar minha senha
+                </button>                             
+            </div>
+
+            <div class="flex justify-end gap-3 px-6 py-4">
+                <button type="button" class="btn-secondary" data-close-account-settings-modal>
                     cancelar
                 </button>
                 <button type="submit" class="btn-primary">

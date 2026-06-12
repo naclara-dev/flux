@@ -19,9 +19,10 @@ class TransactionRepository extends Repository
         return (float) $stmt->fetchColumn();
     }
 
-    public function findPreviousIncomeDate(int $userId, string $date): ?string
+    public function findPreviousIncomeDate(int $userId, string $date, bool $includeDate = false): ?string
     {
-        $query = "SELECT MAX(occurrence_date) FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date <= :date";
+        $operator = $includeDate ? '<=' : '<';
+        $query = "SELECT MAX(occurrence_date) FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date $operator :date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':date', $date);

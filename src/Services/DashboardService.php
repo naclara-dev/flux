@@ -8,6 +8,7 @@ use App\DTOs\Dashboard\Cycle;
 use App\DTOs\Dashboard\Dashboard;
 use App\DTOs\Dashboard\Milestone;
 use App\DTOs\Dashboard\NextIncome;
+use App\Models\Repositories\SettingRepository;
 use App\Models\Repositories\TransactionRepository;
 use App\Models\Repositories\WalletRepository;
 
@@ -15,11 +16,13 @@ class DashboardService {
     private $userID;
     private $transactions;
     private $wallets;
+    private $settings;
 
     public function __construct() {
         $this->userID = (int) Session::get('user_id');
         $this->transactions = new TransactionRepository;
         $this->wallets = new WalletRepository;
+        $this->settings = (new SettingRepository)->firstFromUser($this->userID);
     }
 
     /**
@@ -70,18 +73,49 @@ class DashboardService {
      * @return \App\DTOs\Dashboard\Cycle
      */
     public function getCurrentCycle(): Cycle {
-        // Data Inicial do Ciclo: data da ultima entrada registrada.
-        $start = $this->getCurrentCycleStartDate();
+        return $this->getCycleAt($this->getTodayDate());
+    }
 
-        // Data Final do Ciclo: data da proxima entrada registrada.
-        $end = $this->getCurrentCycleEndDate();
-
-        // Se a data final for menor ou igual a data inicial, forca o fim para o dia seguinte, evitando ciclos com 0 dias.
-        if ($end <= $start) {
-            $end = $this->getToday()->modify('+1 day')->format('Y-m-d');
+    /**
+     * Obtem o ciclo financeiro que contem uma data de referencia.
+     * @return \App\DTOs\Dashboard\Cycle
+     */
+    public function getCycleAt(string $referenceDate): Cycle {
+        if ($this->cycleStartsAfterIncome()) {
+            // Neste modo, o recebimento fecha o ciclo e o seguinte comeca um dia depois.
+            $previousIncomeDate = $this->transactions->findPreviousIncomeDate(
+                $this->userID,
+                $referenceDate
+            );
+            $nextIncome = $this->transactions->findNextIncome(
+                $this->userID,
+                $referenceDate
+            );
+        } else {
+            // No modo convencional, o recebimento abre imediatamente um novo ciclo.
+            $previousIncomeDate = $this->transactions->findPreviousIncomeDate(
+                $this->userID,
+                $referenceDate,
+                true
+            );
+            $nextIncome = $previousIncomeDate
+                ? $this->transactions->findNextIncomeAfter($this->userID, $previousIncomeDate)
+                : $this->transactions->findNextIncome($this->userID, $referenceDate);
         }
 
-        // Progresso: andamento do ciclo em relacao ao dia atual.
+        $start = $previousIncomeDate
+            ? $this->getCycleStartFromIncomeDate($previousIncomeDate)
+            : $referenceDate;
+
+        $end = !empty($nextIncome['occurrence_date'])
+            ? $this->getCycleEndFromIncomeDate($nextIncome['occurrence_date'])
+            : $this->addDays($start, 30);
+
+        // Evita ciclos vazios quando ainda nao existem recebimentos suficientes.
+        if ($end <= $start) {
+            $end = $this->addDays($start, 1);
+        }
+
         $progress = $this->getCycleProgress($start, $end, $this->getTodayDate());
 
         return $this->buildCycle($start, $end, $progress, $this->getCurrentBalance());
@@ -101,12 +135,14 @@ class DashboardService {
         // Obtem a primeira entrada apos a data inicial.
         $nextIncome = $this->transactions->findNextIncomeAfter($this->userID, $start);
 
-        // Data Final: proxima entrada apos a data inicial.
-        $end = $nextIncome['occurrence_date'] ?? (new \DateTimeImmutable($start))->modify('+30 days')->format('Y-m-d');
+        // Data Final: fronteira gerada pela proxima entrada apos a data inicial.
+        $end = !empty($nextIncome['occurrence_date'])
+            ? $this->getCycleEndFromIncomeDate($nextIncome['occurrence_date'])
+            : $this->addDays($start, 30);
 
         // Se a data final for menor ou igual a data inicial, forca o fim para o dia seguinte, evitando ciclos com 0 dias.
         if ($end <= $start) {
-            $end = (new \DateTimeImmutable($start))->modify('+1 day')->format('Y-m-d');
+            $end = $this->addDays($start, 1);
         }
 
         // Saldo projetado no inicio do proximo ciclo.
@@ -205,34 +241,6 @@ class DashboardService {
     }
 
     /**
-     * Obtem a data em que o ciclo atual comeca.
-     * @return string
-     */
-    private function getCurrentCycleStartDate(): string {
-        // Busca a data da ultima entrada registrada.
-        // Se nao houver, seta a data de hoje como inicio do ciclo.
-        return $this->transactions->findPreviousIncomeDate(
-            $this->userID,
-            $this->getTodayDate()
-        ) ?? $this->getTodayDate();
-    }
-
-    /**
-     * Obtem a data em que o ciclo atual termina.
-     * @return string
-     */
-    private function getCurrentCycleEndDate(): string {
-        // Busca a data da proxima entrada prevista.
-        $nextIncome = $this->transactions->findNextIncome(
-            $this->userID,
-            $this->getTodayDate()
-        );
-
-        // Se nao houver, seta a data de hoje + 30 dias como o fim do ciclo.
-        return $nextIncome['occurrence_date'] ?? $this->getToday()->modify('+30 days')->format('Y-m-d');
-    }
-
-    /**
      * Obtem o percentual de andamento do ciclo.
      * @return int
      */
@@ -272,5 +280,41 @@ class DashboardService {
      */
     private function getTodayDate(): string {
         return $this->getToday()->format('Y-m-d');
+    }
+
+    /**
+     * Transforma a data do recebimento na data inicial do ciclo.
+     * @return string
+     */
+    private function getCycleStartFromIncomeDate(string $incomeDate): string {
+        return $this->cycleStartsAfterIncome()
+            ? $this->addDays($incomeDate, 1)
+            : $incomeDate;
+    }
+
+    /**
+     * Transforma a data do recebimento na data final do ciclo.
+     * @return string
+     */
+    private function getCycleEndFromIncomeDate(string $incomeDate): string {
+        return $this->cycleStartsAfterIncome()
+            ? $this->addDays($incomeDate, 1)
+            : $incomeDate;
+    }
+
+    /**
+     * Indica se o recebimento fecha o ciclo atual.
+     * @return bool
+     */
+    private function cycleStartsAfterIncome(): bool {
+        return !empty($this->settings['cycle_starts_after_income']);
+    }
+
+    /**
+     * Soma dias a uma data em formato yyyy-mm-dd.
+     * @return string
+     */
+    private function addDays(string $date, int $days): string {
+        return (new \DateTimeImmutable($date))->modify("+$days days")->format('Y-m-d');
     }
 }

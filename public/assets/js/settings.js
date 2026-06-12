@@ -1,19 +1,37 @@
 (function () {
-    const modal = document.querySelector('[data-settings-modal]');
-    const settingsModal = window.FluxModal ? window.FluxModal.create(modal, {
-        closeSelector: '[data-close-settings-modal]',
+    const transactionModal = document.querySelector('[data-transaction-settings-modal]');
+    const cycleModal = document.querySelector('[data-cycle-settings-modal]');
+    const accountModal = document.querySelector('[data-account-settings-modal]');
+    const transactionSettingsModal = window.FluxModal ? window.FluxModal.create(transactionModal, {
+        closeSelector: '[data-close-transaction-settings-modal]',
         onClose: closeAllMenus
     }) : null;
-    const openButton = document.querySelector('[data-open-settings-modal]');
+    const cycleSettingsModal = window.FluxModal ? window.FluxModal.create(cycleModal, {
+        closeSelector: '[data-close-cycle-settings-modal]'
+    }) : null;
+    const accountSettingsModal = window.FluxModal ? window.FluxModal.create(accountModal, {
+        closeSelector: '[data-close-account-settings-modal]'
+    }) : null;
+    const openTransactionButton = document.querySelector('[data-open-transaction-settings-modal]');
+    const openCycleButton = document.querySelector('[data-open-cycle-settings-modal]');
+    const openAccountButton = document.querySelector('[data-open-account-settings-modal]');
     const selectNames = ['payment-method', 'wallet', 'entity'];
 
-    if (!settingsModal || !openButton) {
+    if (!transactionSettingsModal || !cycleSettingsModal || !openTransactionButton || !openCycleButton) {
         return;
     }
 
-    openButton.addEventListener('click', function () {
+    openTransactionButton.addEventListener('click', function () {
         syncSelectedLabels();
-        settingsModal.open();
+        transactionSettingsModal.open();
+    });
+
+    openCycleButton.addEventListener('click', function () {
+        cycleSettingsModal.open();
+    });
+
+    openAccountButton.addEventListener('click', function () {
+        accountSettingsModal.open();
     });
 
     selectNames.forEach(function (name) {
