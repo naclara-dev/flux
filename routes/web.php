@@ -14,7 +14,6 @@ use App\Controllers\TransactionController;
 return [
     '/'                      => [HomeController::class, 'index'],
     '/dashboard/cycle/'      => [HomeController::class, 'cycle'],
-    // Exibe um ciclo em uma página preparada para impressão
     '/dashboard/cycle/print/' => [HomeController::class, 'printCycle'],
     '/manage/'               => [ManageController::class, 'index'],
     '/manage/categories/'    => [ManageController::class, 'categories'],
@@ -32,7 +31,6 @@ return [
     '/manage/templates/store/' => [TemplateController::class, 'store'],
     '/manage/templates/delete/' => [TemplateController::class, 'delete'],
     '/transactions/store/'    => [TransactionController::class, 'store'],
-    // Exclui uma transação pertencente ao usuário autenticado
     '/transactions/delete/'   => [TransactionController::class, 'delete'],
     '/settings/'             => [SettingsController::class, 'index'],
     '/settings/store/'       => [SettingsController::class, 'store'],

@@ -21,6 +21,9 @@ class AccountController extends Controller {
 
         $repository = new UserRepository;
         $repository->save($data);
+        
+        redirect();
+        exit;
     }
 
     public function update() {
