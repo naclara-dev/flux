@@ -1,7 +1,8 @@
 (function () {
     const modal = document.querySelector('[data-category-modal]');
     const form = document.querySelector('[data-category-form]');
-    const openButton = document.querySelector('[data-open-category-modal]');
+    // Carrega o toggle responsável por iniciar uma nova categoria
+    const openButton = document.querySelector('.modal-toggle[data-modal-target="#category-modal"]');
     const editButtons = document.querySelectorAll('[data-edit-category]');
     const picker = document.querySelector('[data-icon-picker]');
     const pickerToggle = document.querySelector('[data-toggle-icon-picker]');
@@ -17,9 +18,8 @@
     const iconsUrl = modal ? modal.dataset.iconsUrl : '';
     let icons = [];
 
-    const categoryModal = window.FluxModal ? window.FluxModal.create(modal, {
-        closeSelector: '[data-close-category-modal]'
-    }) : null;
+    // Carrega o controlador compartilhado do modal
+    const categoryModal = window.FluxModal ? window.FluxModal.get(modal) : null;
 
     if (!categoryModal || !form || !openButton || !picker || !pickerToggle || !grid || !search || !idInput || !nameInput || !colorInput || !iconInput || !selectedIconPreview || !selectedIconLabel || !modalTitle || !iconsUrl) {
         return;
@@ -27,7 +27,6 @@
 
     openButton.addEventListener('click', function () {
         resetForm();
-        categoryModal.open();
     });
 
     editButtons.forEach(function (button) {

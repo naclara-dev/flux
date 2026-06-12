@@ -59,6 +59,34 @@ class HomeController extends Controller {
         echo json_encode($cycleView);
     }
 
+    /**
+     * Exibe todas as transações de um ciclo em uma página preparada para impressão.
+     */
+    public function printCycle() {
+        // Verifica se o usuário possui uma sessão autenticada
+        $this->requireAuth();
+
+        // Define a data usada para localizar o ciclo solicitado
+        $referenceDate = $_GET['date'] ?? '';
+
+        // Verifica se a data recebida possui o formato esperado
+        if (!$this->isValidDate($referenceDate)) {
+            // Interrompe a impressão quando a referência é inválida
+            http_response_code(422);
+            echo 'Data de referência inválida.';
+            return;
+        }
+
+        // Carrega e prepara o ciclo para a view de impressão
+        $cycle = (new DashboardService)->getCycleAt($referenceDate);
+        $cycleView = (new DashboardPresenter)->presentCycle($cycle);
+
+        // Exibe a página independente usada pelo navegador para gerar o PDF
+        $this->view('dashboard/cycle-print.twig', [
+            'cycle' => $cycleView
+        ]);
+    }
+
     private function isValidDate(string $date): bool {
         $parsed = \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
 

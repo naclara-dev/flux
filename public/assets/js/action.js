@@ -1,7 +1,6 @@
 const deleteConfirmModalElement = document.querySelector('[data-delete-confirm-modal]');
-const deleteConfirmModal = window.FluxModal ? window.FluxModal.create(deleteConfirmModalElement, {
-    closeSelector: '[data-close-delete-confirm-modal]'
-}) : null;
+// Carrega o controlador compartilhado da confirmação de exclusão
+const deleteConfirmModal = window.FluxModal ? window.FluxModal.get(deleteConfirmModalElement) : null;
 const confirmDeleteButton = document.querySelector('[data-confirm-delete]');
 let pendingDeleteForm = null;
 

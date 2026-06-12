@@ -1,78 +1,62 @@
 (function () {
+    // Carrega os elementos principais do formulário de entidade
     const modal = document.querySelector('[data-entity-modal]');
     const form = document.querySelector('[data-entity-form]');
-    const entityModal = window.FluxModal ? window.FluxModal.create(modal, {
-        closeSelector: '[data-close-entity-modal]',
-        onClose: closeTypeMenu
-    }) : null;
-    const openButton = document.querySelector('[data-open-entity-modal]');
+    const openButton = document.querySelector('.modal-toggle[data-modal-target="#entity-modal"]');
     const editButtons = document.querySelectorAll('[data-edit-entity]');
     const idInput = document.querySelector('[data-entity-id-input]');
     const nameInput = document.querySelector('[data-entity-name-input]');
-    const typeInput = document.querySelector('[data-entity-type-input]');
-    const typeToggle = document.querySelector('[data-entity-type-toggle]');
-    const typeLabel = document.querySelector('[data-entity-type-label]');
-    const typeMenu = document.querySelector('[data-entity-type-menu]');
-    const typeOptions = document.querySelectorAll('[data-entity-type-option]');
     const modalTitle = document.querySelector('[data-entity-modal-title]');
+
+    // Carrega os controladores compartilhados do modal e do combobox
+    const entityModal = window.FluxModal ? window.FluxModal.get(modal) : null;
+    const typeSelect = window.FluxSelect && modal
+        ? window.FluxSelect.get(modal.querySelector('[data-select]'))
+        : null;
+
+    // Define a URL usada para carregar os dados da edição
     const findUrl = modal ? modal.dataset.entityFindUrl : '';
 
-    if (!entityModal || !form || !openButton || !idInput || !nameInput || !typeInput || !typeToggle || !typeLabel || !typeMenu || !modalTitle || !findUrl) {
+    // Verifica se a estrutura obrigatória está disponível
+    if (!entityModal || !form || !openButton || !idInput || !nameInput || !typeSelect || !modalTitle || !findUrl) {
+        // Interrompe a inicialização quando a tela está incompleta
         return;
     }
 
+    // Prepara o formulário antes de abrir uma nova entidade
     openButton.addEventListener('click', function () {
         resetForm();
-        entityModal.open();
     });
 
+    // Percorre os botões de edição existentes na página
     editButtons.forEach(function (button) {
+        // Carrega a entidade correspondente ao botão
         button.addEventListener('click', function () {
             fetchEntity(button.dataset.entityId);
         });
     });
 
-    typeToggle.addEventListener('click', function () {
-        if (typeMenu.classList.contains('max-h-0')) {
-            openTypeMenu();
-            return;
-        }
-
-        closeTypeMenu();
-    });
-
-    typeOptions.forEach(function (option) {
-        option.addEventListener('click', function () {
-            setSelectedType(option.dataset.entityTypeId, option.dataset.entityTypeName);
-            closeTypeMenu();
-        });
-    });
-
-    document.addEventListener('click', function (event) {
-        if (!typeMenu.contains(event.target) && !typeToggle.contains(event.target)) {
-            closeTypeMenu();
-        }
-    });
-
+    // Restaura os valores iniciais do formulário
     function resetForm() {
         form.reset();
         idInput.value = '';
-        typeInput.value = '';
-        typeLabel.textContent = 'escolha um tipo';
+        typeSelect.reset();
         modalTitle.textContent = 'nova entidade';
-        closeTypeMenu();
     }
 
+    // Preenche o formulário com os dados da entidade
     function fillForm(entity) {
         idInput.value = entity.id;
         nameInput.value = entity.name;
         modalTitle.textContent = 'editar entidade';
-        setSelectedType(entity.type_id);
-        closeTypeMenu();
+        typeSelect.set(entity.type_id, '', false);
     }
 
+    // Carrega uma entidade pelo endpoint JSON
     function fetchEntity(id) {
+        // Verifica se o identificador foi informado
         if (!id) {
+            // Interrompe a busca sem identificador
             return;
         }
 
@@ -82,6 +66,7 @@
             }
         })
             .then(function (response) {
+                // Verifica se a resposta foi concluída com sucesso
                 if (!response.ok) {
                     throw new Error('entity not found');
                 }
@@ -89,35 +74,14 @@
                 return response.json();
             })
             .then(function (entity) {
+                // Verifica se a entidade foi encontrada
                 if (!entity) {
+                    // Interrompe o preenchimento sem dados
                     return;
                 }
 
                 fillForm(entity);
                 entityModal.open();
             });
-    }
-
-    function setSelectedType(typeId, typeName) {
-        const option = findTypeOption(typeId);
-
-        typeInput.value = typeId || '';
-        typeLabel.textContent = typeName || (option ? option.dataset.entityTypeName : 'tipo selecionado');
-    }
-
-    function findTypeOption(typeId) {
-        return Array.from(typeOptions).find(function (option) {
-            return option.dataset.entityTypeId === String(typeId);
-        });
-    }
-
-    function closeTypeMenu() {
-        typeMenu.classList.remove('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
-        typeMenu.classList.add('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-    }
-
-    function openTypeMenu() {
-        typeMenu.classList.remove('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-        typeMenu.classList.add('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
     }
 })();

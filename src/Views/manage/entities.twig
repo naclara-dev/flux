@@ -11,7 +11,7 @@
             </p>
         </div> 
         <div class="flex justify-end"> 
-            <button type="button" class="btn-primary w-50 mt-4 text-xl" data-open-entity-modal>
+            <button type="button" class="modal-toggle btn-primary w-50 mt-4 text-xl" data-modal-target="#entity-modal">
                 <i class="fa-solid fa-plus fa-sm mr-1"></i>
                 criar
             </button>
@@ -43,14 +43,14 @@
         {% endfor %}  
     </section>
 
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-entity-modal data-entity-find-url="{{ base_url }}/manage/entities/find">
+    <dialog id="entity-modal" class="modal fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-entity-modal data-entity-find-url="{{ base_url }}/manage/entities/find">
         <form method="post" action="{{ base_url }}/manage/entities/store" class="validate" data-entity-form>
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
                     <h2 class="text-xl font-bold text-primary" data-entity-modal-title>nova entidade</h2>
                     <p class="mt-1 text-xs text-[var(--dark)] opacity-70">informe nome e tipo da entidade.</p>
                 </div>
-                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-entity-modal aria-label="Fechar">
+                <button type="button" class="modal-close flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-label="Fechar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -63,20 +63,21 @@
                     <input id="entity-name" name="name" type="text" data-type="required" class="mt-1 w-full bg-transparent outline-none" autocomplete="off" data-entity-name-input>
                 </div>
 
-                <div class="form-group">
+                {# Declara o combobox de tipo da entidade #}
+                <div class="form-group" data-select data-select-placeholder="escolha um tipo">
                     <label>tipo</label>
-                    <input type="hidden" name="type_id" data-type="required" data-entity-type-input>
+                    <input type="hidden" name="type_id" data-type="required" data-select-input>
 
-                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-entity-type-toggle>
-                        <span data-entity-type-label class="text-sm">
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                        <span data-select-label class="text-sm">
                             escolha um tipo
                         </span>
                         <i class="fa-solid fa-chevron-down text-primary"></i>
                     </button>
 
-                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-entity-type-menu>
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                         {% for type in entity_types %}
-                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-entity-type-option data-entity-type-id="{{ type.id|e('html_attr') }}" data-entity-type-name="{{ type.name|e('html_attr') }}">
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ type.id|e('html_attr') }}" data-value-label="{{ type.name|e('html_attr') }}" aria-selected="false">
                                 {{ type.name }}
                             </button>
                         {% endfor %}
@@ -85,7 +86,7 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">
-                <button type="button" class="btn-secondary" data-close-entity-modal>
+                <button type="button" class="modal-close btn-secondary">
                     cancelar
                 </button>
                 <button type="submit" class="btn-primary">

@@ -1,84 +1,68 @@
 (function () {
+    // Carrega os elementos principais do formulário de wallet
     const modal = document.querySelector('[data-wallet-modal]');
     const form = document.querySelector('[data-wallet-form]');
-    const walletModal = window.FluxModal ? window.FluxModal.create(modal, {
-        closeSelector: '[data-close-wallet-modal]',
-        onClose: closeTypeMenu
-    }) : null;
-    const openButton = document.querySelector('[data-open-wallet-modal]');
+    const openButton = document.querySelector('.modal-toggle[data-modal-target="#wallet-modal"]');
     const editButtons = document.querySelectorAll('[data-edit-wallet]');
     const idInput = document.querySelector('[data-wallet-id-input]');
     const nameInput = document.querySelector('[data-wallet-name-input]');
-    const typeInput = document.querySelector('[data-wallet-type-input]');
-    const typeToggle = document.querySelector('[data-wallet-type-toggle]');
-    const typeLabel = document.querySelector('[data-wallet-type-label]');
-    const typeMenu = document.querySelector('[data-wallet-type-menu]');
-    const typeOptions = document.querySelectorAll('[data-wallet-type-option]');
     const balanceInput = document.querySelector('[data-wallet-balance-input]');
     const activeInput = document.querySelector('[data-wallet-active-input]');
     const modalTitle = document.querySelector('[data-wallet-modal-title]');
+
+    // Carrega os controladores compartilhados do modal e do combobox
+    const walletModal = window.FluxModal ? window.FluxModal.get(modal) : null;
+    const typeSelect = window.FluxSelect && modal
+        ? window.FluxSelect.get(modal.querySelector('[data-select]'))
+        : null;
+
+    // Define a URL usada para carregar os dados da edição
     const findUrl = modal ? modal.dataset.walletFindUrl : '';
 
-    if (!walletModal || !form || !openButton || !idInput || !nameInput || !typeInput || !typeToggle || !typeLabel || !typeMenu || !balanceInput || !activeInput || !modalTitle || !findUrl) {
+    // Verifica se a estrutura obrigatória está disponível
+    if (!walletModal || !form || !openButton || !idInput || !nameInput || !typeSelect || !balanceInput || !activeInput || !modalTitle || !findUrl) {
+        // Interrompe a inicialização quando a tela está incompleta
         return;
     }
 
+    // Prepara o formulário antes de abrir uma nova wallet
     openButton.addEventListener('click', function () {
         resetForm();
-        walletModal.open();
     });
 
+    // Percorre os botões de edição existentes na página
     editButtons.forEach(function (button) {
+        // Carrega a wallet correspondente ao botão
         button.addEventListener('click', function () {
             fetchWallet(button.dataset.walletId);
         });
     });
 
-    typeToggle.addEventListener('click', function () {
-        if (typeMenu.classList.contains('max-h-0')) {
-            openTypeMenu();
-            return;
-        }
-
-        closeTypeMenu();
-    });
-
-    typeOptions.forEach(function (option) {
-        option.addEventListener('click', function () {
-            setSelectedType(option.dataset.walletTypeId, option.dataset.walletTypeName);
-            closeTypeMenu();
-        });
-    });
-
-    document.addEventListener('click', function (event) {
-        if (!typeMenu.contains(event.target) && !typeToggle.contains(event.target)) {
-            closeTypeMenu();
-        }
-    });
-
+    // Restaura os valores iniciais do formulário
     function resetForm() {
         form.reset();
         idInput.value = '';
-        typeInput.value = '';
-        typeLabel.textContent = 'escolha um tipo';
+        typeSelect.reset();
         balanceInput.value = '0,00';
         activeInput.checked = true;
         modalTitle.textContent = 'nova wallet';
-        closeTypeMenu();
     }
 
+    // Preenche o formulário com os dados da wallet
     function fillForm(wallet) {
         idInput.value = wallet.id;
         nameInput.value = wallet.name;
         balanceInput.value = formatBalance(wallet.initial_balance);
         activeInput.checked = wallet.active === true || wallet.active === 1 || wallet.active === '1';
         modalTitle.textContent = 'editar wallet';
-        setSelectedType(wallet.type_id);
-        closeTypeMenu();
+        typeSelect.set(wallet.type_id, '', false);
     }
 
+    // Carrega uma wallet pelo endpoint JSON
     function fetchWallet(id) {
+        // Verifica se o identificador foi informado
         if (!id) {
+            // Interrompe a busca sem identificador
             return;
         }
 
@@ -88,6 +72,7 @@
             }
         })
             .then(function (response) {
+                // Verifica se a resposta foi concluída com sucesso
                 if (!response.ok) {
                     throw new Error('wallet not found');
                 }
@@ -95,7 +80,9 @@
                 return response.json();
             })
             .then(function (wallet) {
+                // Verifica se a wallet foi encontrada
                 if (!wallet) {
+                    // Interrompe o preenchimento sem dados
                     return;
                 }
 
@@ -104,38 +91,17 @@
             });
     }
 
-    function setSelectedType(typeId, typeName) {
-        const option = findTypeOption(typeId);
-
-        typeInput.value = typeId || '';
-        typeLabel.textContent = typeName || (option ? option.dataset.walletTypeName : 'tipo selecionado');
-    }
-
-    function findTypeOption(typeId) {
-        return Array.from(typeOptions).find(function (option) {
-            return option.dataset.walletTypeId === String(typeId);
-        });
-    }
-
+    // Formata o saldo para o padrão monetário do formulário
     function formatBalance(value) {
+        // Define o valor numérico recebido do backend
         const number = Number(String(value).replace(',', '.'));
 
+        // Verifica se o saldo recebido é inválido
         if (Number.isNaN(number)) {
+            // Retorna o saldo inicial vazio
             return '0,00';
         }
 
         return number.toFixed(2).replace('.', ',');
-    }
-
-    function closeTypeMenu() {
-        if (typeMenu) {
-            typeMenu.classList.remove('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
-            typeMenu.classList.add('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-        }
-    }
-
-    function openTypeMenu() {
-        typeMenu.classList.remove('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-        typeMenu.classList.add('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
     }
 })();

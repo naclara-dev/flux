@@ -56,6 +56,11 @@
                     <i class="fa-solid fa-chevron-left"></i>
                     <span>ciclo anterior</span>
                 </button>
+                {# Abre a versão do ciclo preparada para impressão #}
+                <button type="button" class="flex items-center gap-2 rounded px-3 py-2 text-sm text-primary transition hover:bg-[var(--yellow)] disabled:cursor-wait disabled:opacity-50" data-print-cycle data-print-url="{{ base_url }}/dashboard/cycle/print/">
+                    <i class="fa-solid fa-download"></i>
+                    <span class="hidden sm:inline">exportar</span>
+                </button>
                 <button type="button" class="flex items-center gap-2 rounded px-3 py-2 text-sm text-primary transition hover:bg-[var(--yellow)] disabled:cursor-wait disabled:opacity-50" data-cycle-next>
                     <span>pr&oacute;ximo ciclo</span>
                     <i class="fa-solid fa-chevron-right"></i>
@@ -184,7 +189,7 @@
                 </div>
             </div>
 
-            <button type="button" class="btn-primary fixed bottom-20 right-6 flex h-12 w-12 items-center justify-center rounded-full text-xl shadow-lg md:hidden" data-open-transaction-modal aria-label="Novo registro">
+            <button type="button" class="modal-toggle btn-primary fixed bottom-20 right-6 flex h-12 w-12 items-center justify-center rounded-full text-xl shadow-lg md:hidden" data-modal-target="#transaction-modal" aria-label="Novo registro">
                 <i class="fa-solid fa-plus"></i>
             </button>
         </aside>

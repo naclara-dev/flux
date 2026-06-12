@@ -1,17 +1,17 @@
-<dialog class="fixed top-1/2 left-1/2 w-[min(90vw,420px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-delete-confirm-modal>
+<dialog id="delete-confirm-modal" class="modal fixed top-1/2 left-1/2 w-[min(90vw,420px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-delete-confirm-modal>
     <div class="px-6 py-5">
         <div class="flex items-start justify-between gap-4">
             <div>
                 <h2 class="text-lg font-bold text-primary">excluir registro?</h2>
                 <p class="mt-2 text-sm opacity-75">cuidado! essa ação é permanente.</p>
             </div>
-            <button type="button" class="flex h-8 w-8 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-delete-confirm-modal aria-label="Fechar">
+            <button type="button" class="modal-close flex h-8 w-8 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-label="Fechar">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button" class="btn-secondary" data-close-delete-confirm-modal>
+            <button type="button" class="modal-close btn-secondary">
                 cancelar
             </button>
             <button type="button" class="btn-primary" data-confirm-delete>

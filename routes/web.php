@@ -14,6 +14,8 @@ use App\Controllers\TransactionController;
 return [
     '/'                      => [HomeController::class, 'index'],
     '/dashboard/cycle/'      => [HomeController::class, 'cycle'],
+    // Exibe um ciclo em uma página preparada para impressão
+    '/dashboard/cycle/print/' => [HomeController::class, 'printCycle'],
     '/manage/'               => [ManageController::class, 'index'],
     '/manage/categories/'    => [ManageController::class, 'categories'],
     '/manage/categories/store/' => [CategoryController::class, 'store'],

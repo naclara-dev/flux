@@ -13,7 +13,12 @@ class SettingsController extends Controller {
     public function index() {
         $this->requireAuth();
 
+        // Define o usuário autenticado e carrega o feedback temporário da conta
         $userId = (int) Session::get('user_id');
+        $accountFeedback = Session::get('account_feedback');
+
+        // Remove o feedback após disponibilizá-lo para a próxima renderização
+        Session::remove('account_feedback');
 
         $this->view('settings.twig', [
             'settings' => (new SettingRepository)->firstFromUser($userId),
@@ -23,6 +28,7 @@ class SettingsController extends Controller {
             'user' => (new UserRepository)->find([
                 'id' => $userId
             ]),
+            'account_feedback' => $accountFeedback,
         ]);
     }
 

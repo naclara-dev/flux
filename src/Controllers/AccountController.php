@@ -37,8 +37,8 @@ class AccountController extends Controller {
         ]);
 
         if (empty($user)) {
-            redirect('settings');
-            exit;
+            // Interrompe a atualização quando o usuário não foi encontrado
+            $this->redirectWithFeedback('não foi possível localizar sua conta.');
         }
 
         $email = trim($_POST['email'] ?? '');
@@ -47,21 +47,32 @@ class AccountController extends Controller {
         ]);
 
         if (!empty($existingUser) && (int) $existingUser['id'] !== (int) $user['id']) {
-            echo 'E-mail ja cadastrado.';
-            exit;
+            // Interrompe a atualização quando o e-mail pertence a outra conta
+            $this->redirectWithFeedback('este e-mail já está cadastrado.');
         }
 
         $password = $user['password'];
 
+        // Verifica se o usuário solicitou a alteração da senha
         if (!empty($_POST['change_password'])) {
+            // Define as senhas informadas no formulário
+            $currentPassword = $_POST['current_password'] ?? '';
             $newPassword = $_POST['password'] ?? '';
             $passwordConfirmation = $_POST['password_confirmation'] ?? '';
 
-            if ($newPassword === '' || $newPassword !== $passwordConfirmation) {
-                echo 'A confirmacao de senha nao confere.';
-                exit;
+            // Verifica se a senha atual corresponde à senha cadastrada
+            if ($currentPassword === '' || !password_verify($currentPassword, $user['password'])) {
+                // Interrompe a alteração e mantém os campos de senha visíveis
+                $this->redirectWithFeedback('a senha atual não confere.', true);
             }
 
+            // Verifica se a nova senha foi confirmada corretamente
+            if ($newPassword === '' || $newPassword !== $passwordConfirmation) {
+                // Interrompe a alteração e mantém os campos de senha visíveis
+                $this->redirectWithFeedback('a confirmação da nova senha não confere.', true);
+            }
+
+            // Define o hash da nova senha
             $password = password_hash($newPassword, PASSWORD_DEFAULT);
         }
 
@@ -72,6 +83,28 @@ class AccountController extends Controller {
             'password' => $password,
             'google_id' => $user['google_id'] ?? null,
             'auth_provider' => $user['auth_provider'] ?? 'local',
+        ]);
+
+        // Salva a confirmação para exibição após o redirecionamento
+        Session::set('account_feedback', [
+            'type' => 'success',
+            'message' => 'seus dados foram atualizados com sucesso.',
+            'change_password' => false,
+        ]);
+
+        redirect('settings');
+        exit;
+    }
+
+    /**
+     * Salva uma mensagem temporária e retorna para as configurações.
+     */
+    private function redirectWithFeedback(string $message, bool $changePassword = false) {
+        // Salva o feedback consumido pela tela de configurações
+        Session::set('account_feedback', [
+            'type' => 'error',
+            'message' => $message,
+            'change_password' => $changePassword,
         ]);
 
         redirect('settings');

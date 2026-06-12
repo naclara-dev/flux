@@ -1,160 +1,78 @@
 (function () {
-    const transactionModal = document.querySelector('[data-transaction-settings-modal]');
-    const cycleModal = document.querySelector('[data-cycle-settings-modal]');
-    const accountModal = document.querySelector('[data-account-settings-modal]');
-    const transactionSettingsModal = window.FluxModal ? window.FluxModal.create(transactionModal, {
-        closeSelector: '[data-close-transaction-settings-modal]',
-        onClose: closeAllMenus
-    }) : null;
-    const cycleSettingsModal = window.FluxModal ? window.FluxModal.create(cycleModal, {
-        closeSelector: '[data-close-cycle-settings-modal]'
-    }) : null;
-    const accountSettingsModal = window.FluxModal ? window.FluxModal.create(accountModal, {
-        closeSelector: '[data-close-account-settings-modal]'
-    }) : null;
-    const openTransactionButton = document.querySelector('[data-open-transaction-settings-modal]');
-    const openCycleButton = document.querySelector('[data-open-cycle-settings-modal]');
-    const openAccountButton = document.querySelector('[data-open-account-settings-modal]');
-    const selectNames = ['payment-method', 'wallet', 'entity'];
+    // Carrega os elementos usados pelo collapse de alteração de senha
+    const toggle = document.querySelector('[data-change-password-toggle]');
+    const collapse = document.querySelector('[data-change-password-collapse]');
+    const label = document.querySelector('[data-change-password-toggle-label]');
+    const icon = document.querySelector('[data-change-password-toggle-icon]');
+    const fields = document.querySelectorAll('[data-change-password-field]');
+    const accountModal = document.querySelector('#account-settings-modal');
 
-    if (!transactionSettingsModal || !cycleSettingsModal || !openTransactionButton || !openCycleButton) {
+    // Verifica se a estrutura do collapse está disponível
+    if (!toggle || !collapse || !label || !icon) {
+        // Interrompe a inicialização quando a tela não possui o componente
         return;
     }
 
-    openTransactionButton.addEventListener('click', function () {
-        syncSelectedLabels();
-        transactionSettingsModal.open();
+    // Alterna o estado do collapse ao clicar no botão
+    toggle.addEventListener('click', function () {
+        // Verifica se os campos estão visíveis
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+
+        // Define o novo estado do collapse
+        setExpanded(!isExpanded);
     });
 
-    openCycleButton.addEventListener('click', function () {
-        cycleSettingsModal.open();
-    });
-
-    openAccountButton.addEventListener('click', function () {
-        accountSettingsModal.open();
-    });
-
-    selectNames.forEach(function (name) {
-        const toggle = getToggle(name);
-        const menu = getMenu(name);
-
-        if (!toggle || !menu) {
-            return;
-        }
-
-        toggle.addEventListener('click', function () {
-            if (menu.classList.contains('max-h-0')) {
-                openMenu(name);
-                return;
-            }
-
-            closeMenu(name);
-        });
-
-        getOptions(name).forEach(function (option) {
-            option.addEventListener('click', function () {
-                setSelectedOption(name, option.dataset.settingsOptionId, option.dataset.settingsOptionName);
-                closeMenu(name);
-            });
-        });
-    });
-
-    document.addEventListener('click', function (event) {
-        selectNames.forEach(function (name) {
-            const toggle = getToggle(name);
-            const menu = getMenu(name);
-
-            if (!toggle || !menu) {
-                return;
-            }
-
-            if (!toggle.contains(event.target) && !menu.contains(event.target)) {
-                closeMenu(name);
-            }
-        });
-    });
-
-    syncSelectedLabels();
-
-    function syncSelectedLabels() {
-        selectNames.forEach(function (name) {
-            const input = getInput(name);
-            const option = findOption(name, input ? input.value : '');
-
-            if (option) {
-                setSelectedOption(name, option.dataset.settingsOptionId, option.dataset.settingsOptionName);
+    // Verifica se o controlador compartilhado do modal está disponível
+    if (window.FluxModal && accountModal) {
+        // Restaura o collapse quando o modal é fechado
+        window.FluxModal.create(accountModal, {
+            onClose: function () {
+                setExpanded(false);
             }
         });
     }
 
-    function setSelectedOption(name, id, label) {
-        const input = getInput(name);
-        const labelElement = getLabel(name);
-
-        if (input) {
-            input.value = id || '';
+    // Verifica se o backend enviou um feedback para a conta
+    if (accountModal && accountModal.hasAttribute('data-account-feedback')) {
+        // Verifica se o erro exige a exibição dos campos de senha
+        if (accountModal.dataset.expandPassword === '1') {
+            setExpanded(true);
         }
 
-        if (labelElement && label) {
-            labelElement.textContent = label;
-        }
+        // Abre o modal para exibir a mensagem ao usuário
+        window.FluxModal.get(accountModal).open();
     }
 
-    function findOption(name, id) {
-        return getOptions(name).find(function (option) {
-            return option.dataset.settingsOptionId === String(id);
-        });
-    }
+    // Define o estado visual e funcional dos campos de senha
+    function setExpanded(isExpanded) {
+        // Define o estado acessível do botão
+        toggle.setAttribute('aria-expanded', String(isExpanded));
 
-    function openMenu(name) {
-        closeAllMenus(name);
+        // Define a altura necessária para animar o conteúdo
+        collapse.style.maxHeight = isExpanded
+            ? collapse.scrollHeight + 'px'
+            : '0px';
 
-        const menu = getMenu(name);
+        // Alterna a visibilidade do conteúdo
+        collapse.classList.toggle('opacity-100', isExpanded);
+        collapse.classList.toggle('opacity-0', !isExpanded);
 
-        if (!menu) {
-            return;
-        }
+        // Atualiza o texto e o ícone do botão
+        label.textContent = isExpanded
+            ? 'não quero alterar minha senha'
+            : 'quero alterar minha senha';
+        icon.classList.toggle('rotate-180', isExpanded);
 
-        menu.classList.remove('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-        menu.classList.add('max-h-48', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
-    }
+        // Percorre os campos controlados pelo collapse
+        fields.forEach(function (field) {
+            // Define se o campo participa da validação e do envio
+            field.disabled = !isExpanded;
 
-    function closeMenu(name) {
-        const menu = getMenu(name);
-
-        if (!menu) {
-            return;
-        }
-
-        menu.classList.remove('max-h-48', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
-        menu.classList.add('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-    }
-
-    function closeAllMenus(except) {
-        selectNames.forEach(function (name) {
-            if (name !== except) {
-                closeMenu(name);
+            // Verifica se o collapse foi fechado
+            if (!isExpanded) {
+                // Limpa as senhas que deixaram de participar do formulário
+                field.value = field.type === 'hidden' ? '1' : '';
             }
         });
-    }
-
-    function getInput(name) {
-        return document.querySelector('[data-settings-select-input="' + name + '"]');
-    }
-
-    function getToggle(name) {
-        return document.querySelector('[data-settings-select-toggle="' + name + '"]');
-    }
-
-    function getLabel(name) {
-        return document.querySelector('[data-settings-select-label="' + name + '"]');
-    }
-
-    function getMenu(name) {
-        return document.querySelector('[data-settings-select-menu="' + name + '"]');
-    }
-
-    function getOptions(name) {
-        return Array.from(document.querySelectorAll('[data-settings-select-option="' + name + '"]'));
     }
 })();

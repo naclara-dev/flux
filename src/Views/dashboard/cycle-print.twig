@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flux - ciclo {{ cycle.label }}</title>
+
+    {# Carrega a tipografia e os ícones usados pela identidade visual #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <style>
+        /* Define as cores e medidas compartilhadas pela página */
+        :root {
+            --lilac: #c17fd7;
+            --purple: #965dab;
+            --yellow: #f8e9b6;
+            --dark-yellow: #e7d69c;
+            --light: #fffbe8;
+            --paper: #fffff5;
+            --dark: #3a3835;
+        }
+
+        /* Normaliza o cálculo de dimensões dos elementos */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Define a aparência da pré-visualização no navegador */
+        body {
+            margin: 0;
+            background: #eee9d7;
+            color: var(--dark);
+            font-family: "Montserrat", sans-serif;
+            font-size: 13px;
+        }
+
+        /* Posiciona os comandos que não fazem parte do PDF */
+        .print-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px;
+        }
+
+        /* Define a aparência dos comandos da pré-visualização */
+        .print-actions button {
+            border: 0;
+            border-radius: 3px;
+            padding: 8px 14px;
+            background: var(--lilac);
+            color: var(--light);
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+        }
+
+        /* Define a folha exibida antes da impressão */
+        .print-sheet {
+            width: min(210mm, calc(100% - 32px));
+            min-height: 297mm;
+            margin: 0 auto 24px;
+            padding: 12mm;
+            background: var(--paper);
+            box-shadow: 0 8px 30px rgba(58, 56, 53, 0.14);
+        }
+
+        /* Usa a tabela apenas para repetir o cabeçalho entre páginas */
+        .cycle-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Reserva espaço após o cabeçalho repetido */
+        .cycle-table thead td {
+            padding: 0 0 6mm;
+        }
+
+        /* Mantém cada lançamento inteiro na mesma página */
+        .cycle-table tbody tr {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* Define o espaçamento entre os cards */
+        .cycle-table tbody td {
+            padding: 0 0 3mm;
+        }
+
+        /* Organiza a identidade e o período do ciclo */
+        .cycle-heading {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Destaca o dia inicial do ciclo */
+        .cycle-day {
+            display: flex;
+            width: 52px;
+            height: 52px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--yellow);
+            color: var(--lilac);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Define o título principal do ciclo */
+        .cycle-title {
+            margin: 0;
+            color: var(--lilac);
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* Define o texto auxiliar do cabeçalho */
+        .cycle-subtitle {
+            margin: 4px 0 0;
+            opacity: 0.65;
+        }
+
+        /* Organiza os totais financeiros do ciclo */
+        .cycle-totals {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        /* Define cada total como um bloco compacto */
+        .cycle-total {
+            border: 1px solid var(--yellow);
+            border-radius: 4px;
+            padding: 9px 11px;
+            background: var(--light);
+        }
+
+        /* Define a legenda dos totais */
+        .cycle-total span {
+            display: block;
+            color: var(--dark-yellow);
+            font-size: 11px;
+        }
+
+        /* Destaca os valores dos totais */
+        .cycle-total strong {
+            display: block;
+            margin-top: 3px;
+            font-size: 14px;
+        }
+
+        /* Aplica a cor de destaque às entradas */
+        .cycle-total.income strong {
+            color: var(--lilac);
+        }
+
+        /* Aplica a cor de destaque às despesas */
+        .cycle-total.expenses strong {
+            color: var(--purple);
+        }
+
+        /* Organiza cada lançamento como um card compacto */
+        .transaction {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid var(--yellow);
+            border-radius: 4px;
+            padding: 10px 12px;
+            background: var(--light);
+        }
+
+        /* Reduz o destaque visual de lançamentos pagos */
+        .transaction.paid {
+            opacity: 0.78;
+        }
+
+        /* Organiza o ícone e a identificação do lançamento */
+        .transaction-identity {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Define o círculo colorido da categoria */
+        .transaction-icon {
+            display: flex;
+            width: 36px;
+            height: 36px;
+            flex: 0 0 36px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--light);
+        }
+
+        /* Impede que textos longos estourem o card */
+        .transaction-text {
+            min-width: 0;
+        }
+
+        /* Define o título do lançamento */
+        .transaction-title {
+            margin: 0;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Define os metadados do lançamento */
+        .transaction-meta {
+            margin: 3px 0 0;
+            color: var(--dark-yellow);
+            font-size: 10px;
+        }
+
+        /* Alinha data, valor e status do lançamento */
+        .transaction-summary {
+            min-width: 112px;
+            text-align: right;
+        }
+
+        /* Define a data do lançamento */
+        .transaction-date {
+            display: block;
+            color: var(--dark-yellow);
+            font-size: 10px;
+        }
+
+        /* Destaca o valor do lançamento */
+        .transaction-amount {
+            display: block;
+            margin-top: 2px;
+            font-size: 13px;
+        }
+
+        /* Aplica a cor de destaque às entradas */
+        .transaction-amount.income {
+            color: var(--lilac);
+        }
+
+        /* Define o selo de status */
+        .transaction-status {
+            display: inline-block;
+            margin-top: 3px;
+            border-radius: 3px;
+            padding: 2px 6px;
+            background: var(--yellow);
+            font-size: 9px;
+        }
+
+        /* Define o estado vazio do ciclo */
+        .empty-state {
+            border: 1px solid var(--yellow);
+            border-radius: 4px;
+            padding: 18px;
+            background: var(--light);
+            text-align: center;
+        }
+
+        /* Configura a folha física usada pelo navegador */
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        /* Ajusta a página para impressão e exportação em PDF */
+        @media print {
+            /* Remove os comandos exclusivos da pré-visualização */
+            .print-actions {
+                display: none;
+            }
+
+            /* Remove o fundo externo e preserva as cores do layout */
+            body {
+                background: var(--paper);
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            /* Usa toda a área disponível da folha */
+            .print-sheet {
+                width: auto;
+                min-height: 0;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    {# Exibe comandos apenas durante a pré-visualização #}
+    <nav class="print-actions" aria-label="Ações de impressão">
+        <button type="button" onclick="window.print()">
+            <i class="fa-solid fa-print"></i>
+            imprimir ou salvar PDF
+        </button>
+        <button type="button" onclick="window.close()">
+            fechar
+        </button>
+    </nav>
+
+    {# Organiza o ciclo em uma folha A4 #}
+    <main class="print-sheet">
+        <table class="cycle-table">
+            {# Repete o resumo do ciclo no início de cada página impressa #}
+            <thead>
+                <tr>
+                    <td>
+                        <div class="cycle-heading">
+                            <div class="cycle-day">{{ cycle.startDayLabel }}</div>
+                            <div>
+                                <h1 class="cycle-title">{{ cycle.label }}</h1>
+                                <p class="cycle-subtitle">lançamentos do ciclo financeiro</p>
+                            </div>
+                        </div>
+
+                        <div class="cycle-totals">
+                            <div class="cycle-total income">
+                                <span>recebe</span>
+                                <strong>{{ cycle.incomeLabel }}</strong>
+                            </div>
+                            <div class="cycle-total expenses">
+                                <span>gastos</span>
+                                <strong>{{ cycle.expensesLabel }}</strong>
+                            </div>
+                            <div class="cycle-total">
+                                <span>sobra</span>
+                                <strong>{{ cycle.balanceLabel }}</strong>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+
+            {# Percorre todos os lançamentos pertencentes ao ciclo #}
+            <tbody>
+                {% for transaction in cycle.transactions %}
+                    <tr>
+                        <td>
+                            <article class="transaction {% if transaction.paid %}paid{% endif %}">
+                                <div class="transaction-identity">
+                                    <div class="transaction-icon" style="background-color: {{ transaction.category.color|e('html_attr') }}">
+                                        <i class="{{ transaction.category.icon|e('html_attr') }}"></i>
+                                    </div>
+                                    <div class="transaction-text">
+                                        <h2 class="transaction-title">{{ transaction.title }}</h2>
+                                        <p class="transaction-meta">{{ transaction.meta_label }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="transaction-summary">
+                                    <span class="transaction-date">{{ transaction.date_label }}</span>
+                                    <strong class="transaction-amount {% if transaction.amount > 0 %}income{% endif %}">{{ transaction.amount_label }}</strong>
+                                    <span class="transaction-status">{{ transaction.status_label }}</span>
+                                </div>
+                            </article>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>
+                            <div class="empty-state">nenhum lançamento neste ciclo.</div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        // Aguarda as fontes antes de abrir a caixa nativa de impressão
+        window.addEventListener('load', function () {
+            // Verifica se o navegador expõe o carregamento de fontes
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(function () {
+                    window.print();
+                });
+                return;
+            }
+
+            window.print();
+        });
+    </script>
+</body>
+</html>

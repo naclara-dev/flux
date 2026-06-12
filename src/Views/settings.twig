@@ -13,7 +13,7 @@
     </section>
 
     <section class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <button type="button" class="manage-card w-full text-left" data-open-transaction-settings-modal>
+        <button type="button" class="modal-toggle manage-card w-full text-left" data-modal-target="#transaction-settings-modal">
             <div class="manage-card-icon">
                 <i class="fa-solid fa-gears fa-xl"></i>
             </div>
@@ -27,7 +27,7 @@
             </div>
         </button>
 
-        <button type="button" class="manage-card w-full text-left" data-open-cycle-settings-modal>
+        <button type="button" class="modal-toggle manage-card w-full text-left" data-modal-target="#cycle-settings-modal">
             <div class="manage-card-icon">
                 <i class="fa-solid fa-arrows-spin fa-xl"></i>
             </div>
@@ -41,7 +41,7 @@
             </div>
         </button>
 
-        <button type="button" class="manage-card w-full text-left" data-open-account-settings-modal>
+        <button type="button" class="modal-toggle manage-card w-full text-left" data-modal-target="#account-settings-modal">
             <div class="manage-card-icon">
                 <i class="fa-regular fa-user fa-xl"></i>
             </div>
@@ -57,14 +57,14 @@
     </section>
 
     <!-- Configurações de Transação -->
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-transaction-settings-modal>
+    <dialog id="transaction-settings-modal" class="modal fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]">
         <form method="post" action="{{ base_url }}/settings/store" class="validate" data-settings-form>
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
                     <h2 class="text-xl font-bold text-primary">configura&ccedil;&otilde;es de transa&ccedil;&otilde;es</h2>
                     <p class="mt-1 text-xs text-[var(--dark)] opacity-70">defina os campos padr&atilde;o para novos lan&ccedil;amentos.</p>
                 </div>
-                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-transaction-settings-modal aria-label="Fechar">
+                <button type="button" class="modal-close flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-label="Fechar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -72,60 +72,63 @@
             <div class="space-y-5 px-6 py-5">
                 <input type="hidden" name="id" value="{{ settings.id|default('')|e('html_attr') }}">
 
-                <div class="form-group">
+                {# Declara o combobox da forma de pagamento padrão #}
+                <div class="form-group" data-select data-select-name="payment-method" data-select-placeholder="escolha uma forma">
                     <label>forma de pagamento padr&atilde;o</label>
-                    <input type="hidden" name="default_payment_method_id" value="{{ settings.default_payment_method_id|default('')|e('html_attr') }}" data-settings-select-input="payment-method">
+                    <input type="hidden" name="default_payment_method_id" value="{{ settings.default_payment_method_id|default('')|e('html_attr') }}" data-select-input>
 
-                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-settings-select-toggle="payment-method">
-                        <span class="text-sm" data-settings-select-label="payment-method">
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                        <span class="text-sm" data-select-label>
                             escolha uma forma
                         </span>
                         <i class="fa-solid fa-chevron-down text-primary"></i>
                     </button>
 
-                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-settings-select-menu="payment-method">
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                         {% for method in payment_methods %}
-                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-settings-select-option="payment-method" data-settings-option-id="{{ method.id|e('html_attr') }}" data-settings-option-name="{{ method.name|e('html_attr') }}">
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ method.id|e('html_attr') }}" data-value-label="{{ method.name|e('html_attr') }}" aria-selected="false">
                                 {{ method.name }}
                             </button>
                         {% endfor %}
                     </div>
                 </div>
 
-                <div class="form-group">
+                {# Declara o combobox da wallet padrão #}
+                <div class="form-group" data-select data-select-name="wallet" data-select-placeholder="escolha uma wallet">
                     <label>wallet padr&atilde;o</label>
-                    <input type="hidden" name="default_wallet_id" value="{{ settings.default_wallet_id|default('')|e('html_attr') }}" data-settings-select-input="wallet">
+                    <input type="hidden" name="default_wallet_id" value="{{ settings.default_wallet_id|default('')|e('html_attr') }}" data-select-input>
 
-                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-settings-select-toggle="wallet">
-                        <span class="text-sm" data-settings-select-label="wallet">
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                        <span class="text-sm" data-select-label>
                             escolha uma wallet
                         </span>
                         <i class="fa-solid fa-chevron-down text-primary"></i>
                     </button>
 
-                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-settings-select-menu="wallet">
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                         {% for wallet in wallets %}
-                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-settings-select-option="wallet" data-settings-option-id="{{ wallet.id|e('html_attr') }}" data-settings-option-name="{{ wallet.name|e('html_attr') }}">
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ wallet.id|e('html_attr') }}" data-value-label="{{ wallet.name|e('html_attr') }}" aria-selected="false">
                                 {{ wallet.name }}
                             </button>
                         {% endfor %}
                     </div>
                 </div>
 
-                <div class="form-group">
+                {# Declara o combobox da entidade padrão #}
+                <div class="form-group" data-select data-select-name="entity" data-select-placeholder="escolha uma entidade">
                     <label>entidade padr&atilde;o</label>
-                    <input type="hidden" name="default_entity_id" value="{{ settings.default_entity_id|default('')|e('html_attr') }}" data-settings-select-input="entity">
+                    <input type="hidden" name="default_entity_id" value="{{ settings.default_entity_id|default('')|e('html_attr') }}" data-select-input>
 
-                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-settings-select-toggle="entity">
-                        <span class="text-sm" data-settings-select-label="entity">
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                        <span class="text-sm" data-select-label>
                             escolha uma entidade
                         </span>
                         <i class="fa-solid fa-chevron-down text-primary"></i>
                     </button>
 
-                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-settings-select-menu="entity">
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                         {% for entity in entities %}
-                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-settings-select-option="entity" data-settings-option-id="{{ entity.id|e('html_attr') }}" data-settings-option-name="{{ entity.name|e('html_attr') }}">
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ entity.id|e('html_attr') }}" data-value-label="{{ entity.name|e('html_attr') }}" aria-selected="false">
                                 {{ entity.name }}
                             </button>
                         {% endfor %}
@@ -135,7 +138,7 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">
-                <button type="button" class="btn-secondary" data-close-transaction-settings-modal>
+                <button type="button" class="modal-close btn-secondary">
                     cancelar
                 </button>
                 <button type="submit" class="btn-primary">
@@ -147,14 +150,14 @@
     </dialog>
 
     <!-- Configurações de Ciclo Financeiro -->
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-cycle-settings-modal>
+    <dialog id="cycle-settings-modal" class="modal fixed top-1/2 left-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]">
         <form method="post" action="{{ base_url }}/settings/store" class="validate">
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
                     <h2 class="text-xl font-bold text-primary">ciclos financeiros</h2>
                     <p class="mt-1 text-xs text-[var(--dark)] opacity-70">defina como os recebimentos delimitam seus ciclos.</p>
                 </div>
-                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-cycle-settings-modal aria-label="Fechar">
+                <button type="button" class="modal-close flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-label="Fechar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -176,7 +179,7 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">
-                <button type="button" class="btn-secondary" data-close-cycle-settings-modal>
+                <button type="button" class="modal-close btn-secondary">
                     cancelar
                 </button>
                 <button type="submit" class="btn-primary">
@@ -188,20 +191,28 @@
     </dialog>
 
     <!-- Configurações de Conta -->
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-account-settings-modal>
-        <form method="post" action="{{ base_url }}/settings/update" class="validate">
+    <dialog id="account-settings-modal" class="modal fixed top-1/2 left-1/2 max-h-[90vh] w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 scale-95 overflow-y-auto rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" {% if account_feedback|default(null) %}data-account-feedback data-expand-password="{{ account_feedback.change_password ? '1' : '0' }}"{% endif %}>
+        <form method="post" action="{{ base_url }}/account/update/" class="validate">
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
                     <h2 class="text-xl font-bold text-primary">minha conta</h2>
                     <p class="mt-1 text-xs text-[var(--dark)] opacity-70">gerencie seus dados pessoais.</p>
                 </div>
-                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-account-settings-modal aria-label="Fechar">
+                <button type="button" class="modal-close flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-label="Fechar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <div class="space-y-5 px-6 py-5">
                 <input type="hidden" name="id" value="{{ user.id }}">
+
+                {# Exibe o feedback temporário da atualização da conta #}
+                {% if account_feedback|default(null) %}
+                    <div class="flex items-start gap-3 rounded border px-3 py-3 text-sm {% if account_feedback.type == 'success' %}border-[var(--lilac)] bg-[rgba(193,127,215,0.08)] text-primary{% else %}border-[var(--yellow)] bg-[var(--light)] text-[var(--purple)]{% endif %}" role="alert">
+                        <i class="fa-solid {% if account_feedback.type == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %} mt-0.5"></i>
+                        <span>{{ account_feedback.message }}</span>
+                    </div>
+                {% endif %}
 
                 <div class="form-group">
                     <label for="name">nome</label>
@@ -211,15 +222,10 @@
                     <label for="email">e-mail</label>
                     <input name="email" id="email" class="w-full" type="text" value="{{ user.email }}" data-type="required" readonly>
                 </div> 
-
-                <button type="button" class="mt-3 flex w-full items-center justify-center rounded border border-[var(--yellow)] bg-[#fffff5] px-3 py-2 font-bold text-primary transition hover:bg-[var(--yellow)]" data-open-change-password>
-                    <i class="fa-solid fa-shield-halved mr-1"></i>
-                    quero alterar minha senha
-                </button>                             
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">
-                <button type="button" class="btn-secondary" data-close-account-settings-modal>
+                <button type="button" class="modal-close btn-secondary">
                     cancelar
                 </button>
                 <button type="submit" class="btn-primary">

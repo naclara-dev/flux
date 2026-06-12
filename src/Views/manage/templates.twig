@@ -11,7 +11,7 @@
             </p>
         </div> 
         <div class="flex justify-end"> 
-            <button type="button" class="btn-primary w-50 mt-4 text-xl" data-open-template-modal>
+            <button type="button" class="modal-toggle btn-primary w-50 mt-4 text-xl" data-modal-target="#template-modal">
                 <i class="fa-solid fa-plus fa-sm mr-1"></i>
                 criar
             </button>
@@ -51,14 +51,14 @@
         {% endfor %}  
     </section>
 
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-template-modal data-template-find-url="{{ base_url }}/manage/templates/find">
+    <dialog id="template-modal" class="modal fixed top-1/2 left-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-template-modal data-template-find-url="{{ base_url }}/manage/templates/find">
         <form method="post" action="{{ base_url }}/manage/templates/store" class="validate" data-template-form>
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
                     <h2 class="text-xl font-bold text-primary" data-template-modal-title>novo template</h2>
                     <p class="mt-1 text-xs text-[var(--dark)] opacity-70">informe origem, destino, valor e periodicidade.</p>
                 </div>
-                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-template-modal aria-label="Fechar">
+                <button type="button" class="modal-close flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-label="Fechar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -79,48 +79,51 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div class="form-group">
+                    {# Declara o combobox de wallet do template #}
+                    <div class="form-group" data-select data-select-name="wallet" data-select-placeholder="escolha uma wallet">
                         <label>wallet</label>
-                        <input type="hidden" name="wallet_id" data-type="required" data-template-wallet-input>
-                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="wallet">
-                            <span data-template-wallet-label class="text-sm">escolha uma wallet</span>
+                        <input type="hidden" name="wallet_id" data-type="required" data-select-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                            <span data-select-label class="text-sm">escolha uma wallet</span>
                             <i class="fa-solid fa-chevron-down text-primary"></i>
                         </button>
-                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="wallet">
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                             {% for wallet in wallets %}
-                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="wallet" data-template-option-id="{{ wallet.id|e('html_attr') }}" data-template-option-name="{{ wallet.name|e('html_attr') }}">
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ wallet.id|e('html_attr') }}" data-value-label="{{ wallet.name|e('html_attr') }}" aria-selected="false">
                                     {{ wallet.name }}
                                 </button>
                             {% endfor %}
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    {# Declara o combobox de categoria do template #}
+                    <div class="form-group" data-select data-select-name="category" data-select-placeholder="escolha uma categoria">
                         <label>categoria</label>
-                        <input type="hidden" name="category_id" data-type="required" data-template-category-input>
-                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="category">
-                            <span data-template-category-label class="text-sm">escolha uma categoria</span>
+                        <input type="hidden" name="category_id" data-type="required" data-select-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                            <span data-select-label class="text-sm">escolha uma categoria</span>
                             <i class="fa-solid fa-chevron-down text-primary"></i>
                         </button>
-                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="category">
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                             {% for category in categories %}
-                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="category" data-template-option-id="{{ category.id|e('html_attr') }}" data-template-option-name="{{ category.name|e('html_attr') }}">
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ category.id|e('html_attr') }}" data-value-label="{{ category.name|e('html_attr') }}" aria-selected="false">
                                     {{ category.name }}
                                 </button>
                             {% endfor %}
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    {# Declara o combobox de entidade do template #}
+                    <div class="form-group" data-select data-select-name="entity" data-select-placeholder="escolha uma entidade">
                         <label>entidade</label>
-                        <input type="hidden" name="entity_id" data-type="required" data-template-entity-input>
-                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="entity">
-                            <span data-template-entity-label class="text-sm">escolha uma entidade</span>
+                        <input type="hidden" name="entity_id" data-type="required" data-select-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                            <span data-select-label class="text-sm">escolha uma entidade</span>
                             <i class="fa-solid fa-chevron-down text-primary"></i>
                         </button>
-                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="entity">
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                             {% for entity in entities %}
-                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="entity" data-template-option-id="{{ entity.id|e('html_attr') }}" data-template-option-name="{{ entity.name|e('html_attr') }}">
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ entity.id|e('html_attr') }}" data-value-label="{{ entity.name|e('html_attr') }}" aria-selected="false">
                                     {{ entity.name }}
                                 </button>
                             {% endfor %}
@@ -134,16 +137,17 @@
                         <input id="template-interval-value" name="interval_value" type="number" min="1" value="1" data-type="required" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" data-template-interval-input>
                     </div>
 
-                    <div class="form-group">
+                    {# Declara o combobox de frequência do template #}
+                    <div class="form-group" data-select data-select-name="frequency" data-select-placeholder="escolha uma frequencia">
                         <label>frequencia</label>
-                        <input type="hidden" name="frequency_id" data-type="required" data-template-frequency-input>
-                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-template-select-toggle="frequency">
-                            <span data-template-frequency-label class="text-sm">escolha uma frequencia</span>
+                        <input type="hidden" name="frequency_id" data-type="required" data-select-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                            <span data-select-label class="text-sm">escolha uma frequencia</span>
                             <i class="fa-solid fa-chevron-down text-primary"></i>
                         </button>
-                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-template-select-menu="frequency">
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
                             {% for frequency in frequencies %}
-                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-template-option="frequency" data-template-option-id="{{ frequency.id|e('html_attr') }}" data-template-option-name="{{ frequency.name|e('html_attr') }}">
+                                <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="{{ frequency.id|e('html_attr') }}" data-value-label="{{ frequency.name|e('html_attr') }}" aria-selected="false">
                                     {{ frequency.name }}
                                 </button>
                             {% endfor %}
@@ -182,7 +186,7 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">
-                <button type="button" class="btn-secondary" data-close-template-modal>
+                <button type="button" class="modal-close btn-secondary">
                     cancelar
                 </button>
                 <button type="submit" class="btn-primary">
@@ -197,4 +201,3 @@
 {% block scripts %}
     <script src="{{ base_url }}/assets/js/templates.js"></script>
 {% endblock %}
-

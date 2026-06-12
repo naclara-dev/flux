@@ -1,37 +1,47 @@
 (function () {
+    // Carrega os elementos principais do formulário de transação
     const modal = document.querySelector('[data-transaction-modal]');
     const form = document.querySelector('[data-transaction-form]');
-    const transactionModal = window.FluxModal ? window.FluxModal.create(modal, {
-        closeSelector: '[data-close-transaction-modal]',
-        onClose: closeMenus
-    }) : null;
-    const openButtons = document.querySelectorAll('[data-open-transaction-modal]');
+    const openButtons = document.querySelectorAll('.modal-toggle[data-modal-target="#transaction-modal"]');
     const paidInput = document.querySelector('[data-transaction-paid-input]');
     const modalTitle = document.querySelector('[data-transaction-modal-title]');
 
+    // Carrega o controlador compartilhado do modal
+    const transactionModal = window.FluxModal ? window.FluxModal.get(modal) : null;
+
+    // Carrega os comboboxes compartilhados do formulário
     const selects = {
-        wallet: createSelect('wallet'),
-        category: createSelect('category'),
-        entity: createSelect('entity'),
-        template: createSelect('template'),
-        'payment-method': createSelect('payment-method')
+        wallet: getSelect('wallet'),
+        category: getSelect('category'),
+        entity: getSelect('entity'),
+        template: getSelect('template'),
+        'payment-method': getSelect('payment-method')
     };
 
-    if (!transactionModal || !form || !paidInput || Object.values(selects).some(function (select) { return !select; })) {
+    // Verifica se a estrutura obrigatória está disponível
+    if (!transactionModal || !form || !paidInput || Object.values(selects).some(function (select) {
+        return !select;
+    })) {
+        // Interrompe a inicialização quando a tela está incompleta
         return;
     }
 
+    // Percorre os toggles usados para criar uma transação
     openButtons.forEach(function (button) {
+        // Prepara o formulário antes da abertura declarativa
         button.addEventListener('click', function () {
             resetForm();
-            transactionModal.open();
         });
     });
 
+    // Intercepta cliques nas transações editáveis
     document.addEventListener('click', function (event) {
+        // Carrega o botão de edição mais próximo do clique
         const button = event.target.closest('[data-edit-transaction]');
 
+        // Verifica se o clique ocorreu em uma transação
         if (!button) {
+            // Interrompe quando não existe uma transação para editar
             return;
         }
 
@@ -39,42 +49,18 @@
         transactionModal.open();
     });
 
-    Object.keys(selects).forEach(function (name) {
-        const select = selects[name];
-
-        select.toggle.addEventListener('click', function () {
-            if (select.menu.classList.contains('max-h-0')) {
-                closeMenus();
-                openMenu(select.menu);
-                return;
-            }
-
-            closeMenu(select.menu);
-        });
-
-        select.options.forEach(function (option) {
-            option.addEventListener('click', function () {
-                setSelected(name, option.dataset.transactionOptionId, option.dataset.transactionOptionName);
-
-                if (name === 'template') {
-                    applyTemplate(option);
-                }
-
-                closeMenu(select.menu);
-            });
-        });
-    });
-
-    document.addEventListener('click', function (event) {
-        const clickedInsideSelect = Object.values(selects).some(function (select) {
-            return select.menu.contains(event.target) || select.toggle.contains(event.target);
-        });
-
-        if (!clickedInsideSelect) {
-            closeMenus();
+    // Aplica os dados relacionados quando o usuário escolhe um template
+    selects.template.element.addEventListener('flux:select-change', function (event) {
+        // Verifica se a opção selecionada possui dados de template
+        if (!event.detail.option) {
+            // Interrompe quando o template foi limpo
+            return;
         }
+
+        applyTemplate(event.detail.option);
     });
 
+    // Restaura os valores iniciais do formulário
     function resetForm() {
         form.reset();
         form.elements.amount.value = '0,00';
@@ -82,15 +68,15 @@
         paidInput.checked = false;
         setModalTitle('novo registro');
 
-        resetSelect('wallet', 'escolha uma wallet');
-        resetSelect('category', 'escolha uma categoria');
-        resetSelect('entity', 'escolha uma entidade');
-        resetSelect('template', 'sem template');
-        resetSelect('payment-method', 'escolha uma forma');
+        // Percorre os comboboxes para restaurar seus placeholders
+        Object.values(selects).forEach(function (select) {
+            select.reset();
+        });
+
         applyDefaults();
-        closeMenus();
     }
 
+    // Preenche o formulário com os dados da transação
     function fillForm(transaction) {
         form.reset();
         form.elements.id.value = transaction.transactionId || '';
@@ -102,95 +88,73 @@
         paidInput.checked = transaction.transactionPaid === '1';
         setModalTitle('editar registro');
 
-        setSelected('wallet', transaction.transactionWalletId, transaction.transactionWalletName || 'escolha uma wallet');
-        setSelected('category', transaction.transactionCategoryId, transaction.transactionCategoryName || 'escolha uma categoria');
-        setSelected('entity', transaction.transactionEntityId, transaction.transactionEntityName || 'escolha uma entidade');
-        setSelected('template', transaction.transactionTemplateId, transaction.transactionTemplateName || 'sem template');
-        setSelected('payment-method', transaction.transactionPaymentMethodId, transaction.transactionPaymentMethodName || 'escolha uma forma');
-        closeMenus();
+        // Define os relacionamentos selecionados sem emitir eventos de usuário
+        selects.wallet.set(transaction.transactionWalletId, transaction.transactionWalletName || 'escolha uma wallet', false);
+        selects.category.set(transaction.transactionCategoryId, transaction.transactionCategoryName || 'escolha uma categoria', false);
+        selects.entity.set(transaction.transactionEntityId, transaction.transactionEntityName || 'escolha uma entidade', false);
+        selects.template.set(transaction.transactionTemplateId, transaction.transactionTemplateName || 'sem template', false);
+        selects['payment-method'].set(transaction.transactionPaymentMethodId, transaction.transactionPaymentMethodName || 'escolha uma forma', false);
     }
 
+    // Define o título exibido no modal
     function setModalTitle(title) {
+        // Verifica se o título está disponível
         if (modalTitle) {
             modalTitle.textContent = title;
         }
     }
 
-    function createSelect(name) {
-        const input = document.querySelector('[data-transaction-' + name + '-input]');
-        const label = document.querySelector('[data-transaction-' + name + '-label]');
-        const toggle = document.querySelector('[data-transaction-select-toggle="' + name + '"]');
-        const menu = document.querySelector('[data-transaction-select-menu="' + name + '"]');
-        const options = document.querySelectorAll('[data-transaction-option="' + name + '"]');
-
-        if (!input || !label || !toggle || !menu) {
+    // Carrega um combobox do formulário pelo nome
+    function getSelect(name) {
+        // Verifica se a API compartilhada e o modal estão disponíveis
+        if (!window.FluxSelect || !modal) {
+            // Interrompe a busca sem a estrutura compartilhada
             return null;
         }
 
-        return {
-            input: input,
-            label: label,
-            toggle: toggle,
-            menu: menu,
-            options: Array.from(options)
-        };
+        return window.FluxSelect.get(modal.querySelector('[data-select-name="' + name + '"]'));
     }
 
-    function resetSelect(name, label) {
-        selects[name].input.value = '';
-        selects[name].label.textContent = label;
-    }
-
-    function setSelected(name, id, optionName) {
-        const select = selects[name];
-
-        select.input.value = id || '';
-        select.label.textContent = optionName || 'item selecionado';
-    }
-
+    // Aplica as configurações padrão do usuário
     function applyDefaults() {
         applyDefaultSelect('wallet', modal.dataset.defaultWalletId);
         applyDefaultSelect('entity', modal.dataset.defaultEntityId);
         applyDefaultSelect('payment-method', modal.dataset.defaultPaymentMethodId);
     }
 
+    // Define o valor padrão de um combobox
     function applyDefaultSelect(name, id) {
+        // Verifica se existe um valor configurado
         if (!id) {
+            // Interrompe quando não existe configuração padrão
             return;
         }
 
-        const option = findOption(name, id);
-
-        if (!option) {
-            return;
-        }
-
-        setSelected(name, option.dataset.transactionOptionId, option.dataset.transactionOptionName);
+        selects[name].set(id, '', false);
     }
 
-    function findOption(name, id) {
-        return selects[name].options.find(function (option) {
-            return option.dataset.transactionOptionId === String(id);
-        });
-    }
-
+    // Preenche os campos relacionados ao template selecionado
     function applyTemplate(option) {
-        form.elements.title.value = option.dataset.transactionOptionName || '';
+        form.elements.title.value = option.dataset.valueLabel || '';
         form.elements.amount.value = formatMoney(option.dataset.templateAmount);
         form.elements.occurrence_date.value = getNextDateFromMonthDay(option.dataset.templateMonthDay);
-        setSelected('wallet', option.dataset.templateWalletId, option.dataset.templateWalletName);
-        setSelected('category', option.dataset.templateCategoryId, option.dataset.templateCategoryName);
-        setSelected('entity', option.dataset.templateEntityId, option.dataset.templateEntityName);        
+        selects.wallet.set(option.dataset.templateWalletId, option.dataset.templateWalletName, false);
+        selects.category.set(option.dataset.templateCategoryId, option.dataset.templateCategoryName, false);
+        selects.entity.set(option.dataset.templateEntityId, option.dataset.templateEntityName, false);
     }
 
+    // Calcula a próxima ocorrência para o dia mensal do template
     function getNextDateFromMonthDay(monthDay) {
+        // Inicializa a data atual e limita o dia informado
         const today = new Date();
         const day = Math.min(Math.max(Number(monthDay || 1), 1), 31);
-        let year = today.getFullYear();
+        const year = today.getFullYear();
         let month = today.getMonth();
         let date = createDate(year, month, day);
 
+        // Verifica se a ocorrência deste mês já passou
         if (date < startOfDay(today)) {
+            // Define a ocorrência para o próximo mês
             month += 1;
             date = createDate(year, month, day);
         }
@@ -198,17 +162,22 @@
         return formatDate(date);
     }
 
+    // Cria uma data respeitando o último dia do mês
     function createDate(year, month, day) {
+        // Calcula o último dia disponível no mês
         const lastDay = new Date(year, month + 1, 0).getDate();
 
         return new Date(year, month, Math.min(day, lastDay));
     }
 
+    // Remove o horário de uma data
     function startOfDay(date) {
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
 
+    // Formata uma data para o valor aceito pelo input
     function formatDate(date) {
+        // Define as partes normalizadas da data
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
@@ -216,29 +185,17 @@
         return year + '-' + month + '-' + day;
     }
 
+    // Formata um valor para o padrão monetário do formulário
     function formatMoney(value) {
+        // Define o valor numérico recebido
         const number = Number(String(value || '0').replace(',', '.'));
 
+        // Verifica se o valor recebido é inválido
         if (Number.isNaN(number)) {
+            // Retorna o valor monetário vazio
             return '0,00';
         }
 
         return number.toFixed(2).replace('.', ',');
-    }
-
-    function closeMenus() {
-        Object.values(selects).forEach(function (select) {
-            closeMenu(select.menu);
-        });
-    }
-
-    function closeMenu(menu) {
-        menu.classList.remove('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
-        menu.classList.add('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-    }
-
-    function openMenu(menu) {
-        menu.classList.remove('max-h-0', 'border-transparent', 'opacity-0', 'overflow-hidden');
-        menu.classList.add('max-h-56', 'border-[var(--yellow)]', 'opacity-100', 'overflow-y-auto');
     }
 })();

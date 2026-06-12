@@ -3,6 +3,8 @@
     const previousButton = document.querySelector('[data-cycle-previous]');
     const nextButton = document.querySelector('[data-cycle-next]');
     const refreshButton = document.querySelector('[data-refresh-home]');
+    // Carrega o botão responsável pela impressão do ciclo
+    const printButton = document.querySelector('[data-print-cycle]');
     const cache = new Map();
 
     if (refreshButton) {
@@ -29,6 +31,12 @@
     let nextReference = card.dataset.cycleEnd;
 
     initializeCollapse();
+
+    // Verifica se o botão de impressão está disponível
+    if (printButton) {
+        // Abre a versão de impressão do ciclo atualmente exibido
+        printButton.addEventListener('click', printCycle);
+    }
 
     if (!previousButton || !nextButton || !cycleUrl) {
         return;
@@ -190,6 +198,23 @@
         transactions.forEach(function (transaction) {
             content.appendChild(createTransactionButton(transaction));
         });
+    }
+
+    // Abre a página preparada para imprimir o ciclo visualizado
+    function printCycle() {
+        // Verifica se a rota de impressão foi informada
+        if (!printButton.dataset.printUrl) {
+            // Interrompe quando não existe uma rota configurada
+            return;
+        }
+
+        // Define a URL com a data inicial do ciclo atual
+        const printUrl = printButton.dataset.printUrl
+            + '?date='
+            + encodeURIComponent(card.dataset.cycleStart);
+
+        // Abre a pré-visualização em uma nova aba
+        window.open(printUrl, '_blank', 'noopener');
     }
 
     function createTransactionButton(transaction) {

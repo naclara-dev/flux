@@ -11,7 +11,7 @@
             </p>
         </div> 
         <div class="flex justify-end"> 
-            <button type="button" class="btn-primary w-50 mt-4 text-xl" data-open-category-modal>
+            <button type="button" class="modal-toggle btn-primary w-50 mt-4 text-xl" data-modal-target="#category-modal">
                 <i class="fa-solid fa-plus fa-sm mr-1"></i>
                 criar
             </button>
@@ -48,14 +48,14 @@
         {% endfor %}  
     </section>
 
-    <dialog class="fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-category-modal data-icons-url="{{ base_url }}/assets/vendor/fontawesome/icons.json">
+    <dialog id="category-modal" class="modal fixed top-1/2 left-1/2 w-[min(92vw,650px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-category-modal data-icons-url="{{ base_url }}/assets/vendor/fontawesome/icons.json">
         <form method="post" action="{{ base_url }}/manage/categories/store" class="validate" data-category-form>
             <div class="flex items-center justify-between px-6 py-4">
                 <div>
                     <h2 class="text-xl font-medium text-primary font-bold" data-category-modal-title>nova categoria</h2>
                     <p class="mt-1 text-xs text-[var(--dark)] opacity-70">escolha nome, cor e ícone.</p>
                 </div>
-                <button type="button" class="flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" data-close-category-modal aria-label="Fechar">
+                <button type="button" class="modal-close flex h-9 w-9 items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" aria-label="Fechar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -103,7 +103,7 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">
-                <button type="button" class="btn-secondary" data-close-category-modal>
+                <button type="button" class="modal-close btn-secondary">
                     cancelar
                 </button>
                 <button type="submit" class="btn-primary">
