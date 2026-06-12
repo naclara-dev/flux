@@ -32,6 +32,8 @@ return [
     '/manage/templates/store/' => [TemplateController::class, 'store'],
     '/manage/templates/delete/' => [TemplateController::class, 'delete'],
     '/transactions/store/'    => [TransactionController::class, 'store'],
+    // Exclui uma transação pertencente ao usuário autenticado
+    '/transactions/delete/'   => [TransactionController::class, 'delete'],
     '/settings/'             => [SettingsController::class, 'index'],
     '/settings/store/'       => [SettingsController::class, 'store'],
     '/login/'                => [AuthController::class, 'login'],

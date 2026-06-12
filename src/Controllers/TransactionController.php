@@ -23,6 +23,35 @@ class TransactionController extends Controller {
         exit;
     }
 
+    /**
+     * Exclui uma transação pertencente ao usuário autenticado.
+     */
+    public function delete() {
+        // Verifica se a exclusão foi solicitada por POST
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            // Interrompe requisições feitas por outros métodos
+            redirect();
+            exit;
+        }
+
+        // Verifica se o usuário possui uma sessão autenticada
+        $this->requireAuth();
+
+        // Define o identificador recebido pelo formulário
+        $id = (int) ($_POST['id'] ?? 0);
+
+        // Verifica se o identificador é válido
+        if ($id > 0) {
+            // Exclui somente a transação pertencente ao usuário atual
+            (new TransactionRepository)->delete($id, [
+                'user_id' => Session::get('user_id')
+            ]);
+        }
+
+        redirect();
+        exit;
+    }
+
     protected function normalizeData(array $data) {
         $paid = !empty($data['paid']);
         $templateId = empty($data['template_id']) ? null : (int) $data['template_id'];

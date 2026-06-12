@@ -118,7 +118,7 @@
         if (toggle && toggle.getAttribute('aria-expanded') === 'true') {
             // Atualiza a altura do conteúdo após a troca de ciclo
             requestAnimationFrame(function () {
-                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.maxHeight = getExpandedContentHeight();
             });
         }
     }
@@ -218,9 +218,40 @@
     }
 
     function createTransactionButton(transaction) {
+        // Inicializa a linha que separa exclusão e edição
+        const wrapper = document.createElement('div');
+        wrapper.className = 'group relative flex items-center gap-2 transition hover:-translate-y-0.5 md:block';
+
+        // Inicializa o formulário usado pelo modal de confirmação
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'post';
+        deleteForm.action = card.dataset.transactionDeleteUrl || '';
+        deleteForm.className = 'shrink-0 md:absolute md:-left-12 md:top-1/2 md:-translate-y-1/2';
+
+        // Define o identificador enviado para exclusão
+        const deleteInput = document.createElement('input');
+        deleteInput.type = 'hidden';
+        deleteInput.name = 'id';
+        deleteInput.value = transaction.id || '';
+
+        // Inicializa o botão de exclusão da transação
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'submit';
+        deleteButton.className = 'flex h-9 w-9 cursor-pointer items-center justify-center rounded text-secondary transition hover:bg-[var(--yellow)] hover:text-primary';
+        deleteButton.setAttribute('data-delete-button', '');
+        deleteButton.setAttribute('aria-label', 'Excluir transação');
+        deleteButton.title = 'Excluir transação';
+
+        // Define o ícone da ação de exclusão
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'fa-regular fa-trash-can';
+        deleteButton.appendChild(deleteIcon);
+        deleteForm.append(deleteInput, deleteButton);
+
+        // Inicializa o card clicável usado para edição
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'grid w-full gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md sm:grid-cols-[1fr_auto] sm:items-center';
+        button.className = 'grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition group-hover:shadow-md md:w-full sm:grid-cols-[1fr_auto] sm:items-center';
         button.setAttribute('data-edit-transaction', '');
 
         if (transaction.paid) {
@@ -273,8 +304,9 @@
         summary.append(date, amount, status);
 
         button.append(identity, summary);
+        wrapper.append(deleteForm, button);
 
-        return button;
+        return wrapper;
     }
 
     function setTransactionData(button, transaction) {
@@ -303,22 +335,30 @@
         }
 
         content.style.overflow = 'hidden';
-        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.maxHeight = getExpandedContentHeight();
 
         toggle.addEventListener('click', function () {
             const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
 
             toggle.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
-            content.style.maxHeight = isExpanded ? '0px' : content.scrollHeight + 'px';
+            content.style.maxHeight = isExpanded ? '0px' : getExpandedContentHeight();
             content.classList.toggle('mt-5', !isExpanded);
             icon.classList.toggle('rotate-180', isExpanded);
         });
 
         window.addEventListener('resize', function () {
             if (toggle.getAttribute('aria-expanded') === 'true') {
-                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.maxHeight = getExpandedContentHeight();
             }
         });
+    }
+
+    // Calcula a altura expandida com folga para bordas e sombras
+    function getExpandedContentHeight() {
+        // Calcula alguns pixels adicionais além do conteúdo real
+        const visualSpacing = 8;
+
+        return content.scrollHeight + visualSpacing + 'px';
     }
 
     function setText(selector, value) {

@@ -67,7 +67,7 @@
                 </button>
             </nav>
 
-            <article class="relative rounded border border-[var(--yellow)] bg-[#fffff5] p-5" data-cycle-card data-cycle-url="{{ base_url }}/dashboard/cycle/" data-cycle-start="{{ dashboard.currentCycle.start|e('html_attr') }}" data-cycle-end="{{ dashboard.currentCycle.end|e('html_attr') }}">
+            <article class="relative rounded border border-[var(--yellow)] bg-[#fffff5] p-5" data-cycle-card data-cycle-url="{{ base_url }}/dashboard/cycle/" data-transaction-delete-url="{{ base_url }}/transactions/delete/" data-cycle-start="{{ dashboard.currentCycle.start|e('html_attr') }}" data-cycle-end="{{ dashboard.currentCycle.end|e('html_attr') }}">
                 <header>
                     <button type="button" class="grid w-full gap-4 text-left md:grid-cols-[auto_1fr_auto_auto] md:items-center" data-cycle-toggle aria-expanded="true">
                         <div class="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--yellow)] text-primary">
@@ -98,23 +98,34 @@
                 </header>
 
                 <div class="mt-5 space-y-3 pl-0 transition-[max-height,margin-top] duration-300 ease-in-out md:pl-20" data-cycle-content>
+                    {# Percorre as transações e separa a exclusão da ação de edição #}
                     {% for transaction in dashboard.currentCycle.transactions %}
-                        <button type="button" class="grid w-full gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md {% if transaction.paid %}opacity-80{% endif %} sm:grid-cols-[1fr_auto] sm:items-center" data-edit-transaction data-transaction-id="{{ transaction.id|e('html_attr') }}" data-transaction-title="{{ transaction.title|e('html_attr') }}" data-transaction-amount="{{ transaction.form_amount_label|e('html_attr') }}" data-transaction-occurrence-date="{{ transaction.occurrence_date|e('html_attr') }}" data-transaction-due-date="{{ transaction.due_date|e('html_attr') }}" data-transaction-paid-at="{{ transaction.paid_at|e('html_attr') }}" data-transaction-paid="{{ transaction.paid|e('html_attr') }}" data-transaction-wallet-id="{{ transaction.wallet.id|e('html_attr') }}" data-transaction-wallet-name="{{ transaction.wallet.name|e('html_attr') }}" data-transaction-category-id="{{ transaction.category.id|e('html_attr') }}" data-transaction-category-name="{{ transaction.category.name|e('html_attr') }}" data-transaction-entity-id="{{ transaction.entity.id|e('html_attr') }}" data-transaction-entity-name="{{ transaction.entity.name|e('html_attr') }}" data-transaction-template-id="{{ transaction.template.id|e('html_attr') }}" data-transaction-template-name="{{ transaction.template.title|e('html_attr') }}" data-transaction-payment-method-id="{{ transaction.payment_method.id|e('html_attr') }}" data-transaction-payment-method-name="{{ transaction.payment_method.name|e('html_attr') }}">
-                            <div class="flex items-center gap-3">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-full text-light" style="background-color: {{ transaction.category.color|e('html_attr') }}">
-                                    <i class="{{ transaction.category.icon|e('html_attr') }}"></i>
+                        <div class="group relative flex items-center gap-2 transition hover:-translate-y-0.5 md:block">
+                            {# Envia a exclusão pelo modal de confirmação compartilhado #}
+                            <form method="post" action="{{ base_url }}/transactions/delete/" class="shrink-0 md:absolute md:-left-12 md:top-1/2 md:-translate-y-1/2">
+                                <input type="hidden" name="id" value="{{ transaction.id|e('html_attr') }}">
+                                <button type="submit" class="flex h-9 w-9 cursor-pointer items-center justify-center text-secondary" aria-label="Excluir transação" title="Excluir transação" data-delete-button>
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </form>
+
+                            <button type="button" class="grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition group-hover:shadow-md md:w-full {% if transaction.paid %}opacity-80{% endif %} sm:grid-cols-[1fr_auto] sm:items-center" data-edit-transaction data-transaction-id="{{ transaction.id|e('html_attr') }}" data-transaction-title="{{ transaction.title|e('html_attr') }}" data-transaction-amount="{{ transaction.form_amount_label|e('html_attr') }}" data-transaction-occurrence-date="{{ transaction.occurrence_date|e('html_attr') }}" data-transaction-due-date="{{ transaction.due_date|e('html_attr') }}" data-transaction-paid-at="{{ transaction.paid_at|e('html_attr') }}" data-transaction-paid="{{ transaction.paid|e('html_attr') }}" data-transaction-wallet-id="{{ transaction.wallet.id|e('html_attr') }}" data-transaction-wallet-name="{{ transaction.wallet.name|e('html_attr') }}" data-transaction-category-id="{{ transaction.category.id|e('html_attr') }}" data-transaction-category-name="{{ transaction.category.name|e('html_attr') }}" data-transaction-entity-id="{{ transaction.entity.id|e('html_attr') }}" data-transaction-entity-name="{{ transaction.entity.name|e('html_attr') }}" data-transaction-template-id="{{ transaction.template.id|e('html_attr') }}" data-transaction-template-name="{{ transaction.template.title|e('html_attr') }}" data-transaction-payment-method-id="{{ transaction.payment_method.id|e('html_attr') }}" data-transaction-payment-method-name="{{ transaction.payment_method.name|e('html_attr') }}">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-full text-light" style="background-color: {{ transaction.category.color|e('html_attr') }}">
+                                        <i class="{{ transaction.category.icon|e('html_attr') }}"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">{{ transaction.title }}</h3>
+                                        <p class="text-xs text-secondary">{{ transaction.meta_label }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="font-medium">{{ transaction.title }}</h3>
-                                    <p class="text-xs text-secondary">{{ transaction.meta_label }}</p>
+                                <div class="flex items-center justify-between gap-4 sm:block sm:text-right">
+                                    <span class="text-xs text-secondary">{{ transaction.date_label }}</span>
+                                    <strong class="block text-sm {% if transaction.amount > 0 %}text-primary{% else %}text-[var(--dark)]{% endif %}">{{ transaction.amount_label }}</strong>
+                                    <span class="badge">{{ transaction.status_label }}</span>
                                 </div>
-                            </div>
-                            <div class="flex items-center justify-between gap-4 sm:block sm:text-right">
-                                <span class="text-xs text-secondary">{{ transaction.date_label }}</span>
-                                <strong class="block text-sm {% if transaction.amount > 0 %}text-primary{% else %}text-[var(--dark)]{% endif %}">{{ transaction.amount_label }}</strong>
-                                <span class="badge">{{ transaction.status_label }}</span>
-                            </div>
-                        </button>
+                            </button>
+                        </div>
                     {% else %}
                         <div class="rounded border border-[var(--yellow)] bg-[var(--light)] p-4 text-sm text-secondary">
                             nenhum lançamento neste ciclo.
