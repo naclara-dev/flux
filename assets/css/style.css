@@ -372,28 +372,20 @@ h1 {
 }
 
 @media (max-width: 600px) {
-    .app-sidebar {
-        width: 100vw;
-        height: 80px;
-        bottom: 0;
-        left: 0;
-        width: 100vw;
-        height: 64px;
-        top: auto;
-        z-index: 1000;        
-    }
-
     .page-content.has-sidebar {
         margin-left: 0;
-        padding-bottom: 88px;
-    }
-
-    .app-sidebar nav, .app-sidebar nav ul {
-        width: 100%;
+        padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
     }
 
     body {
         flex-direction: column;
+    }
+
+    .app-sidebar {
+       top: auto;
+       right: 20px;
+       bottom: 10px;
+       left: 10px;
     }
 
     .tab-menu {
