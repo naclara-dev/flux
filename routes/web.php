@@ -30,6 +30,7 @@ return [
     '/manage/templates/find/' => [TemplateController::class, 'find'],
     '/manage/templates/store/' => [TemplateController::class, 'store'],
     '/manage/templates/delete/' => [TemplateController::class, 'delete'],
+    '/transactions/find/'     => [TransactionController::class, 'find'],
     '/transactions/store/'    => [TransactionController::class, 'store'],
     '/transactions/delete/'   => [TransactionController::class, 'delete'],
     '/settings/'             => [SettingsController::class, 'index'],

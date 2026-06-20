@@ -9,6 +9,7 @@ class Template
     private $walletId = null;
     private $categoryId = null;
     private $entityId = null;
+    private $type = null;
     private $title = null;
     private $amount = null;
     private $intervalValue = null;
@@ -29,6 +30,8 @@ class Template
     public function setCategoryId(?int $categoryId): void { $this->categoryId = $categoryId; }
     public function getEntityId(): ?int { return $this->entityId; }
     public function setEntityId(?int $entityId): void { $this->entityId = $entityId; }
+    public function getType(): ?string { return $this->type; }
+    public function setType(?string $type): void { $this->type = $type; }
     public function getTitle(): ?string { return $this->title; }
     public function setTitle(?string $title): void { $this->title = $title; }
     public function getAmount(): ?float { return $this->amount; }

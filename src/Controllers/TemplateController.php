@@ -62,6 +62,7 @@ class TemplateController extends Controller {
             'wallet_id' => empty($data['wallet_id']) ? null : (int) $data['wallet_id'],
             'category_id' => empty($data['category_id']) ? null : (int) $data['category_id'],
             'entity_id' => empty($data['entity_id']) ? null : (int) $data['entity_id'],
+            'type' => in_array($data['type'] ?? null, ['I', 'E'], true) ? $data['type'] : null,
             'title' => trim($data['title'] ?? ''),
             'amount' => moneyToFloat($data['amount'] ?? '0'),
             'interval_value' => empty($data['interval_value']) ? 1 : (int) $data['interval_value'],

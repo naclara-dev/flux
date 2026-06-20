@@ -7,6 +7,21 @@ use App\Models\Repositories\TemplateRepository;
 use App\Models\Repositories\TransactionRepository;
 
 class TransactionController extends Controller {
+    public function find() {
+        $this->requireAuth();
+
+        $id = (int) ($_GET['id'] ?? 0);
+        $repository = new TransactionRepository;
+
+        $transaction = $repository->find([
+            'id' => $id,
+            'user_id' => Session::get('user_id')
+        ]);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($transaction);
+    }
+
     public function store() {
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
             redirect();

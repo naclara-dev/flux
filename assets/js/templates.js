@@ -27,6 +27,7 @@
 
     // Carrega os comboboxes compartilhados do formulário
     const selects = {
+        type: getSelect('type'),
         wallet: getSelect('wallet'),
         category: getSelect('category'),
         entity: getSelect('entity'),
@@ -86,6 +87,7 @@
         modalTitle.textContent = 'editar template';
 
         // Define os relacionamentos selecionados sem emitir eventos de usuário
+        selects.type.set(template.type, '', false);
         selects.wallet.set(template.wallet_id, '', false);
         selects.category.set(template.category_id, '', false);
         selects.entity.set(template.entity_id, '', false);

@@ -9,6 +9,12 @@
     // Carrega o controlador compartilhado do modal
     const transactionModal = window.FluxModal ? window.FluxModal.get(modal) : null;
 
+    // Define a URL usada para carregar os dados da edição
+    const findUrl = modal ? modal.dataset.transactionFindUrl : '';
+
+    // Controla a requisição de edição em andamento para evitar respostas obsoletas
+    let activeFetchController = null;
+
     // Carrega os comboboxes compartilhados do formulário
     const selects = {
         type: getSelect('type'),
@@ -31,6 +37,12 @@
     openButtons.forEach(function (button) {
         // Prepara o formulário antes da abertura declarativa
         button.addEventListener('click', function () {
+            // Aborta edição em andamento para evitar que a resposta tardia sobrescreva o formulário vazio
+            if (activeFetchController) {
+                activeFetchController.abort();
+                activeFetchController = null;
+            }
+
             resetForm();
         });
     });
@@ -41,13 +53,12 @@
         const button = event.target.closest('[data-edit-transaction]');
 
         // Verifica se o clique ocorreu em uma transação
-        if (!button) {
+        if (!button || !button.dataset.transactionId) {
             // Interrompe quando não existe uma transação para editar
             return;
         }
 
-        fillForm(button.dataset);
-        transactionModal.open();
+        fetchTransaction(button.dataset.transactionId);
     });
 
     // Aplica os dados relacionados quando o usuário escolhe um template
@@ -77,25 +88,76 @@
         applyDefaults();
     }
 
+    // Carrega uma transação pelo endpoint JSON e preenche o formulário
+    function fetchTransaction(id) {
+        // Verifica se a rota de busca foi configurada
+        if (!findUrl) {
+            return;
+        }
+
+        // Aborta requisição anterior em andamento para descartar respostas obsoletas
+        if (activeFetchController) {
+            activeFetchController.abort();
+        }
+
+        const controller = new AbortController();
+        activeFetchController = controller;
+
+        // Prepara o formulário e abre o modal antes da resposta para mascarar a latência
+        resetForm();
+        setModalTitle('carregando…');
+        transactionModal.open();
+
+        fetch(findUrl + '?id=' + encodeURIComponent(id), {
+            headers: {
+                'Accept': 'application/json'
+            },
+            signal: controller.signal
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('transaction not found');
+                }
+
+                return response.json();
+            })
+            .then(function (transaction) {
+                // Verifica se a transação foi encontrada
+                if (!transaction) {
+                    transactionModal.close();
+                    return;
+                }
+
+                fillForm(transaction);
+            })
+            .catch(function (error) {
+                // Ignora cancelamentos explícitos de requisições obsoletas
+                if (error && error.name === 'AbortError') {
+                    return;
+                }
+
+                transactionModal.close();
+            });
+    }
+
     // Preenche o formulário com os dados da transação
     function fillForm(transaction) {
-        form.reset();
-        form.elements.id.value = transaction.transactionId || '';
-        form.elements.title.value = transaction.transactionTitle || '';
-        form.elements.amount.value = transaction.transactionAmount || '0,00';
-        form.elements.occurrence_date.value = transaction.transactionOccurrenceDate || '';
-        form.elements.due_date.value = transaction.transactionDueDate || '';
-        form.elements.paid_at.value = transaction.transactionPaidAt || '';
-        paidInput.checked = transaction.transactionPaid === '1';
+        form.elements.id.value = transaction.id || '';
+        form.elements.title.value = transaction.title || '';
+        form.elements.amount.value = formatMoney(transaction.amount);
+        form.elements.occurrence_date.value = transaction.occurrence_date || '';
+        form.elements.due_date.value = transaction.due_date || '';
+        form.elements.paid_at.value = transaction.paid_at || '';
+        paidInput.checked = !!Number(transaction.paid);
         setModalTitle('editar registro');
 
-        // Define os relacionamentos selecionados sem emitir eventos de usuário
-        selects.type.set(transaction.transactionType, '', false);
-        selects.wallet.set(transaction.transactionWalletId, transaction.transactionWalletName || 'escolha uma wallet', false);
-        selects.category.set(transaction.transactionCategoryId, transaction.transactionCategoryName || 'escolha uma categoria', false);
-        selects.entity.set(transaction.transactionEntityId, transaction.transactionEntityName || 'escolha uma entidade', false);
-        selects.template.set(transaction.transactionTemplateId, transaction.transactionTemplateName || 'sem template', false);
-        selects['payment-method'].set(transaction.transactionPaymentMethodId, transaction.transactionPaymentMethodName || 'escolha uma forma', false);
+        // Define os relacionamentos selecionados; o label resolve a partir do data-value-label das opções
+        selects.type.set(transaction.type, '', false);
+        selects.wallet.set(transaction.wallet_id, '', false);
+        selects.category.set(transaction.category_id, '', false);
+        selects.entity.set(transaction.entity_id, '', false);
+        selects.template.set(transaction.template_id, '', false);
+        selects['payment-method'].set(transaction.payment_method_id, '', false);
     }
 
     // Define o título exibido no modal
@@ -141,6 +203,7 @@
         form.elements.title.value = option.dataset.valueLabel || '';
         form.elements.amount.value = formatMoney(option.dataset.templateAmount);
         form.elements.occurrence_date.value = getNextDateFromMonthDay(option.dataset.templateMonthDay);
+        selects.type.set(option.dataset.templateType, '', false);
         selects.wallet.set(option.dataset.templateWalletId, option.dataset.templateWalletName, false);
         selects.category.set(option.dataset.templateCategoryId, option.dataset.templateCategoryName, false);
         selects.entity.set(option.dataset.templateEntityId, option.dataset.templateEntityName, false);

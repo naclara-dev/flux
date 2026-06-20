@@ -295,7 +295,7 @@
 
         const amount = document.createElement('strong');
         amount.className = 'block text-sm';
-        amount.classList.add(Number(transaction.amount) > 0 ? 'text-primary' : 'text-[var(--dark)]');
+        amount.classList.add(transaction.type === 'I' ? 'text-primary' : 'text-[var(--dark)]');
         amount.textContent = transaction.amount_label;
 
         const status = document.createElement('span');
@@ -311,22 +311,6 @@
 
     function setTransactionData(button, transaction) {
         button.dataset.transactionId = transaction.id || '';
-        button.dataset.transactionTitle = transaction.title || '';
-        button.dataset.transactionAmount = transaction.form_amount_label || '0,00';
-        button.dataset.transactionOccurrenceDate = transaction.occurrence_date || '';
-        button.dataset.transactionDueDate = transaction.due_date || '';
-        button.dataset.transactionPaidAt = transaction.paid_at || '';
-        button.dataset.transactionPaid = String(transaction.paid || 0);
-        button.dataset.transactionWalletId = transaction.wallet.id || '';
-        button.dataset.transactionWalletName = transaction.wallet.name || '';
-        button.dataset.transactionCategoryId = transaction.category.id || '';
-        button.dataset.transactionCategoryName = transaction.category.name || '';
-        button.dataset.transactionEntityId = transaction.entity.id || '';
-        button.dataset.transactionEntityName = transaction.entity.name || '';
-        button.dataset.transactionTemplateId = transaction.template.id || '';
-        button.dataset.transactionTemplateName = transaction.template.title || '';
-        button.dataset.transactionPaymentMethodId = transaction.payment_method.id || '';
-        button.dataset.transactionPaymentMethodName = transaction.payment_method.name || '';
     }
 
     function initializeCollapse() {

@@ -5,6 +5,7 @@ CREATE TABLE templates (
 	wallet_id INT NOT NULL,
 	category_id INT NOT NULL,
 	entity_id INT NOT NULL,
+    type ENUM('I', 'E') NOT NULL,
     title VARCHAR(255) NOT NULL,
 	amount DECIMAL(12,2) NOT NULL,
     interval_value INT DEFAULT 1,

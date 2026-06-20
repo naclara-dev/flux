@@ -4,10 +4,10 @@
     <section class="grid grid-cols-1 md:grid-cols-2 items-end">
         <div>
             <h1 class="text-primary text-3xl">
-                Templates
+                templates
             </h1>
             <p class="text-sm mt-2">
-                Defina modelos personalizados para lançamentos periódicos.
+                defina modelos personalizados para lançamentos periódicos.
             </p>
         </div> 
         <div class="flex justify-end"> 
@@ -66,7 +66,25 @@
             <div class="space-y-5 px-6 py-5">
                 <input type="hidden" name="id" data-template-id-input>
 
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_160px]">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-[160px_1fr_160px]">
+                    {# Declara o combobox de tipo do template #}
+                    <div class="form-group" data-select data-select-name="type" data-select-placeholder="escolha o tipo">
+                        <label>tipo</label>
+                        <input type="hidden" name="type" data-type="required" data-select-input>
+                        <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                            <span data-select-label class="text-sm">escolha o tipo</span>
+                            <i class="fa-solid fa-chevron-down text-primary"></i>
+                        </button>
+                        <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="E" data-value-label="despesa" aria-selected="false">
+                                despesa
+                            </button>
+                            <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="I" data-value-label="receita" aria-selected="false">
+                                receita
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="template-title">título</label>
                         <input id="template-title" name="title" type="text" data-type="required" class="mt-1 w-full bg-transparent outline-none" autocomplete="off" data-template-title-input>
