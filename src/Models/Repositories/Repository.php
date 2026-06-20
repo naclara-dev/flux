@@ -186,8 +186,12 @@ abstract class Repository {
             $stmt->bindValue(":$f", $data[$f]);
         }
 
-        return $stmt->execute();        
-    } 
+        if (!$stmt->execute()) {
+            return false;
+        }
+
+        return (int) $this->db->lastInsertId();
+    }
 
     public function delete(int $id, array $filters = []) {
         $query = "DELETE FROM $this->table WHERE id = :id";

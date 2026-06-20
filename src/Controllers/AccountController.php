@@ -20,8 +20,12 @@ class AccountController extends Controller {
         ];
 
         $repository = new UserRepository;
-        $repository->save($data);
-        
+        $userId = $repository->save($data);
+
+        if ($userId) {
+            Session::set('user_id', $userId);
+        }
+
         redirect();
         exit;
     }
