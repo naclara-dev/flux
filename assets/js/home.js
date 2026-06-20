@@ -220,7 +220,7 @@
     function createTransactionButton(transaction) {
         // Inicializa a linha que separa exclusão e edição
         const wrapper = document.createElement('div');
-        wrapper.className = 'group relative flex items-center gap-2 transition hover:-translate-y-0.5 md:block';
+        wrapper.className = 'group relative flex items-center gap-2 md:block';
 
         // Inicializa o formulário usado pelo modal de confirmação
         const deleteForm = document.createElement('form');
@@ -251,7 +251,7 @@
         // Inicializa o card clicável usado para edição
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition group-hover:shadow-md md:w-full sm:grid-cols-[1fr_auto] sm:items-center';
+        button.className = 'grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left md:w-full sm:grid-cols-[1fr_auto] sm:items-center';
         button.setAttribute('data-edit-transaction', '');
 
         if (transaction.paid) {

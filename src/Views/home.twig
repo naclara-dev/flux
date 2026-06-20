@@ -93,7 +93,7 @@
                 <div class="mt-5 space-y-3 pl-0 transition-[max-height,margin-top] duration-300 ease-in-out md:pl-20" data-cycle-content>
                     {# Percorre as transações e separa a exclusão da ação de edição #}
                     {% for transaction in dashboard.currentCycle.transactions %}
-                        <div class="group relative flex items-center gap-2 transition hover:-translate-y-0.5 md:block">
+                        <div class="group relative flex items-center gap-2 md:block">
                             {# Envia a exclusão pelo modal de confirmação compartilhado #}
                             <form method="post" action="{{ base_url }}/transactions/delete/" class="shrink-0 md:absolute md:-left-12 md:top-1/2 md:-translate-y-1/2">
                                 <input type="hidden" name="id" value="{{ transaction.id|e('html_attr') }}">
@@ -102,7 +102,7 @@
                                 </button>
                             </form>
 
-                            <button type="button" class="hover:!translate-y-0 grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left md:w-full {% if transaction.paid %}opacity-80{% endif %} sm:grid-cols-[1fr_auto] sm:items-center" data-edit-transaction data-transaction-id="{{ transaction.id|e('html_attr') }}">
+                            <button type="button" class="grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left md:w-full {% if transaction.paid %}opacity-80{% endif %} sm:grid-cols-[1fr_auto] sm:items-center" data-edit-transaction data-transaction-id="{{ transaction.id|e('html_attr') }}">
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full text-light" style="background-color: {{ transaction.category.color|e('html_attr') }}">
                                         <i class="{{ transaction.category.icon|e('html_attr') }}"></i>
@@ -193,7 +193,7 @@
                 </div>
             </div>
 
-            <button type="button" class="modal-toggle btn-primary fixed bottom-20 right-6 flex h-12 w-12 items-center justify-center rounded-full text-xl shadow-lg md:hidden" data-modal-target="#transaction-modal" aria-label="Novo registro">
+            <button type="button" class="modal-toggle fixed bottom-24 right-5 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--yellow)] text-2xl text-[var(--lilac)] shadow-lg md:hidden" data-modal-target="#transaction-modal" aria-label="Novo registro">
                 <i class="fa-solid fa-plus"></i>
             </button>
         </aside>
