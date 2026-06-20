@@ -5,6 +5,7 @@ CREATE TABLE settings (
 	default_payment_method_id INT(11) DEFAULT NULL,
     default_wallet_id INT(11) DEFAULT NULL,
     default_entity_id INT(11) DEFAULT NULL,
+    default_type ENUM('I', 'E') NULL,
     cycle_starts_after_income TINYINT(1) DEFAULT 1,
     UNIQUE (user_id),
 	FOREIGN KEY (user_id) REFERENCES users(id),

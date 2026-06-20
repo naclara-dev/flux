@@ -2,11 +2,6 @@
 {% set manage_active = 'manage/' in current_path %}
 {% set settings_active = current_path == (base_url ~ '/settings/') %}
 
-{% set item_base = 'max-[600px]:flex-1 max-[600px]:justify-center' %}
-{% set chip_li = 'max-[600px]:!flex-none max-[600px]:bg-[var(--yellow)] max-[600px]:rounded-full max-[600px]:px-3 max-[600px]:py-1.5 max-[600px]:gap-1.5' %}
-{% set chip_link = 'max-[600px]:!bg-transparent max-[600px]:text-[var(--lilac)]' %}
-{% set chip_label = 'max-[600px]:!inline-block max-[600px]:!static max-[600px]:!m-0 max-[600px]:!opacity-100 max-[600px]:!transform-none max-[600px]:text-[var(--lilac)] max-[600px]:text-[0.9rem] max-[600px]:font-semibold max-[600px]:whitespace-nowrap' %}
-
 <aside class="app-sidebar flex flex-col justify-between items-center max-[600px]:flex-row max-[600px]:!w-auto max-[600px]:!h-auto max-[600px]:bg-[var(--lilac)] max-[600px]:!text-[var(--light)] max-[600px]:rounded-md max-[600px]:text-[1.1rem]">
     <a class="pl-8 pt-8 brand-mark hidden md:block" href="{{ base_url }}/" aria-label="Flux">
         <img src="{{ base_url }}/assets/img/logo.svg" alt="Flux">
@@ -14,19 +9,19 @@
 
     <nav class="p-8 flex items-center justify-center max-[600px]:!py-2 max-[600px]:!px-4 max-[600px]:w-full" aria-label="Menu principal">
         <ul class="flex flex-cow md:flex-col gap-0 md:gap-8 justify-between max-[600px]:w-full max-[600px]:gap-1">
-            <li class="nav-item flex items-center {{ item_base }} {{ home_active ? chip_li : '' }}">
-                <a class="nav-item-link p-1 {{ home_active ? 'active ' ~ chip_link : '' }} inline-block" href="{{ base_url }}/" aria-label="Visão Geral">
+            <li class="nav-item flex items-center">
+                <a class="nav-item-link p-1 {{ home_active ? 'active' : '' }} inline-block" href="{{ base_url }}/" aria-label="Visão Geral">
                     <i class="fa-regular fa-house fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label hidden md:d-inline-block {{ home_active ? chip_label : '' }}">
+                <span class="nav-item-label hidden md:d-inline-block">
                     visão geral
                 </span>
             </li>
-            <li class="nav-item flex items-center {{ item_base }} {{ manage_active ? chip_li : '' }}">
-                <a class="nav-item-link p-1 {{ manage_active ? 'active ' ~ chip_link : '' }} inline-block" href="{{ base_url }}/manage/" aria-label="Cadastros">
+            <li class="nav-item flex items-center">
+                <a class="nav-item-link p-1 {{ manage_active ? 'active' : '' }} inline-block" href="{{ base_url }}/manage/" aria-label="Cadastros">
                     <i class="fa-regular fa-rectangle-list fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label hidden md:d-inline-block {{ manage_active ? chip_label : '' }}">
+                <span class="nav-item-label hidden md:d-inline-block">
                     cadastros
                 </span>
             </li>
@@ -38,15 +33,15 @@
                     novo registro
                 </span>
             </li>
-            <li class="nav-item flex items-center {{ item_base }} {{ settings_active ? chip_li : '' }}">
-                <a class="nav-item-link p-1 {{ settings_active ? 'active ' ~ chip_link : '' }} inline-block" href="{{ base_url }}/settings/" aria-label="Configurações">
+            <li class="nav-item flex items-center">
+                <a class="nav-item-link p-1 {{ settings_active ? 'active' : '' }} inline-block" href="{{ base_url }}/settings/" aria-label="Configurações">
                     <i class="fa-solid fa-gear fa-xl" aria-hidden="true"></i>
                 </a>
-                <span class="nav-item-label hidden md:d-inline-block {{ settings_active ? chip_label : '' }}">
+                <span class="nav-item-label hidden md:d-inline-block">
                     ajustes
                 </span>
             </li>
-            <li class="nav-item flex items-center {{ item_base }}">
+            <li class="nav-item flex items-center">
                 <a class="nav-item-link p-1 inline-block" href="{{ base_url }}/logoff" aria-label="Sair">
                     <i class="fa-solid fa-power-off fa-xl" aria-hidden="true"></i>
                 </a>
@@ -57,4 +52,3 @@
         </ul>
     </nav>
 </aside>
-

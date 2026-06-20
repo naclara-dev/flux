@@ -3,6 +3,7 @@ CREATE TABLE transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     wallet_id INT NOT NULL,
+    type ENUM('I', 'E') NOT NULL;
     category_id INT,
     entity_id INT,
     template_id INT,
