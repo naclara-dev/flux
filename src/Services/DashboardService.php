@@ -190,7 +190,8 @@ class DashboardService {
             $milestones[] = new Milestone(
                 $transaction['title'],
                 $transaction['occurrence_date'],
-                (float) $transaction['amount']
+                (float) $transaction['amount'],
+                $transaction['type'] ?? null
             );
         }
 

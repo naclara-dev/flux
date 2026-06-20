@@ -58,6 +58,7 @@ class SettingsController extends Controller {
             'default_payment_method_id' => $this->normalizeOptionalInteger($data, $current, 'default_payment_method_id'),
             'default_wallet_id' => $this->normalizeOptionalInteger($data, $current, 'default_wallet_id'),
             'default_entity_id' => $this->normalizeOptionalInteger($data, $current, 'default_entity_id'),
+            'default_type' => $this->normalizeOptionalEnum($data, $current, 'default_type', ['I', 'E']),
             'cycle_starts_after_income' => array_key_exists('cycle_starts_after_income', $data)
                 ? (!empty($data['cycle_starts_after_income']) ? 1 : 0)
                 : (int) ($current['cycle_starts_after_income'] ?? 1),
@@ -70,5 +71,13 @@ class SettingsController extends Controller {
         }
 
         return empty($data[$field]) ? null : (int) $data[$field];
+    }
+
+    private function normalizeOptionalEnum(array $data, array $current, string $field, array $allowed) {
+        if (!array_key_exists($field, $data)) {
+            return $current[$field] ?? null;
+        }
+
+        return in_array($data[$field], $allowed, true) ? $data[$field] : null;
     }
 }

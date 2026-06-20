@@ -1,4 +1,4 @@
-<dialog id="transaction-modal" class="modal fixed top-1/2 left-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-transaction-modal data-default-wallet-id="{{ transaction_settings.default_wallet_id|default('')|e('html_attr') }}" data-default-entity-id="{{ transaction_settings.default_entity_id|default('')|e('html_attr') }}" data-default-payment-method-id="{{ transaction_settings.default_payment_method_id|default('')|e('html_attr') }}">
+<dialog id="transaction-modal" class="modal fixed top-1/2 left-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2 scale-95 rounded-lg border border-[var(--yellow)] bg-[#fffff5] p-0 text-[var(--dark)] opacity-0 shadow-xl transition duration-200 backdrop:bg-[rgba(58,56,53,0.35)]" data-transaction-modal data-default-wallet-id="{{ transaction_settings.default_wallet_id|default('')|e('html_attr') }}" data-default-entity-id="{{ transaction_settings.default_entity_id|default('')|e('html_attr') }}" data-default-payment-method-id="{{ transaction_settings.default_payment_method_id|default('')|e('html_attr') }}" data-default-type="{{ transaction_settings.default_type|default('')|e('html_attr') }}">
     <form method="post" action="{{ base_url }}/transactions/store" class="validate" data-transaction-form>
         <div class="flex items-center justify-between px-6 py-4">
             <div>
@@ -13,7 +13,25 @@
         <div class="space-y-5 px-6 py-5">
             <input type="hidden" name="id">
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_160px]">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-[160px_1fr_160px]">
+                {# Declara o combobox de tipo da transação #}
+                <div class="form-group" data-select data-select-name="type" data-select-placeholder="escolha o tipo">
+                    <label>tipo</label>
+                    <input type="hidden" name="type" data-type="required" data-select-input>
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                        <span data-select-label class="text-sm">escolha o tipo</span>
+                        <i class="fa-solid fa-chevron-down text-primary"></i>
+                    </button>
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
+                        <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="E" data-value-label="despesa" aria-selected="false">
+                            saída
+                        </button>
+                        <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="I" data-value-label="receita" aria-selected="false">
+                            entrada
+                        </button>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="transaction-title">titulo</label>
                     <input id="transaction-title" name="title" type="text" data-type="required" class="mt-1 w-full bg-transparent outline-none" autocomplete="off">

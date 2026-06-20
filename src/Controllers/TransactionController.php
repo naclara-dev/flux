@@ -79,6 +79,7 @@ class TransactionController extends Controller {
             'id' => empty($data['id']) ? null : (int) $data['id'],
             'user_id' => Session::get('user_id'),
             'wallet_id' => empty($data['wallet_id']) ? null : (int) $data['wallet_id'],
+            'type' => in_array($data['type'] ?? null, ['I', 'E'], true) ? $data['type'] : null,
             'category_id' => empty($data['category_id']) ? null : (int) $data['category_id'],
             'entity_id' => empty($data['entity_id']) ? null : (int) $data['entity_id'],
             'template_id' => $templateId,

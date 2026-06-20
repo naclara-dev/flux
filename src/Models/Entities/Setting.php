@@ -9,6 +9,7 @@ class Setting
     private $defaultPaymentMethodId = null;
     private $defaultWalletId = null;
     private $defaultEntityId = null;
+    private $defaultType = null;
     private $cycleStartsAfterIncome = null;
 
     public function getId(): ?int
@@ -59,6 +60,16 @@ class Setting
     public function setDefaultEntityId(?int $defaultEntityId): void
     {
         $this->defaultEntityId = $defaultEntityId;
+    }
+
+    public function getDefaultType(): ?string
+    {
+        return $this->defaultType;
+    }
+
+    public function setDefaultType(?string $defaultType): void
+    {
+        $this->defaultType = $defaultType;
     }
 
     public function getCycleStartsAfterIncome(): ?bool

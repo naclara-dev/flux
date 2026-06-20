@@ -11,6 +11,7 @@
 
     // Carrega os comboboxes compartilhados do formulário
     const selects = {
+        type: getSelect('type'),
         wallet: getSelect('wallet'),
         category: getSelect('category'),
         entity: getSelect('entity'),
@@ -89,6 +90,7 @@
         setModalTitle('editar registro');
 
         // Define os relacionamentos selecionados sem emitir eventos de usuário
+        selects.type.set(transaction.transactionType, '', false);
         selects.wallet.set(transaction.transactionWalletId, transaction.transactionWalletName || 'escolha uma wallet', false);
         selects.category.set(transaction.transactionCategoryId, transaction.transactionCategoryName || 'escolha uma categoria', false);
         selects.entity.set(transaction.transactionEntityId, transaction.transactionEntityName || 'escolha uma entidade', false);
@@ -117,6 +119,7 @@
 
     // Aplica as configurações padrão do usuário
     function applyDefaults() {
+        applyDefaultSelect('type', modal.dataset.defaultType);
         applyDefaultSelect('wallet', modal.dataset.defaultWalletId);
         applyDefaultSelect('entity', modal.dataset.defaultEntityId);
         applyDefaultSelect('payment-method', modal.dataset.defaultPaymentMethodId);

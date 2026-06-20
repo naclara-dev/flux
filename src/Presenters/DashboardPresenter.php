@@ -62,21 +62,21 @@ class DashboardPresenter {
 
         // Percorre as transações apresentadas no ciclo
         foreach ($transactions as $transaction) {
-            // Define o valor numérico da transação atual
-            $amount = (float) $transaction['amount'];
-
             // Verifica se a transação não representa uma saída
-            if ($amount >= 0) {
+            if (($transaction['type'] ?? null) !== 'E') {
                 // Interrompe o processamento da transação atual
                 continue;
             }
+
+            // Define o valor da despesa (sempre positivo)
+            $amount = (float) $transaction['amount'];
 
             // Define o nome utilizado para agrupar a despesa
             $label = $transaction[$group][$labelField] ?? $fallbackLabel;
             $label = $label ?: $fallbackLabel;
 
             // Calcula o total acumulado do grupo
-            $totals[$label] = ($totals[$label] ?? 0) + abs($amount);
+            $totals[$label] = ($totals[$label] ?? 0) + $amount;
         }
 
         // Ordena os grupos do maior para o menor valor
@@ -116,12 +116,16 @@ class DashboardPresenter {
 
     private function presentMilestones(): array {
         return array_map(function ($milestone) {
+            // Aplica o sinal apenas para fins de exibição mantendo o valor armazenado positivo
+            $signedAmount = $milestone->type === 'I' ? $milestone->amount : -$milestone->amount;
+
             return [
                 'title' => $milestone->title,
                 'date' => $milestone->date,
                 'amount' => $milestone->amount,
+                'type' => $milestone->type,
                 'dateLabel' => $this->formatShortDate($milestone->date),
-                'amountLabel' => $this->formatMoneyWithExplicitSignal($milestone->amount),
+                'amountLabel' => $this->formatMoneyWithExplicitSignal($signedAmount),
             ];
         }, $this->dashboard->milestones);
     }
@@ -129,13 +133,16 @@ class DashboardPresenter {
     private function presentTransactions(array $transactions): array {
         return array_map(function ($transaction) {
             $amount = (float) $transaction['amount'];
+            $type = $transaction['type'] ?? null;
+            // Aplica o sinal apenas para a exibição mantendo o valor armazenado positivo
+            $signedAmount = $type === 'I' ? $amount : -$amount;
             $categoryName = $transaction['category_name'] ?: 'sem categoria';
             $walletName = $transaction['wallet_name'] ?: 'sem wallet';
             $entityName = $transaction['entity_name'] ?: '';
             $templateName = $transaction['template_title'] ?: 'sem template';
             $paymentMethodName = $transaction['payment_method_name'] ?: 'escolha uma forma';
 
-            $transaction['amount_label'] = $this->formatMoneyWithExplicitSignal($amount);
+            $transaction['amount_label'] = $this->formatMoneyWithExplicitSignal($signedAmount);
             $transaction['form_amount_label'] = number_format($amount, 2, ',', '.');
             $transaction['date_label'] = $this->formatShortDate($transaction['occurrence_date']);
             $transaction['status_label'] = !empty($transaction['paid']) ? 'pago' : 'pendente';
@@ -173,11 +180,11 @@ class DashboardPresenter {
         $largestExpense = null;
 
         foreach ($transactions as $transaction) {
-            if ((float) $transaction['amount'] >= 0) {
+            if (($transaction['type'] ?? null) !== 'E') {
                 continue;
             }
 
-            if (!$largestExpense || abs((float) $transaction['amount']) > abs((float) $largestExpense['amount'])) {
+            if (!$largestExpense || (float) $transaction['amount'] > (float) $largestExpense['amount']) {
                 $largestExpense = $transaction;
             }
         }
@@ -193,7 +200,7 @@ class DashboardPresenter {
 
         return [
             'title' => $largestExpense['title'],
-            'description' => $this->formatMoney(abs((float) $largestExpense['amount'])) . ' ' . $status . ' para ' . $largestExpense['date_label'] . '.',
+            'description' => $this->formatMoney((float) $largestExpense['amount']) . ' ' . $status . ' para ' . $largestExpense['date_label'] . '.',
         ];
     }
 
@@ -210,7 +217,9 @@ class DashboardPresenter {
         $lowestDate = $transactions[0]['date_label'];
 
         foreach ($transactions as $transaction) {
-            $runningBalance += (float) $transaction['amount'];
+            // Entrada acrescenta ao saldo; saída debita
+            $amount = (float) $transaction['amount'];
+            $runningBalance += ($transaction['type'] ?? null) === 'I' ? $amount : -$amount;
 
             if ($runningBalance < $lowestBalance) {
                 $lowestBalance = $runningBalance;

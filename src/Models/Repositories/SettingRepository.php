@@ -25,6 +25,7 @@ class SettingRepository extends Repository
             'default_payment_method_id' => null,
             'default_wallet_id' => null,
             'default_entity_id' => null,
+            'default_type' => null,
             'cycle_starts_after_income' => 1,
         ];
     }

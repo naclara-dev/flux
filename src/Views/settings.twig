@@ -72,6 +72,28 @@
             <div class="space-y-5 px-6 py-5">
                 <input type="hidden" name="id" value="{{ settings.id|default('')|e('html_attr') }}">
 
+                {# Declara o combobox do tipo padrão #}
+                <div class="form-group" data-select data-select-name="default-type" data-select-placeholder="escolha o tipo">
+                    <label>tipo padr&atilde;o</label>
+                    <input type="hidden" name="default_type" value="{{ settings.default_type|default('')|e('html_attr') }}" data-select-input>
+
+                    <button type="button" class="mt-1 flex h-[29px] w-full items-center justify-between rounded border-b-[1.5px] border-[var(--lilac)] bg-transparent px-[7px] py-[3px] text-left leading-[21px] transition hover:border-[var(--purple)]" data-select-toggle aria-expanded="false">
+                        <span class="text-sm" data-select-label>
+                            escolha o tipo
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-primary"></i>
+                    </button>
+
+                    <div class="mt-2 max-h-0 overflow-hidden rounded border border-transparent bg-[#fffff5] opacity-0 shadow-lg transition-all duration-200" data-select-menu>
+                        <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="E" data-value-label="despesa" aria-selected="false">
+                            despesa
+                        </button>
+                        <button type="button" class="flex w-full items-center rounded px-3 py-2 text-left text-sm transition hover:bg-[var(--yellow)] hover:text-primary" data-select-option data-value="I" data-value-label="receita" aria-selected="false">
+                            receita
+                        </button>
+                    </div>
+                </div>
+
                 {# Declara o combobox da forma de pagamento padrão #}
                 <div class="form-group" data-select data-select-name="payment-method" data-select-placeholder="escolha uma forma">
                     <label>forma de pagamento padr&atilde;o</label>

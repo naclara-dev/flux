@@ -7,6 +7,7 @@ class Transaction
     private $id = null;
     private $userId = null;
     private $walletId = null;
+    private $type = null;
     private $categoryId = null;
     private $entityId = null;
     private $templateId = null;
@@ -46,6 +47,16 @@ class Transaction
     public function setWalletId(?int $walletId): void
     {
         $this->walletId = $walletId;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
     }
 
     public function getCategoryId(): ?int

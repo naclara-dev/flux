@@ -102,7 +102,7 @@
                                 </button>
                             </form>
 
-                            <button type="button" class="grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition group-hover:shadow-md md:w-full {% if transaction.paid %}opacity-80{% endif %} sm:grid-cols-[1fr_auto] sm:items-center" data-edit-transaction data-transaction-id="{{ transaction.id|e('html_attr') }}" data-transaction-title="{{ transaction.title|e('html_attr') }}" data-transaction-amount="{{ transaction.form_amount_label|e('html_attr') }}" data-transaction-occurrence-date="{{ transaction.occurrence_date|e('html_attr') }}" data-transaction-due-date="{{ transaction.due_date|e('html_attr') }}" data-transaction-paid-at="{{ transaction.paid_at|e('html_attr') }}" data-transaction-paid="{{ transaction.paid|e('html_attr') }}" data-transaction-wallet-id="{{ transaction.wallet.id|e('html_attr') }}" data-transaction-wallet-name="{{ transaction.wallet.name|e('html_attr') }}" data-transaction-category-id="{{ transaction.category.id|e('html_attr') }}" data-transaction-category-name="{{ transaction.category.name|e('html_attr') }}" data-transaction-entity-id="{{ transaction.entity.id|e('html_attr') }}" data-transaction-entity-name="{{ transaction.entity.name|e('html_attr') }}" data-transaction-template-id="{{ transaction.template.id|e('html_attr') }}" data-transaction-template-name="{{ transaction.template.title|e('html_attr') }}" data-transaction-payment-method-id="{{ transaction.payment_method.id|e('html_attr') }}" data-transaction-payment-method-name="{{ transaction.payment_method.name|e('html_attr') }}">
+                            <button type="button" class="grid min-w-0 flex-1 gap-3 rounded border border-[var(--yellow)] bg-[var(--light)] p-3 text-left transition group-hover:shadow-md md:w-full {% if transaction.paid %}opacity-80{% endif %} sm:grid-cols-[1fr_auto] sm:items-center" data-edit-transaction data-transaction-id="{{ transaction.id|e('html_attr') }}" data-transaction-type="{{ transaction.type|e('html_attr') }}" data-transaction-title="{{ transaction.title|e('html_attr') }}" data-transaction-amount="{{ transaction.form_amount_label|e('html_attr') }}" data-transaction-occurrence-date="{{ transaction.occurrence_date|e('html_attr') }}" data-transaction-due-date="{{ transaction.due_date|e('html_attr') }}" data-transaction-paid-at="{{ transaction.paid_at|e('html_attr') }}" data-transaction-paid="{{ transaction.paid|e('html_attr') }}" data-transaction-wallet-id="{{ transaction.wallet.id|e('html_attr') }}" data-transaction-wallet-name="{{ transaction.wallet.name|e('html_attr') }}" data-transaction-category-id="{{ transaction.category.id|e('html_attr') }}" data-transaction-category-name="{{ transaction.category.name|e('html_attr') }}" data-transaction-entity-id="{{ transaction.entity.id|e('html_attr') }}" data-transaction-entity-name="{{ transaction.entity.name|e('html_attr') }}" data-transaction-template-id="{{ transaction.template.id|e('html_attr') }}" data-transaction-template-name="{{ transaction.template.title|e('html_attr') }}" data-transaction-payment-method-id="{{ transaction.payment_method.id|e('html_attr') }}" data-transaction-payment-method-name="{{ transaction.payment_method.name|e('html_attr') }}">
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full text-light" style="background-color: {{ transaction.category.color|e('html_attr') }}">
                                         <i class="{{ transaction.category.icon|e('html_attr') }}"></i>
@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="flex items-center justify-between gap-4 sm:block sm:text-right">
                                     <span class="text-xs text-secondary">{{ transaction.date_label }}</span>
-                                    <strong class="block text-sm {% if transaction.amount > 0 %}text-primary{% else %}text-[var(--dark)]{% endif %}">{{ transaction.amount_label }}</strong>
+                                    <strong class="block text-sm {% if transaction.type == 'I' %}text-primary{% else %}text-[var(--dark)]{% endif %}">{{ transaction.amount_label }}</strong>
                                     <span class="badge">{{ transaction.status_label }}</span>
                                 </div>
                             </button>
@@ -185,7 +185,7 @@
                                 <p class="text-sm font-medium">{{ milestone.title }}</p>
                                 <p class="text-xs text-secondary">{{ milestone.dateLabel }}</p>
                             </div>
-                            <strong class="text-sm {% if milestone.amount > 0 %}text-primary{% endif %}">{{ milestone.amountLabel }}</strong>
+                            <strong class="text-sm {% if milestone.type == 'I' %}text-primary{% endif %}">{{ milestone.amountLabel }}</strong>
                         </div>
                     {% else %}
                         <p class="text-sm text-secondary">nenhum marco previsto.</p>

@@ -11,7 +11,7 @@ class TransactionRepository extends Repository
 
     public function sumPaidAmountFromUser(int $userId): float
     {
-        $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND paid = 1";
+        $query = "SELECT COALESCE(SUM(CASE WHEN type = 'I' THEN amount ELSE -amount END), 0) FROM $this->table WHERE user_id = :user_id AND paid = 1";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -22,7 +22,7 @@ class TransactionRepository extends Repository
     public function findPreviousIncomeDate(int $userId, string $date, bool $includeDate = false): ?string
     {
         $operator = $includeDate ? '<=' : '<';
-        $query = "SELECT MAX(occurrence_date) FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date $operator :date";
+        $query = "SELECT MAX(occurrence_date) FROM $this->table WHERE user_id = :user_id AND type = 'I' AND occurrence_date $operator :date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':date', $date);
@@ -35,7 +35,7 @@ class TransactionRepository extends Repository
 
     public function findNextIncome(int $userId, string $date): ?array
     {
-        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date >= :date ORDER BY occurrence_date ASC LIMIT 1";
+        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND type = 'I' AND occurrence_date >= :date ORDER BY occurrence_date ASC LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':date', $date);
@@ -48,7 +48,7 @@ class TransactionRepository extends Repository
 
     public function findNextIncomeAfter(int $userId, string $date): ?array
     {
-        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date > :date ORDER BY occurrence_date ASC LIMIT 1";
+        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND type = 'I' AND occurrence_date > :date ORDER BY occurrence_date ASC LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':date', $date);
@@ -61,7 +61,7 @@ class TransactionRepository extends Repository
 
     public function sumAmountInCycle(int $userId, string $startDate, string $endDate): float
     {
-        $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND occurrence_date >= :start_date AND occurrence_date < :end_date";
+        $query = "SELECT COALESCE(SUM(CASE WHEN type = 'I' THEN amount ELSE -amount END), 0) FROM $this->table WHERE user_id = :user_id AND occurrence_date >= :start_date AND occurrence_date < :end_date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':start_date', $startDate);
@@ -73,7 +73,7 @@ class TransactionRepository extends Repository
 
     public function sumIncomeInCycle(int $userId, string $startDate, string $endDate): float
     {
-        $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND amount > 0 AND occurrence_date >= :start_date AND occurrence_date < :end_date";
+        $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND type = 'I' AND occurrence_date >= :start_date AND occurrence_date < :end_date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':start_date', $startDate);
@@ -85,7 +85,7 @@ class TransactionRepository extends Repository
 
     public function sumExpenseInCycle(int $userId, string $startDate, string $endDate): float
     {
-        $query = "SELECT COALESCE(SUM(ABS(amount)), 0) FROM $this->table WHERE user_id = :user_id AND amount < 0 AND occurrence_date >= :start_date AND occurrence_date < :end_date";
+        $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND type = 'E' AND occurrence_date >= :start_date AND occurrence_date < :end_date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':start_date', $startDate);
@@ -97,7 +97,7 @@ class TransactionRepository extends Repository
 
     public function sumCommittedUntil(int $userId, string $startDate, string $endDate): float
     {
-        $query = "SELECT COALESCE(SUM(ABS(amount)), 0) FROM $this->table WHERE user_id = :user_id AND amount < 0 AND paid = 0 AND COALESCE(due_date, occurrence_date) >= :start_date AND COALESCE(due_date, occurrence_date) < :end_date";
+        $query = "SELECT COALESCE(SUM(amount), 0) FROM $this->table WHERE user_id = :user_id AND type = 'E' AND paid = 0 AND COALESCE(due_date, occurrence_date) >= :start_date AND COALESCE(due_date, occurrence_date) < :end_date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':start_date', $startDate);
