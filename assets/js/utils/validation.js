@@ -302,6 +302,16 @@
     }
 
     function getErrorContainer(input) {
+        const select = input.closest('[data-select]');
+
+        if (select) {
+            const toggle = select.querySelector('[data-select-toggle]');
+
+            if (toggle) {
+                return toggle;
+            }
+        }
+
         const inputGroup = input.closest('.input-group');
 
         if (inputGroup) {

@@ -66,7 +66,7 @@
             <div class="space-y-5 px-6 py-5">
                 <input type="hidden" name="id" data-template-id-input>
 
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-[160px_1fr_160px]">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {# Declara o combobox de tipo do template #}
                     <div class="form-group" data-select data-select-name="type" data-select-placeholder="escolha o tipo">
                         <label>tipo</label>
@@ -86,14 +86,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="template-title">título</label>
-                        <input id="template-title" name="title" type="text" data-type="required" class="mt-1 w-full bg-transparent outline-none" autocomplete="off" data-template-title-input>
-                    </div>
-
-                    <div class="form-group">
                         <label for="template-amount">valor</label>
                         <input id="template-amount" name="amount" type="text" inputmode="decimal" value="0,00" data-type="required" class="mt-1 h-[29px] w-full bg-transparent leading-[21px] outline-none" autocomplete="off" data-template-amount-input>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="template-title">título</label>
+                    <input id="template-title" name="title" type="text" data-type="required" class="mt-1 w-full bg-transparent outline-none" autocomplete="off" data-template-title-input>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
