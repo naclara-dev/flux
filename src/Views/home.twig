@@ -27,11 +27,11 @@
         </div>
 
         <div class="mt-5">
-            {# Exibe o feedback temporario da geracao de previsoes #}
-            {% if periodic_feedback|default(null) %}
+            {# Exibe o feedback temporario das acoes da dashboard #}
+            {% if dashboard_feedback|default(null) %}
                 <div class="mb-4 flex items-start gap-3 rounded border border-[var(--lilac)] bg-[rgba(193,127,215,0.08)] px-3 py-3 text-sm text-primary" role="alert">
                     <i class="fa-solid fa-circle-check mt-0.5"></i>
-                    <span>{{ periodic_feedback.message }}</span>
+                    <span>{{ dashboard_feedback.message }}</span>
                 </div>
             {% endif %}
 
@@ -64,6 +64,14 @@
                     <button type="submit" class="group flex h-9 items-center gap-1.5 overflow-hidden rounded px-2 text-sm text-primary transition hover:bg-[var(--yellow)] focus-visible:bg-[var(--yellow)] focus-visible:outline-none disabled:cursor-wait disabled:opacity-60" title="Inserir previsoes" aria-label="Inserir previsoes">
                         <i class="fa-solid fa-calendar-plus flex w-5 justify-center"></i>
                         <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-40 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:max-w-40 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">inserir previs&otilde;es</span>
+                    </button>
+                </form>
+
+                {# Envia a solicitacao de encerramento do ciclo atual #}
+                <form method="post" action="{{ base_url }}/dashboard/cycle/close/" data-confirm-form data-confirm-preset="close-cycle">
+                    <button type="submit" class="group flex h-9 items-center gap-1.5 overflow-hidden rounded px-2 text-sm text-primary transition hover:bg-[var(--yellow)] focus-visible:bg-[var(--yellow)] focus-visible:outline-none disabled:cursor-wait disabled:opacity-60" title="Encerrar ciclo" aria-label="Encerrar ciclo">
+                        <i class="fa-solid fa-circle-check flex w-5 justify-center"></i>
+                        <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-32 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:max-w-32 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">encerrar ciclo</span>
                     </button>
                 </form>
             </div>

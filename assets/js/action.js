@@ -1,11 +1,11 @@
 const confirmModalElement = document.querySelector('[data-confirm-modal]');
 // Carrega o controlador compartilhado do modal de confirmacao
 const confirmModal = window.FluxModal ? window.FluxModal.get(confirmModalElement) : null;
-const confirmDeleteButton = document.querySelector('[data-confirm-delete]');
-const confirmTitle = document.querySelector('[data-confirm-title]');
-const confirmMessage = document.querySelector('[data-confirm-message]');
-const confirmIcon = document.querySelector('[data-confirm-icon]');
-const confirmLabel = document.querySelector('[data-confirm-label]');
+const confirmDeleteButton = confirmModalElement ? confirmModalElement.querySelector('[data-confirm-delete]') : null;
+const confirmTitle = confirmModalElement ? confirmModalElement.querySelector('[data-confirm-title]') : null;
+const confirmMessage = confirmModalElement ? confirmModalElement.querySelector('[data-confirm-message]') : null;
+const confirmIcon = confirmModalElement ? confirmModalElement.querySelector('[data-confirm-icon]') : null;
+const confirmLabel = confirmModalElement ? confirmModalElement.querySelector('[data-confirm-label]') : null;
 let pendingConfirmForm = null;
 
 // Define os textos originais do modal compartilhado
@@ -23,6 +23,12 @@ const confirmPresets = {
         message: 'Ser\u00e3o criadas transa\u00e7\u00f5es para cada template ativo com pr\u00f3xima execu\u00e7\u00e3o dentro do ciclo atual.',
         icon: 'fa-solid fa-calendar-plus',
         label: 'inserir'
+    },
+    'close-cycle': {
+        title: 'encerrar ciclo?',
+        message: 'Todas as transa\u00e7\u00f5es pendentes do ciclo atual ser\u00e3o marcadas como pagas.',
+        icon: 'fa-solid fa-circle-check',
+        label: 'encerrar'
     }
 };
 
@@ -137,7 +143,8 @@ function setConfirmContent(content) {
  */
 function getConfirmContent(form) {
     // Define o preset informado pelo formulario
-    const preset = confirmPresets[form.dataset.confirmPreset] || {};
+    const presetName = form.dataset.confirmPreset || getConfirmPresetFromAction(form.action || '');
+    const preset = confirmPresets[presetName] || {};
 
     return {
         title: form.dataset.confirmTitle || preset.title || defaultConfirmContent.title,
@@ -145,6 +152,25 @@ function getConfirmContent(form) {
         icon: form.dataset.confirmIcon || preset.icon || defaultConfirmContent.icon,
         label: form.dataset.confirmLabel || preset.label || defaultConfirmContent.label
     };
+}
+
+/**
+ * Identifica o preset de confirmacao a partir da URL do formulario.
+ */
+function getConfirmPresetFromAction(action) {
+    // Verifica se a acao corresponde ao encerramento do ciclo
+    if (action.indexOf('/dashboard/cycle/close/') !== -1) {
+        // Define o preset de encerramento do ciclo
+        return 'close-cycle';
+    }
+
+    // Verifica se a acao corresponde a geracao de previsoes
+    if (action.indexOf('/dashboard/periodic/generate/') !== -1) {
+        // Define o preset de geracao de previsoes
+        return 'periodic';
+    }
+
+    return '';
 }
 
 /**

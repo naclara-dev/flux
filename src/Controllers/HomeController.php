@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Session;
+use App\Models\Repositories\TransactionRepository;
 use App\Models\Repositories\UserRepository;
 use App\Presenters\DashboardPresenter;
 use App\Services\DashboardService;
@@ -12,12 +13,12 @@ class HomeController extends Controller {
     public function index() {  
         $this->requireAuth();
 
-        // Define o usuario autenticado e carrega o feedback temporario das previsoes
+        // Define o usuario autenticado e carrega o feedback temporario da dashboard
         $user_id = (int) Session::get('user_id');
-        $periodicFeedback = Session::get('periodic_feedback');
+        $dashboardFeedback = Session::get('dashboard_feedback');
 
         // Remove o feedback apos disponibiliza-lo para a proxima renderizacao
-        Session::remove('periodic_feedback');
+        Session::remove('dashboard_feedback');
 
         // Carrega os dados consolidados da dashboard
         $dashboard = (new DashboardService)->build();
@@ -26,7 +27,7 @@ class HomeController extends Controller {
         $this->view('home.twig', [
             'dashboard' => $dashboardView,
             'user' => (new UserRepository)->find(["id" => $user_id]),
-            'periodic_feedback' => $periodicFeedback
+            'dashboard_feedback' => $dashboardFeedback
         ]);
     }
 
@@ -69,7 +70,56 @@ class HomeController extends Controller {
         }
 
         // Salva o feedback exibido apos o redirecionamento
-        Session::set('periodic_feedback', [
+        Session::set('dashboard_feedback', [
+            'type' => 'success',
+            'message' => $message
+        ]);
+
+        redirect();
+        exit;
+    }
+
+    public function closeCurrentCycle() {
+        // Verifica se o encerramento foi solicitado por POST
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            // Interrompe requisicoes feitas por outros metodos
+            redirect();
+            exit;
+        }
+
+        // Verifica se o usuario possui uma sessao autenticada
+        $this->requireAuth();
+
+        // Define o usuario autenticado e o ciclo financeiro atual
+        $userId = (int) Session::get('user_id');
+        $dashboardService = new DashboardService;
+        $currentCycle = $dashboardService->getCurrentCycle();
+
+        // Marca as transacoes pendentes do ciclo atual como pagas
+        $updated = (new TransactionRepository)->markCycleAsPaid(
+            $userId,
+            $currentCycle->start,
+            $currentCycle->end,
+            (new \DateTimeImmutable('today'))->format('Y-m-d')
+        );
+
+        // Define a mensagem exibida apos o redirecionamento
+        $message = 'Nenhuma transação pendente foi encontrada no ciclo atual.';
+
+        // Verifica se apenas uma transacao foi atualizada
+        if ($updated === 1) {
+            // Define o texto singular para o feedback
+            $message = '1 transação foi marcada como paga no ciclo atual.';
+        }
+
+        // Verifica se mais de uma transacao foi atualizada
+        if ($updated > 1) {
+            // Define o texto plural para o feedback
+            $message = "$updated transações foram marcadas como pagas no ciclo atual.";
+        }
+
+        // Salva o feedback exibido apos o redirecionamento
+        Session::set('dashboard_feedback', [
             'type' => 'success',
             'message' => $message
         ]);

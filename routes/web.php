@@ -17,6 +17,8 @@ return [
     '/dashboard/cycle/print/' => [HomeController::class, 'printCycle'],
     // Define a rota que gera previsoes periodicas do ciclo atual
     '/dashboard/periodic/generate/' => [HomeController::class, 'generatePeriodicTransactions'],
+    // Define a rota que encerra o ciclo atual
+    '/dashboard/cycle/close/' => [HomeController::class, 'closeCurrentCycle'],
     '/manage/'               => [ManageController::class, 'index'],
     '/manage/categories/'    => [ManageController::class, 'categories'],
     '/manage/categories/store/' => [CategoryController::class, 'store'],

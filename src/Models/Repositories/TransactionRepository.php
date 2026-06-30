@@ -120,6 +120,28 @@ class TransactionRepository extends Repository
         return (float) $stmt->fetchColumn();
     }
 
+    public function markCycleAsPaid(int $userId, string $startDate, string $endDate, string $paidAt): int
+    {
+        // Define todas as transacoes pendentes do ciclo como pagas
+        $query = "
+            UPDATE $this->table
+            SET paid = 1,
+                paid_at = :paid_at
+            WHERE user_id = :user_id
+                AND occurrence_date >= :start_date
+                AND occurrence_date < :end_date
+                AND paid = 0
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':paid_at', $paidAt);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(':start_date', $startDate);
+        $stmt->bindValue(':end_date', $endDate);
+        $stmt->execute();
+
+        return $stmt->rowCount();
+    }
+
     public function allInCycleFromUser(int $userId, string $startDate, string $endDate): array
     {
         $query = "
