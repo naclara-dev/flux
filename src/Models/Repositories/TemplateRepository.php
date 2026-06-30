@@ -44,6 +44,46 @@ class TemplateRepository extends Repository {
         }, $rows);
     }
 
+    public function allDueInCycleFromUser(int $userId, string $startDate, string $endDate): array {
+        // Carrega templates ativos com proxima execucao dentro do ciclo atual
+        $query = "
+            SELECT
+                templates.*,
+                frequencies.unit AS frequency_unit
+            FROM $this->table
+            INNER JOIN frequencies ON frequencies.id = templates.frequency_id
+            WHERE templates.user_id = :user_id
+                AND templates.active = 1
+                AND templates.next_run_date >= :start_date
+                AND templates.next_run_date < :end_date
+                AND (
+                    templates.end_date IS NULL
+                    OR templates.next_run_date <= templates.end_date
+                )
+            ORDER BY templates.next_run_date ASC, templates.id ASC
+        ";
+
+        // Inicializa a consulta dos templates pendentes
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(':start_date', $startDate);
+        $stmt->bindValue(':end_date', $endDate);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function updateNextRunDate(int $id, int $userId, string $nextRunDate): bool {
+        // Salva a proxima data de execucao do template informado
+        $query = "UPDATE $this->table SET next_run_date = :next_run_date WHERE id = :id AND user_id = :user_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':next_run_date', $nextRunDate);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
     private function withWallet(array $row): array {
         $row["wallet"] = [
             "id" => $row["wallet_id"],

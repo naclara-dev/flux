@@ -59,6 +59,19 @@ class TransactionRepository extends Repository
         return $result ?: null;
     }
 
+    public function existsFromTemplateOnDate(int $userId, int $templateId, string $occurrenceDate): bool
+    {
+        // Verifica se o template ja gerou uma transacao na data prevista
+        $query = "SELECT COUNT(id) FROM $this->table WHERE user_id = :user_id AND template_id = :template_id AND occurrence_date = :occurrence_date";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(':template_id', $templateId, \PDO::PARAM_INT);
+        $stmt->bindValue(':occurrence_date', $occurrenceDate);
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
     public function sumAmountInCycle(int $userId, string $startDate, string $endDate): float
     {
         $query = "SELECT COALESCE(SUM(CASE WHEN type = 'I' THEN amount ELSE -amount END), 0) FROM $this->table WHERE user_id = :user_id AND occurrence_date >= :start_date AND occurrence_date < :end_date";

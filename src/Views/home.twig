@@ -27,6 +27,14 @@
         </div>
 
         <div class="mt-5">
+            {# Exibe o feedback temporario da geracao de previsoes #}
+            {% if periodic_feedback|default(null) %}
+                <div class="mb-4 flex items-start gap-3 rounded border border-[var(--lilac)] bg-[rgba(193,127,215,0.08)] px-3 py-3 text-sm text-primary" role="alert">
+                    <i class="fa-solid fa-circle-check mt-0.5"></i>
+                    <span>{{ periodic_feedback.message }}</span>
+                </div>
+            {% endif %}
+
             <div>
                 <div class="flex items-center justify-between text-xs">
                     <span class="text-secondary">progresso do ciclo <span data-viewed-cycle-progress-label>{{ dashboard.currentCycle.label }}</span></span>
@@ -51,11 +59,13 @@
                     <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-24 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:max-w-24 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">exportar</span>
                 </button>
 
-                {# Reserva a acao visual para geracao futura de registros periodicos #}
-                <button type="button" class="group flex h-9 items-center gap-1.5 overflow-hidden rounded px-2 text-sm text-primary transition hover:bg-[var(--yellow)] disabled:cursor-not-allowed disabled:opacity-60" title="Inserir previsoes" aria-label="Inserir previsoes" disabled>
-                    <i class="fa-solid fa-calendar-plus flex w-5 justify-center"></i>
-                    <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-40 group-hover:translate-x-0 group-hover:opacity-100">inserir previs&otilde;es</span>
-                </button>
+                {# Envia a solicitacao de geracao de registros periodicos #}
+                <form method="post" action="{{ base_url }}/dashboard/periodic/generate/" data-confirm-form data-confirm-preset="periodic">
+                    <button type="submit" class="group flex h-9 items-center gap-1.5 overflow-hidden rounded px-2 text-sm text-primary transition hover:bg-[var(--yellow)] focus-visible:bg-[var(--yellow)] focus-visible:outline-none disabled:cursor-wait disabled:opacity-60" title="Inserir previsoes" aria-label="Inserir previsoes">
+                        <i class="fa-solid fa-calendar-plus flex w-5 justify-center"></i>
+                        <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-40 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:max-w-40 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">inserir previs&otilde;es</span>
+                    </button>
+                </form>
             </div>
         </div>
     </section>
