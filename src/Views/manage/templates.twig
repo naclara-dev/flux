@@ -193,14 +193,25 @@
                     </div>
                 </div>
 
-                <label class="flex cursor-pointer items-center gap-3 text-sm text-[var(--dark)]">
-                    <input type="hidden" name="active" value="0">
-                    <input type="checkbox" name="active" value="1" checked class="peer sr-only" data-template-active-input>
-                    <span class="flex h-5 w-5 items-center justify-center rounded border-[1.5px] border-[var(--lilac)] text-[0px] text-light transition peer-checked:bg-[var(--lilac)] peer-checked:text-xs">
-                        <i class="fa-solid fa-check"></i>
-                    </span>
-                    ativo
-                </label>
+                <div class="flex flex-wrap items-center gap-5">
+                    <label class="flex cursor-pointer items-center gap-3 text-sm text-[var(--dark)]">
+                        <input type="hidden" name="active" value="0">
+                        <input type="checkbox" name="active" value="1" checked class="peer sr-only" data-template-active-input>
+                        <span class="flex h-5 w-5 items-center justify-center rounded border-[1.5px] border-[var(--lilac)] text-[0px] text-light transition peer-checked:bg-[var(--lilac)] peer-checked:text-xs">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        ativo
+                    </label>
+
+                    <label class="flex cursor-pointer items-center gap-3 text-sm text-[var(--dark)]">
+                        <input type="hidden" name="defines_cycle" value="0">
+                        <input type="checkbox" name="defines_cycle" value="1" class="peer sr-only" data-template-defines-cycle-input>
+                        <span class="flex h-5 w-5 items-center justify-center rounded border-[1.5px] border-[var(--lilac)] text-[0px] text-light transition peer-checked:bg-[var(--lilac)] peer-checked:text-xs">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        define ciclo
+                    </label>
+                </div>
             </div>
 
             <div class="flex justify-end gap-3 px-6 py-4">

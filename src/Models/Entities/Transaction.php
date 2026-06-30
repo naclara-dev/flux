@@ -14,6 +14,7 @@ class Transaction
     private $paymentMethodId = null;
     private $title = null;
     private $paid = null;
+    private $definesCycle = null;
     private $amount = null;
     private $occurrenceDate = null;
     private $dueDate = null;
@@ -117,6 +118,16 @@ class Transaction
     public function setPaid(?bool $paid): void
     {
         $this->paid = $paid;
+    }
+
+    public function definesCycle(): ?bool
+    {
+        return $this->definesCycle;
+    }
+
+    public function setDefinesCycle(?bool $definesCycle): void
+    {
+        $this->definesCycle = $definesCycle;
     }
 
     public function getAmount(): ?float

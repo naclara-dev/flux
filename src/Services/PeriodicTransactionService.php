@@ -62,6 +62,7 @@ class PeriodicTransactionService {
             'payment_method_id' => null,
             'title' => trim($template['title'] ?? ''),
             'paid' => 0,
+            'defines_cycle' => !empty($template['defines_cycle']) ? 1 : 0,
             'amount' => (float) ($template['amount'] ?? 0),
             'occurrence_date' => $runDate,
             'due_date' => $runDate,

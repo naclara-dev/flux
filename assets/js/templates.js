@@ -22,7 +22,8 @@
         start_date: document.querySelector('[data-template-start-date-input]'),
         end_date: document.querySelector('[data-template-end-date-input]'),
         next_run_date: document.querySelector('[data-template-next-run-date-input]'),
-        active: document.querySelector('[data-template-active-input]')
+        active: document.querySelector('[data-template-active-input]'),
+        defines_cycle: document.querySelector('[data-template-defines-cycle-input]')
     };
 
     // Carrega os comboboxes compartilhados do formulário
@@ -65,6 +66,7 @@
         fields.interval_value.value = '1';
         fields.month_day.value = '1';
         fields.active.checked = true;
+        fields.defines_cycle.checked = false;
         modalTitle.textContent = 'novo template';
 
         // Percorre os comboboxes para restaurar seus placeholders
@@ -84,6 +86,7 @@
         fields.end_date.value = template.end_date || '';
         fields.next_run_date.value = template.next_run_date || '';
         fields.active.checked = template.active === true || template.active === 1 || template.active === '1';
+        fields.defines_cycle.checked = template.defines_cycle === true || template.defines_cycle === 1 || template.defines_cycle === '1';
         modalTitle.textContent = 'editar template';
 
         // Define os relacionamentos selecionados sem emitir eventos de usuário

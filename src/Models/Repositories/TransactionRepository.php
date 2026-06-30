@@ -22,7 +22,8 @@ class TransactionRepository extends Repository
     public function findPreviousIncomeDate(int $userId, string $date, bool $includeDate = false): ?string
     {
         $operator = $includeDate ? '<=' : '<';
-        $query = "SELECT MAX(occurrence_date) FROM $this->table WHERE user_id = :user_id AND type = 'I' AND occurrence_date $operator :date";
+        // Carrega apenas entradas que definem fronteiras do ciclo financeiro
+        $query = "SELECT MAX(occurrence_date) FROM $this->table WHERE user_id = :user_id AND type = 'I' AND defines_cycle = 1 AND occurrence_date $operator :date";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':date', $date);
@@ -35,7 +36,8 @@ class TransactionRepository extends Repository
 
     public function findNextIncome(int $userId, string $date): ?array
     {
-        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND type = 'I' AND occurrence_date >= :date ORDER BY occurrence_date ASC LIMIT 1";
+        // Carrega a proxima entrada que define uma fronteira do ciclo financeiro
+        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND type = 'I' AND defines_cycle = 1 AND occurrence_date >= :date ORDER BY occurrence_date ASC LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':date', $date);
@@ -48,7 +50,8 @@ class TransactionRepository extends Repository
 
     public function findNextIncomeAfter(int $userId, string $date): ?array
     {
-        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND type = 'I' AND occurrence_date > :date ORDER BY occurrence_date ASC LIMIT 1";
+        // Carrega a proxima entrada ancora posterior a data informada
+        $query = "SELECT * FROM $this->table WHERE user_id = :user_id AND type = 'I' AND defines_cycle = 1 AND occurrence_date > :date ORDER BY occurrence_date ASC LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $stmt->bindValue(':date', $date);

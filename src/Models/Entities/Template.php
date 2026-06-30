@@ -19,6 +19,7 @@ class Template
     private $endDate = null;
     private $nextRunDate = null;
     private $active = null;
+    private $definesCycle = null;
 
     public function getId(): ?int { return $this->id; }
     public function setId(?int $id): void { $this->id = $id; }
@@ -50,4 +51,6 @@ class Template
     public function setNextRunDate(?string $nextRunDate): void { $this->nextRunDate = $nextRunDate; }
     public function isActive(): ?bool { return $this->active; }
     public function setActive(?bool $active): void { $this->active = $active; }
+    public function definesCycle(): ?bool { return $this->definesCycle; }
+    public function setDefinesCycle(?bool $definesCycle): void { $this->definesCycle = $definesCycle; }
 }

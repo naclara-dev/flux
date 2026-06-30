@@ -72,6 +72,7 @@ class TemplateController extends Controller {
             'end_date' => empty($data['end_date']) ? null : $data['end_date'],
             'next_run_date' => empty($data['next_run_date']) ? ($data['start_date'] ?? null) : $data['next_run_date'],
             'active' => !empty($data['active']) ? 1 : 0,
+            'defines_cycle' => !empty($data['defines_cycle']) ? 1 : 0,
         ];
     }
 }

@@ -101,6 +101,7 @@ class TransactionController extends Controller {
             'payment_method_id' => empty($data['payment_method_id']) ? null : (int) $data['payment_method_id'],
             'title' => $title,
             'paid' => $paid ? 1 : 0,
+            'defines_cycle' => !empty($data['defines_cycle']) ? 1 : 0,
             'amount' => moneyToFloat($data['amount'] ?? '0'),
             'occurrence_date' => $occurrenceDate,
             'due_date' => empty($data['due_date']) ? null : $data['due_date'],

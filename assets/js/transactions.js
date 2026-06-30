@@ -4,6 +4,7 @@
     const form = document.querySelector('[data-transaction-form]');
     const openButtons = document.querySelectorAll('.modal-toggle[data-modal-target="#transaction-modal"]');
     const paidInput = document.querySelector('[data-transaction-paid-input]');
+    const definesCycleInput = document.querySelector('[data-transaction-defines-cycle-input]');
     const modalTitle = document.querySelector('[data-transaction-modal-title]');
 
     // Carrega o controlador compartilhado do modal
@@ -26,7 +27,7 @@
     };
 
     // Verifica se a estrutura obrigatória está disponível
-    if (!transactionModal || !form || !paidInput || Object.values(selects).some(function (select) {
+    if (!transactionModal || !form || !paidInput || !definesCycleInput || Object.values(selects).some(function (select) {
         return !select;
     })) {
         // Interrompe a inicialização quando a tela está incompleta
@@ -78,6 +79,7 @@
         form.elements.amount.value = '0,00';
         form.elements.occurrence_date.value = new Date().toISOString().slice(0, 10);
         paidInput.checked = false;
+        definesCycleInput.checked = false;
         setModalTitle('novo registro');
 
         // Percorre os comboboxes para restaurar seus placeholders
@@ -149,6 +151,7 @@
         form.elements.due_date.value = transaction.due_date || '';
         form.elements.paid_at.value = transaction.paid_at || '';
         paidInput.checked = !!Number(transaction.paid);
+        definesCycleInput.checked = !!Number(transaction.defines_cycle);
         setModalTitle('editar registro');
 
         // Define os relacionamentos selecionados; o label resolve a partir do data-value-label das opções
@@ -203,6 +206,7 @@
         form.elements.title.value = option.dataset.valueLabel || '';
         form.elements.amount.value = formatMoney(option.dataset.templateAmount);
         form.elements.occurrence_date.value = getNextDateFromMonthDay(option.dataset.templateMonthDay);
+        definesCycleInput.checked = !!Number(option.dataset.templateDefinesCycle);
         selects.type.set(option.dataset.templateType, '', false);
         selects.wallet.set(option.dataset.templateWalletId, option.dataset.templateWalletName, false);
         selects.category.set(option.dataset.templateCategoryId, option.dataset.templateCategoryName, false);
