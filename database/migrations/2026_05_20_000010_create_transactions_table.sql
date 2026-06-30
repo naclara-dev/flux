@@ -10,6 +10,7 @@ CREATE TABLE transactions (
     payment_method_id INT,
     title VARCHAR(255) NOT NULL,
     paid BOOLEAN DEFAULT FALSE,
+	defines_cycle BOOLEAN DEFAULT FALSE,
     amount DECIMAL(12,2) DEFAULT 0,
     occurrence_date DATE NOT NULL,
     due_date DATE,
