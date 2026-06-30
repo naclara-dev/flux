@@ -15,6 +15,7 @@ CREATE TABLE templates (
     end_date DATE,
     next_run_date DATE,
     active BOOLEAN DEFAULT TRUE,
+	defines_cycle BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (wallet_id) REFERENCES wallets(id),
     FOREIGN KEY (category_id) REFERENCES categories(id),
