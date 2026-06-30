@@ -12,9 +12,6 @@
                         confira seu fluxo até o próximo respiro:
                     </p>
                 </div>
-                <button type="button" class="flex h-10 w-10 flex-none items-center justify-center rounded text-primary transition hover:bg-[var(--yellow)]" title="Atualizar dados" aria-label="Atualizar dados" data-refresh-home>
-                    <i class="fa-solid fa-rotate-right"></i>
-                </button>
             </div>
 
             <div class="grid grid-cols-2 gap-3 xl:min-w-[680px]">
@@ -29,7 +26,7 @@
             </div>
         </div>
 
-        <div class="mt-5 grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
+        <div class="mt-5">
             <div>
                 <div class="flex items-center justify-between text-xs">
                     <span class="text-secondary">progresso do ciclo <span data-viewed-cycle-progress-label>{{ dashboard.currentCycle.label }}</span></span>
@@ -38,6 +35,27 @@
                 <div class="mt-2 h-2 overflow-hidden rounded-full bg-[var(--yellow)]">
                     <div class="h-full rounded-full bg-[var(--lilac)] transition-all duration-300" style="width: {{ dashboard.currentCycle.progress }}%" data-viewed-cycle-progress-bar></div>
                 </div>
+            </div>
+
+            {# Agrupa as acoes principais da dashboard em uma toolbar expansivel #}
+            <div class="mt-4 flex flex-wrap items-center gap-1" aria-label="Acoes da dashboard">
+                {# Recarrega os dados exibidos na dashboard #}
+                <button type="button" class="group flex h-9 items-center gap-1.5 overflow-hidden rounded px-2 text-sm text-primary transition hover:bg-[var(--yellow)] focus-visible:bg-[var(--yellow)] focus-visible:outline-none disabled:cursor-wait disabled:opacity-50" title="Atualizar dados" aria-label="Atualizar dados" data-refresh-home>
+                    <i class="fa-solid fa-rotate-right flex w-5 justify-center"></i>
+                    <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-28 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:max-w-28 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">recarregar</span>
+                </button>
+
+                {# Abre a versao do ciclo preparada para impressao #}
+                <button type="button" class="group flex h-9 items-center gap-1.5 overflow-hidden rounded px-2 text-sm text-primary transition hover:bg-[var(--yellow)] focus-visible:bg-[var(--yellow)] focus-visible:outline-none disabled:cursor-wait disabled:opacity-50" title="Exportar ciclo" aria-label="Exportar ciclo" data-print-cycle data-print-url="{{ base_url }}/dashboard/cycle/print/">
+                    <i class="fa-solid fa-download flex w-5 justify-center"></i>
+                    <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-24 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:max-w-24 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">exportar</span>
+                </button>
+
+                {# Reserva a acao visual para geracao futura de registros periodicos #}
+                <button type="button" class="group flex h-9 items-center gap-1.5 overflow-hidden rounded px-2 text-sm text-primary transition hover:bg-[var(--yellow)] disabled:cursor-not-allowed disabled:opacity-60" title="Inserir previsoes" aria-label="Inserir previsoes" disabled>
+                    <i class="fa-solid fa-calendar-plus flex w-5 justify-center"></i>
+                    <span class="max-w-0 -translate-x-1 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 ease-out group-hover:max-w-40 group-hover:translate-x-0 group-hover:opacity-100">inserir previs&otilde;es</span>
+                </button>
             </div>
         </div>
     </section>
@@ -48,11 +66,6 @@
                 <button type="button" class="flex items-center gap-2 rounded px-3 py-2 text-sm text-primary transition hover:bg-[var(--yellow)] disabled:cursor-wait disabled:opacity-50" data-cycle-previous>
                     <i class="fa-solid fa-chevron-left"></i>
                     <span>ciclo anterior</span>
-                </button>
-                {# Abre a versão do ciclo preparada para impressão #}
-                <button type="button" class="flex items-center gap-2 rounded px-3 py-2 text-sm text-primary transition hover:bg-[var(--yellow)] disabled:cursor-wait disabled:opacity-50" data-print-cycle data-print-url="{{ base_url }}/dashboard/cycle/print/">
-                    <i class="fa-solid fa-download"></i>
-                    <span class="hidden sm:inline">exportar</span>
                 </button>
                 <button type="button" class="flex items-center gap-2 rounded px-3 py-2 text-sm text-primary transition hover:bg-[var(--yellow)] disabled:cursor-wait disabled:opacity-50" data-cycle-next>
                     <span>pr&oacute;ximo ciclo</span>
