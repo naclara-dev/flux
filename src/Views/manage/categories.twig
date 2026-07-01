@@ -3,9 +3,20 @@
 {% block content %}
     <section class="grid grid-cols-1 md:grid-cols-2 items-end">
         <div>
-            <h1 class="text-primary text-3xl">
-                categorias
-            </h1>
+            <div class="flex items-center gap-2">
+                <h1 class="text-primary text-3xl">
+                    categorias
+                </h1>
+                {# Define a dica contextual da tela de categorias #}
+                <div class="info-hint-wrapper" data-info-hint>
+                    <button type="button" class="flex h-7 w-7 items-center justify-center rounded text-secondary transition hover:text-[var(--lilac)] focus-visible:bg-[var(--lilac)] focus-visible:outline-none" aria-label="Mostrar explicação sobre categorias" aria-describedby="categories-info-hint" aria-expanded="false" data-info-hint-toggle>
+                        <i class="fa-regular fa-circle-question"></i>
+                    </button>
+                    <div id="categories-info-hint" class="info-hint" role="tooltip">
+                        grupos para organizar as movimentações financeiras. ajudam a identificar origem, destino e finalidade.
+                    </div>
+                </div>
+            </div>
             <p class="text-sm mt-2">
                 organize seus lançamentos em categorias personalizadas.
             </p>
